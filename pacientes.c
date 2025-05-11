@@ -6,7 +6,7 @@
 void menuPacientes()
 {
     Paciente *pacientes = NULL;
-    long int tampacientes = 0;
+    long int tampacientes = 0, codigoatual=0;
     int op, cpf;
 
     do
@@ -27,22 +27,29 @@ void menuPacientes()
         {
             if (op == 1)
             {
-                cadastrarpaciente(pacientes, &tampacientes);
+                pacientes=cadastrarpaciente(pacientes, &tampacientes,&codigoatual);
             }
             else if (op == 2)
             {
                 printf("digite o cpf");
                 scanf("%d", &cpf);
-                pacientes = alterercliente(pacientes, tampacientes, cpf);
+             alterercliente(&pacientes, &tampacientes, cpf);
+            }
+            else if(op==3){
+
+            }
+            else if(op==4){
+                listarpacientes(pacientes,tampacientes);
             }
         }
 
     } while (op != 5);
 }
 
-Paciente *cadastrarpaciente(Paciente *pacientes, long int *tampacientes)
+Paciente *cadastrarpaciente(Paciente *pacientes, long int *tampacientes,long int *codigoatual)
 {
-    Paciente *novopaciente = realloc(pacientes, (*tampacientes + 1) * sizeof(Paciente));
+    Paciente *novopaciente = realloc(pacientes, (*tampacientes + 1) * sizeof(Paciente));//usa um ponteiro auxiliar para o caso de não ser bem sucedido
+    //não sobrescreve ou perde as informações anteriores por erros de realocação
     if (novopaciente == NULL)
     {
         printf("Erro ao alocar memória\n");
@@ -51,8 +58,8 @@ Paciente *cadastrarpaciente(Paciente *pacientes, long int *tampacientes)
 
     pacientes = novopaciente;
 
-    printf("Digite o código: ");
-    scanf("%d", &pacientes[*tampacientes].codigo);
+     pacientes[*tampacientes].codigo=*codigoatual;
+      
 
     printf("Digite o nome completo: ");
     scanf(" %[^\n]", pacientes[*tampacientes].nomeCompleto);
@@ -82,10 +89,11 @@ Paciente *cadastrarpaciente(Paciente *pacientes, long int *tampacientes)
     scanf(" %[^\n]", pacientes[*tampacientes].historicoMedico);
 
     (*tampacientes)++; // Atualiza a quantidade de pacientes
+    (*codigoatual)++;
     return pacientes;  // Retorna o ponteiro com o novo paciente inserido
 }
 
-Paciente *altererpaciente(Paciente *pacientes, long int *tampacientes, int cpf)
+ void alterarpaciente(Paciente *pacientes, long int *tampacientes, int cpf)
 {
     if (pacientes == NULL)
     {
@@ -98,8 +106,6 @@ Paciente *altererpaciente(Paciente *pacientes, long int *tampacientes, int cpf)
         {
             if (pacientes[i].cpf == cpf)
             {
-                printf("Digite o código: ");
-                scanf("%d", &pacientes[i].codigo);
 
                 printf("Digite o nome completo: ");
                 scanf(" %[^\n]", pacientes[i].nomeCompleto);
@@ -131,4 +137,17 @@ Paciente *altererpaciente(Paciente *pacientes, long int *tampacientes, int cpf)
         }
     }
     return pacientes;
+}
+
+void listarpacientes( Paciente *pacientes, long int *tampacientes){
+  for(int i=0;i<*tampacientes;i++){
+    printf("Codigo:%ld\n",pacientes[i].codigo);
+    printf("Nome:%s\n",pacientes[i].nomeCompleto);
+    printf("Cpf:%d\n",pacientes[i].cpf);
+    printf("Endereço:%s \t %s\t %s \t %s\n",pacientes[i].endereco.estado,pacientes[i].endereco.cidade,
+        pacientes[i].endereco.bairro,pacientes[i].endereco.rua);
+    printf("Telefone:%ld\n",pacientes[i].telefone);
+    printf("Data de nascimento:%s\n",pacientes[i].dataNascimento);
+    printf("Historico médico:%s\n",pacientes[i].historicoMedico);
+  }
 }

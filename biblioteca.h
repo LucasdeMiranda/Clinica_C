@@ -20,29 +20,29 @@ typedef struct
 
 typedef struct
 {
-    int codigo;
+    long int codigo;
     char nomeCompleto[100];
     int cpf[15];
     Endereco endereco;
-    int telefone[20];
+    long int telefone[20];
     char dataNascimento[11];
     char historicoMedico[2000];
 } Paciente;
 
 typedef struct
 {
-    int codigo;
+    long int codigo;
     char nomeCompleto[100];
     char crm[20];
     char especialidade[50];
     int cpf[15];
-    int telefone[20];
+    long int telefone[20];
     char email[100];
 } Profissional;
 
 typedef struct
 {
-    int codigo;
+    long int codigo;
     char nomeFantasia[100];
     char razaoSocial[100];
     char inscricaoEstadual[20];
@@ -54,32 +54,32 @@ typedef struct
 
 typedef struct
 {
-    int codigo;
+    long int codigo;
     char descricaoProcedimento[1000];
 } AmbienteMedico;
 
 typedef struct
 {
-    int codigo;
+    long int codigo;
     char descricao[100];
     char fabricante[50];
     float precoCusto;
     float precoVenda;
-    int quantidadeEstoque;
-    int estoqueMinimo;
+    long int quantidadeEstoque;
+    long int estoqueMinimo;
 } MedicamentoMaterial;
 
 typedef struct
 {
-    int codigo;
+    long int codigo;
     char descricao[1000];
     float custo;
-    int tempoEstimado;
-    int quantidadeItens;
+    long int tempoEstimado;
+    long int quantidadeItens;
     AmbienteMedico ambientemedico;
 } Procedimento;
 
-//menus auxiliares
+// menus auxiliares
 void menuambientesmedicos();
 void menufornecedores();
 void menumedicamentos_materiais();
@@ -87,19 +87,15 @@ void menuPacientes();
 void menuprocedimentos();
 void menuprofisionais();
 
-
-//cadastros
+// cadastros
 AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tamambientes);
-Fornecedor* cadastrarfornecedor(Fornecedor *fornecedores, long int *tamfornecedor);
+Fornecedor *cadastrarfornecedor(Fornecedor *fornecedores, long int *tamfornecedor);
 MedicamentoMaterial *cadastrarmedicamentomaterial(MedicamentoMaterial *itens, long int *tammedicamentomaterial);
-Paciente* cadastrarpaciente(Paciente *pacientes, long int *tampacientes);
+Paciente *cadastrarpaciente(Paciente *pacientes, long int *tampacientes);
 Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tamprocedimento);
-Profissional* cadastrarprofissionalsaude(Profissional *profissionais, long int *tamprocedimento);
+Profissional *cadastrarprofissionalsaude(Profissional *profissionais, long int *tamprocedimento);
 
-
-
-
-//edicoes
+// edicoes
 Paciente *altererpaciente(Paciente *pacientes, long int *tampacientes, int cpf);
 
 #endif
