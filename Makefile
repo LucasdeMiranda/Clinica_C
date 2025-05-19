@@ -2,7 +2,7 @@
 CC = gcc
 CFLAGS = -Wall -std=c99
 OBJ = main.o biblioteca.o ambientes_medicos.o fornecedores.o medicamentos_materiais.o pacientes.o procedimentos.o profisionais.o
-EXEC = programa
+EXEC = CLINICA
 
 # Regra para compilar o programa
 $(EXEC): $(OBJ)
@@ -24,7 +24,7 @@ fornecedores.o: fornecedores.c
 medicamentos_materiais.o: medicamentos_materiais.c
 	$(CC) $(CFLAGS) -c medicamentos_materiais.c
 
-pacientes.o: pacientes.c
+pacientes.o: pacientes.c biblioteca.h
 	$(CC) $(CFLAGS) -c pacientes.c
 
 procedimentos.o: procedimentos.c
