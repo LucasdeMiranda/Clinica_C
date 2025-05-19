@@ -3,3 +3,8 @@
 
 *.exe
 *.exe.stackdump
+.vscode/
+
+.vscode/settings.json
+/.vscode
+*.json
