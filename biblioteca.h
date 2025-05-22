@@ -90,7 +90,7 @@ void menuprocedimentos();
 void menuprofisionais();
 
 // cadastros
-AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tamambiente, long int *codigoatual);
+AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tamambiente, long int *codigoatual, AmbienteMedico *novoambiente);
 Fornecedor *cadastrarfornecedor(Fornecedor *fornecedores, long int *tamfornecedor, long int *codigoatual);
 MedicamentoMaterial *cadastrarmedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int *tammedicamentomaterial, long int *codigoatual);
 Paciente *cadastrarpaciente(Paciente *pacientes, long int *tampacientes, long int *codigoatual);
@@ -98,7 +98,7 @@ Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tampr
 Profissional *cadastrarprofissionalsaude(Profissional *profissionais, long int *tamprofisionais, long int *codigoatual);
 
 // edicoes
-void alterarambientemedico(AmbienteMedico *ambientes, long int tamambiente, long int codigo);
+long int alterarambientemedico(AmbienteMedico *ambientes, long int tamambiente, long int codigo);
 void alterarfornecedor(Fornecedor *fornecedores, long int tamfornecedor, long int codigo);
 void alterarmedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, long int codigo);
 void alterarpaciente(Paciente *pacientes, long int tampacientes, long int codigo);
@@ -122,7 +122,7 @@ Procedimento *excluirprocedimento(Procedimento *procedimentos, long int *tamproc
 Profissional *excluirprofisional(Profissional *profisionais, long int *tamprofisional, long int codigo);
 
 // consulta
-void consultaambiente(AmbienteMedico *ambientes,long int tamambiente ,long int codigo);
+long int consultaambiente(AmbienteMedico *ambientes, long int tamambiente, long int codigo);
 void consultafornecedor(Fornecedor *fornecedores, long int tamfornecedor,long int codigo);
 void consultamedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial,long int codigo);
 void consultapaciente(Paciente *pacientes,long int tampacientes,long int codigo);

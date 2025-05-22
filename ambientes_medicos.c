@@ -6,41 +6,78 @@
 void menuambientesmedicos()
 {
     AmbienteMedico *ambientes = NULL;
-    long int tamambiente = 0, codigoatual = 0, codigo;
+    long int tamambiente = 0, codigoatual = 0, codigo, auxtam = 0, posicao;
     int op;
 
     do
     {
-        op = 0, codigo = 0;
-        printf("1:Cadastrar ambiente\n:");
-        printf("2:Alterar ambiente\n:");
+        op = 0, posicao = -1;
+        printf("1: Cadastrar ambiente\n");
+        printf("2: Alterar ambiente\n");
         printf("3: Excluir ambiente\n");
-        printf("4:Listar ambientes\n");
-        printf("5:Consultar ambientes médicos\n");
-        printf("6:Sair\n");
+        printf("4: Listar ambientes\n");
+        printf("5: Consultar ambientes médicos\n");
+        printf("6: Sair\n");
         scanf("%d", &op);
 
         if (op <= 0 || op > 6)
         {
-            printf("opção invalida! tente novamente");
+            printf("Opção inválida! Tente novamente.\n");
         }
         else
         {
             if (op == 1)
             {
-                ambientes = cadastrarambientemedico(ambientes, &tamambiente, &codigoatual);
+                AmbienteMedico novoambiente;
+                novoambiente.codigo = codigoatual;
+                auxtam = tamambiente;
+
+                printf("Digite a descrição do procedimento: ");
+                scanf(" %[^\n]", novoambiente.descricaoProcedimento);
+
+                ambientes = cadastrarambientemedico(ambientes, &tamambiente, &codigoatual, &novoambiente);
+                if (tamambiente > auxtam)
+                {
+                    printf("Ambiente médico cadastrado com sucesso\n");
+                }
+                else
+                {
+                    printf("Erro ao cadastrar o ambiente médico.\n");
+                }
             }
             else if (op == 2)
             {
-                printf("digite o codigo");
+                printf("Digite o código: ");
                 scanf("%ld", &codigo);
-                alterarambientemedico(ambientes, tamambiente, codigo);
+
+                posicao = alterarambientemedico(ambientes, tamambiente, codigo);
+                if (posicao == -1)
+                {
+                    printf("Ambiente não encontrado ou lista vazia.\n");
+                }
+                else
+                {
+                    printf("Digite a nova descrição do procedimento: ");
+                    scanf(" %[^\n]", ambientes[posicao].descricaoProcedimento); // altera direto no vetor
+
+                    printf("Alteração feita com sucesso.\n");
+                }
             }
             else if (op == 3)
             {
-                printf("digite o código:");
+                printf("Digite o código: ");
                 scanf("%ld", &codigo);
+                auxtam = tamambiente;
                 ambientes = excluirambientemedico(ambientes, &tamambiente, codigo);
+
+                if (tamambiente < auxtam)
+                {
+                    printf("Ambiente excluído com sucesso!\n");
+                }
+                else
+                {
+                    printf("Ambiente não encontrado para exclusão.\n");
+                }
             }
             else if (op == 4)
             {
@@ -48,17 +85,26 @@ void menuambientesmedicos()
             }
             else if (op == 5)
             {
-                printf("digite o código:");
+                printf("Digite o código: ");
                 scanf("%ld", &codigo);
-                consultaambiente(ambientes, tamambiente, codigo);
+                posicao = consultaambiente(ambientes, tamambiente, codigo);
+                if(posicao==-1){
+                    printf("Ambiente não encontrado\n");
+                }
+                else{
+                   printf("Código: %ld\n", ambientes[posicao].codigo);
+                printf("Descrição do procedimento: %s\n", ambientes[posicao].descricaoProcedimento);
+                }
+                 
             }
-            
         }
 
     } while (op != 6);
+
     free(ambientes);
 }
-AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tamambiente, long int *codigoatual)
+
+AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tamambiente, long int *codigoatual, AmbienteMedico *novoambiente)
 {
     AmbienteMedico *novo = realloc(ambientes, (*tamambiente + 1) * sizeof(AmbienteMedico));
     if (novo == NULL)
@@ -69,35 +115,29 @@ AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tam
 
     ambientes = novo;
 
-    ambientes[*tamambiente].codigo = *codigoatual;
-
-    printf("Digite a descrição do procedimento: ");
-    scanf(" %[^\n]", ambientes[*tamambiente].descricaoProcedimento);
+    // Copia os dados preenchidos no main para a nova posição do vetor
+    ambientes[*tamambiente] = *novoambiente;
 
     (*tamambiente)++;
     (*codigoatual)++;
-    printf("Ambiente médico cadastrado com sucesso\n");
+
     return ambientes;
 }
 
-void alterarambientemedico(AmbienteMedico *ambientes, long int tamambiente, long int codigo)
+long int alterarambientemedico(AmbienteMedico *ambientes, long int tamambiente, long int codigo)
 {
-    if (ambientes == NULL)
+    if (ambientes == NULL || tamambiente == 0)
     {
-        printf("Lista de ambientes vazia");
-        return;
+        return -1; // lista vazia
     }
-
     for (int i = 0; i < tamambiente; i++)
     {
         if (ambientes[i].codigo == codigo)
         {
-            printf("Digite a nova descrição do procedimento: ");
-            scanf(" %[^\n]", ambientes[i].descricaoProcedimento);
-             printf("alteração feita com sucesso\n");
+            return i; // retorna a posição
         }
     }
-    return;
+    return -1;
 }
 
 void listarambiente(AmbienteMedico *ambientes, long int tamambiente)
@@ -120,7 +160,6 @@ AmbienteMedico *excluirambientemedico(AmbienteMedico *ambientes, long int *tamam
     int encontrado = -1;
     if (ambientes == NULL || *tamambiente == 0)
     {
-        printf("Lista de  ambientes vazia.\n");
         return ambientes;
     }
 
@@ -134,7 +173,6 @@ AmbienteMedico *excluirambientemedico(AmbienteMedico *ambientes, long int *tamam
     }
     if (encontrado == -1)
     {
-        printf("ambiente medico não encontrado\n");
         return ambientes;
     }
     else
@@ -147,7 +185,6 @@ AmbienteMedico *excluirambientemedico(AmbienteMedico *ambientes, long int *tamam
 
         if (*tamambiente == 0)
         {
-            printf("excluido com sucesso\n");
             free(ambientes);
             return NULL;
         }
@@ -160,28 +197,26 @@ AmbienteMedico *excluirambientemedico(AmbienteMedico *ambientes, long int *tamam
         else
         {
             ambientes = aux;
-            printf("excluido com sucesso\n");
         }
     }
     return ambientes;
 }
 
-void consultaambiente(AmbienteMedico *ambientes, long int tamambiente, long int codigo)
+long int consultaambiente(AmbienteMedico *ambientes, long int tamambiente, long int codigo)
 {
     if (ambientes == NULL || tamambiente == 0)
     {
-        printf("Lista de ambientes vazia.\n");
-        return;
+
+        return -1;
     }
     for (int i = 0; i < tamambiente; i++)
     {
         if (ambientes[i].codigo == codigo)
         {
-            printf("Código: %ld\n", ambientes[i].codigo);
-            printf("Descrição do procedimento: %s\n", ambientes[i].descricaoProcedimento);
-            return;
+
+            return i;
         }
     }
 
-    printf("ambiente não encontrado\n");
+    return -1;
 }
