@@ -6,7 +6,7 @@
 void menuambientesmedicos()
 {
     AmbienteMedico *ambientes = NULL;
-    long int tamambiente = 0, codigoatual = 0, codigo, auxtam = 0, posicao;
+    long int tamambiente = 0, codigoatual = 0, codigo, auxtam = 0, posicao;//auxtam vai guardar uma copia do tamnho do betor que será muito util
     int op;
 
     do
@@ -29,7 +29,6 @@ void menuambientesmedicos()
             if (op == 1)
             {
                 AmbienteMedico novoambiente;
-                novoambiente.codigo = codigoatual;
                 auxtam = tamambiente;
 
                 printf("Digite a descrição do procedimento: ");
@@ -114,6 +113,7 @@ AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tam
     }
 
     ambientes = novo;
+    novoambiente->codigo = *codigoatual;
 
     // Copia os dados preenchidos no main para a nova posição do vetor
     ambientes[*tamambiente] = *novoambiente;
@@ -217,6 +217,6 @@ long int consultaambiente(AmbienteMedico *ambientes, long int tamambiente, long 
             return i;
         }
     }
-
+     
     return -1;
 }

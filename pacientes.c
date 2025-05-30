@@ -6,7 +6,7 @@
 void menuPacientes()
 {
     Paciente *pacientes = NULL;
-    long int tampacientes = 0, codigoatual = 0, codigo;
+    long int tampacientes = 0, codigoatual = 0, codigo, posicao, auxtam = 0;
     int op;
 
     do
@@ -28,19 +28,100 @@ void menuPacientes()
         {
             if (op == 1)
             {
-                pacientes = cadastrarpaciente(pacientes, &tampacientes, &codigoatual);
+                Paciente novopaciente;
+                 auxtam=tampacientes;
+                printf("Digite o nome completo: ");
+                scanf(" %[^\n]", novopaciente.nomeCompleto);
+
+                printf("Digite o CPF: ");
+                scanf(" %[^\n]", &novopaciente.cpf);
+
+                printf("Digite a sigla do estado: ");
+                scanf(" %[^\n]", novopaciente.endereco.estado);
+
+                printf("Digite a cidade: ");
+                scanf(" %[^\n]", novopaciente.endereco.cidade);
+
+                printf("Digite o bairro: ");
+                scanf(" %[^\n]", novopaciente.endereco.bairro);
+
+                printf("Digite a rua: ");
+                scanf(" %[^\n]", novopaciente.endereco.rua);
+
+                printf("Digite seu telefone: ");
+                scanf(" %[^\n]", novopaciente.telefone);
+
+                printf("Digite sua data de nascimento: ");
+                scanf(" %[^\n]", novopaciente.dataNascimento);
+
+                printf("Digite o histórico médico: ");
+                scanf(" %[^\n]", novopaciente.historicoMedico);
+
+                pacientes = cadastrarpaciente(pacientes, &tampacientes, &codigoatual, &novopaciente);
+
+                if (tampacientes > auxtam)
+                {
+                    printf("Paciente cadastrado com sucesso\n");
+                }
+                else
+                {
+                    printf("Erro ao cadastrar paciente\n");
+                }
             }
             else if (op == 2)
             {
                 printf("digite o codigo");
                 scanf("%ld", &codigo);
-                alterarpaciente(pacientes, tampacientes, codigo);
+                posicao = alterarpaciente(pacientes, tampacientes, codigo);
+                if (posicao == -1)
+                {
+                    printf("Paciente não encontrado ou lista vazia\n");
+                }
+                else
+                {
+                    printf("Digite o nome completo: ");
+                    scanf(" %[^\n]", pacientes[posicao].nomeCompleto);
+
+                    printf("Digite o CPF: ");
+                    scanf(" %[^\n]", &pacientes[posicao].cpf);
+
+                    printf("Digite a sigla do estado: ");
+                    scanf(" %[^\n]", pacientes[posicao].endereco.estado);
+
+                    printf("Digite a cidade: ");
+                    scanf(" %[^\n]", pacientes[posicao].endereco.cidade);
+
+                    printf("Digite o bairro: ");
+                    scanf(" %[^\n]", pacientes[posicao].endereco.bairro);
+
+                    printf("Digite a rua: ");
+                    scanf(" %[^\n]", pacientes[posicao].endereco.rua);
+
+                    printf("Digite seu telefone: ");
+                    scanf(" %[^\n]", &pacientes[posicao].telefone);
+
+                    printf("Digite sua data de nascimento: ");
+                    scanf(" %[^\n]", pacientes[posicao].dataNascimento);
+
+                    printf("Digite o histórico médico: ");
+                    scanf(" %[^\n]", pacientes[posicao].historicoMedico);
+                    printf("alteração feita com sucesso\n");
+                }
             }
             else if (op == 3)
             {
                 printf("digite o código:");
                 scanf("%ld", &codigo);
+                auxtam = tampacientes;
                 pacientes = excluirpaciente(pacientes, &tampacientes, codigo);
+                if (tampacientes < auxtam)
+                {
+                    printf(" Paciente excluido com sucesso\n");
+                }
+                else
+                {
+                    printf("Paciente não encontrado\n");
+                }
             }
             else if (op == 4)
             {
@@ -51,7 +132,23 @@ void menuPacientes()
                 printf("digite o código:");
                 scanf("%ld", &codigo);
 
-                consultapaciente(pacientes, tampacientes, codigo);
+                posicao = consultapaciente(pacientes, tampacientes, codigo);
+
+                if (posicao == -1)
+                {
+                    printf("paciente não encontrado\n");
+                }
+                else
+                {
+                    printf("Codigo:%ld\n", pacientes[posicao].codigo);
+                    printf("Nome:%s\n", pacientes[posicao].nomeCompleto);
+                    printf("Cpf:%s\n", pacientes[posicao].cpf);
+                    printf("Endereço:%s \t %s\t %s \t %s\n", pacientes[posicao].endereco.estado, pacientes[posicao].endereco.cidade,
+                           pacientes[posicao].endereco.bairro, pacientes[posicao].endereco.rua);
+                    printf("Telefone:%s\n", pacientes[posicao].telefone);
+                    printf("Data de nascimento:%s\n", pacientes[posicao].dataNascimento);
+                    printf("Historico médico:%s\n", pacientes[posicao].historicoMedico);
+                }
             }
         }
 
@@ -59,97 +156,40 @@ void menuPacientes()
     free(pacientes);
 }
 
-Paciente *cadastrarpaciente(Paciente *pacientes, long int *tampacientes, long int *codigoatual)
+Paciente *cadastrarpaciente(Paciente *pacientes, long int *tampacientes, long int *codigoatual, Paciente *novopaciente)
 {
-    Paciente *novopaciente = realloc(pacientes, (*tampacientes + 1) * sizeof(Paciente)); // usa um ponteiro auxiliar para o caso de não ser bem sucedido
+    Paciente *novo = realloc(pacientes, (*tampacientes + 1) * sizeof(Paciente)); // usa um ponteiro auxiliar para o caso de não ser bem sucedido
     // não sobrescreve ou perde as informações anteriores por erros de realocação
-    if (novopaciente == NULL)
+    if (novo == NULL)
     {
         printf("Erro ao alocar memória\n");
         return pacientes; // Retorna o vetor original caso a alocação falhe
     }
 
-    pacientes = novopaciente;
-
-    pacientes[*tampacientes].codigo = *codigoatual;
-
-    printf("Digite o nome completo: ");
-    scanf(" %[^\n]", pacientes[*tampacientes].nomeCompleto);
-
-    printf("Digite o CPF: ");
-    scanf(" %[^\n]", &pacientes[*tampacientes].cpf);
-
-    printf("Digite a sigla do estado: ");
-    scanf(" %[^\n]", pacientes[*tampacientes].endereco.estado);
-
-    printf("Digite a cidade: ");
-    scanf(" %[^\n]", pacientes[*tampacientes].endereco.cidade);
-
-    printf("Digite o bairro: ");
-    scanf(" %[^\n]", pacientes[*tampacientes].endereco.bairro);
-
-    printf("Digite a rua: ");
-    scanf(" %[^\n]", pacientes[*tampacientes].endereco.rua);
-
-    printf("Digite seu telefone: ");
-    scanf(" %[^\n]", pacientes[*tampacientes].telefone);
-
-    printf("Digite sua data de nascimento: ");
-    scanf(" %[^\n]", pacientes[*tampacientes].dataNascimento);
-
-    printf("Digite o histórico médico: ");
-    scanf(" %[^\n]", pacientes[*tampacientes].historicoMedico);
-    printf("Paciente cadastrado com sucesso\n");
+    pacientes = novo;
+    novopaciente->codigo = *codigoatual;
+    pacientes[*tampacientes] = *novopaciente;
     (*tampacientes)++; // Atualiza a quantidade de pacientes
     (*codigoatual)++;
     return pacientes; // Retorna o ponteiro com o novo paciente inserido
 }
 
-void alterarpaciente(Paciente *pacientes, long int tampacientes, long int codigo)
+long int alterarpaciente(Paciente *pacientes, long int tampacientes, long int codigo)
 {
     if (pacientes == NULL)
     {
-        printf("Lista de pacientes vazia");
-        return;
+        return -1; // vazio
     }
     // não precisa de else porque caso entre no if ja retorna e se não ja ta implicito um else no for
     for (int i = 0; i < tampacientes; i++)
     {
         if (pacientes[i].codigo == codigo)
         {
-
-            printf("Digite o nome completo: ");
-            scanf(" %[^\n]", pacientes[i].nomeCompleto);
-
-            printf("Digite o CPF: ");
-            scanf(" %[^\n]", &pacientes[i].cpf);
-
-            printf("Digite a sigla do estado: ");
-            scanf(" %[^\n]", pacientes[i].endereco.estado);
-
-            printf("Digite a cidade: ");
-            scanf(" %[^\n]", pacientes[i].endereco.cidade);
-
-            printf("Digite o bairro: ");
-            scanf(" %[^\n]", pacientes[i].endereco.bairro);
-
-            printf("Digite a rua: ");
-            scanf(" %[^\n]", pacientes[i].endereco.rua);
-
-            printf("Digite seu telefone: ");
-            scanf(" %[^\n]", &pacientes[i].telefone);
-
-            printf("Digite sua data de nascimento: ");
-            scanf(" %[^\n]", pacientes[i].dataNascimento);
-
-            printf("Digite o histórico médico: ");
-            scanf(" %[^\n]", pacientes[i].historicoMedico);
-            printf("alteração feita com sucesso\n");
-            return;
+            return i; // retorna o indice de onde ta o paciente
         }
     }
 
-    printf("Paciente não encontrado\n");
+    return -1;
 }
 
 void listarpacientes(Paciente *pacientes, long int tampacientes)
@@ -178,8 +218,7 @@ Paciente *excluirpaciente(Paciente *pacientes, long int *tampacientes, long int 
     int encontrado = -1;
     if (pacientes == NULL || *tampacientes == 0)
     {
-        printf("Lista de pacientes vazia.\n");
-        return pacientes;
+        return pacientes; // vazio
     }
 
     for (int i = 0; i < *tampacientes; i++)
@@ -192,8 +231,7 @@ Paciente *excluirpaciente(Paciente *pacientes, long int *tampacientes, long int 
     }
     if (encontrado == -1)
     {
-        printf(" paciente não encontrado\n");
-        return pacientes;
+        return pacientes; // não encontrado
     }
 
     else
@@ -206,7 +244,6 @@ Paciente *excluirpaciente(Paciente *pacientes, long int *tampacientes, long int 
 
         if (*tampacientes == 0)
         {
-            printf("excluido com sucesso\n");
             free(pacientes);
             return NULL;
         }
@@ -220,36 +257,24 @@ Paciente *excluirpaciente(Paciente *pacientes, long int *tampacientes, long int 
         else
         {
             pacientes = aux;
-            printf("excluido com sucesso\n");
         }
     }
 
     return pacientes;
 }
 
-void consultapaciente(Paciente *pacientes, long int tampacientes, long int codigo)
+long int consultapaciente(Paciente *pacientes, long int tampacientes, long int codigo)
 {
     if (pacientes == NULL || tampacientes == 0)
     {
-        printf("Lista de pacientes vazia.\n");
-        return;
+        return -1; // vazio
     }
     for (int i = 0; i < tampacientes; i++)
     {
         if (pacientes[i].codigo == codigo)
         {
-            printf("Codigo:%ld\n", pacientes[i].codigo);
-            printf("Nome:%s\n", pacientes[i].nomeCompleto);
-            printf("Cpf:%s\n", pacientes[i].cpf);
-            printf("Endereço:%s \t %s\t %s \t %s\n", pacientes[i].endereco.estado, pacientes[i].endereco.cidade,
-                   pacientes[i].endereco.bairro, pacientes[i].endereco.rua);
-            printf("Telefone:%s\n", pacientes[i].telefone);
-            printf("Data de nascimento:%s\n", pacientes[i].dataNascimento);
-            printf("Historico médico:%s\n", pacientes[i].historicoMedico);
-            printf("\n");
-            return;
+            return i; // retorna indice
         }
     }
-    printf("paciente não encontrado\n");
-    return;
+    return -1; // não encontrado
 }

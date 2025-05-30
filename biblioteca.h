@@ -91,17 +91,17 @@ void menuprofisionais();
 
 // cadastros
 AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tamambiente, long int *codigoatual, AmbienteMedico *novoambiente);
-Fornecedor *cadastrarfornecedor(Fornecedor *fornecedores, long int *tamfornecedor, long int *codigoatual);
-MedicamentoMaterial *cadastrarmedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int *tammedicamentomaterial, long int *codigoatual);
-Paciente *cadastrarpaciente(Paciente *pacientes, long int *tampacientes, long int *codigoatual);
+Fornecedor *cadastrarfornecedor(Fornecedor *fornecedores, long int *tamfornecedor, long int *codigoatual,Fornecedor *novofornecedor);
+MedicamentoMaterial *cadastrarmedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int *tammedicamentomaterial, long int *codigoatual, MedicamentoMaterial *novomedicamentomaterial);
+Paciente *cadastrarpaciente(Paciente *pacientes, long int *tampacientes, long int *codigoatual,Paciente *novopaciente);
 Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int *codigoatual);
 Profissional *cadastrarprofissionalsaude(Profissional *profissionais, long int *tamprofisionais, long int *codigoatual);
 
 // edicoes
 long int alterarambientemedico(AmbienteMedico *ambientes, long int tamambiente, long int codigo);
-void alterarfornecedor(Fornecedor *fornecedores, long int tamfornecedor, long int codigo);
-void alterarmedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, long int codigo);
-void alterarpaciente(Paciente *pacientes, long int tampacientes, long int codigo);
+long int alterarfornecedor(Fornecedor *fornecedores, long int tamfornecedor, long int codigo);
+long int alterarmedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, long int codigo);
+long int alterarpaciente(Paciente *pacientes, long int tampacientes, long int codigo);
 void alterarprocedimento(Procedimento *procedimentos, long int tamprocedimento, long int codigo);
 void alterarprofissional(Profissional *profisionais, long int tamprofisional, long int codigo);
 
@@ -123,11 +123,10 @@ Profissional *excluirprofisional(Profissional *profisionais, long int *tamprofis
 
 // consulta
 long int consultaambiente(AmbienteMedico *ambientes, long int tamambiente, long int codigo);
-void consultafornecedor(Fornecedor *fornecedores, long int tamfornecedor,long int codigo);
-void consultamedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial,long int codigo);
-void consultapaciente(Paciente *pacientes,long int tampacientes,long int codigo);
-void consultaprocedimento(Procedimento *procedimentos,long int tamprocedimento,long int codigo);
-void consultaprofisional(Profissional *profisionais, long int tamprofisional, long int codigo);
+long int consultafornecedor(Fornecedor *fornecedores, long int tamfornecedor, long int codigo);
+long int consultamedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, long int codigo);
+long int consultapaciente(Paciente *pacientes, long int tampacientes, long int codigo);
+2
 
 
 #endif

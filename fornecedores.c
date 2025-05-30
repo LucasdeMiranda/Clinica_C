@@ -6,7 +6,7 @@
 void menufornecedores()
 {
    Fornecedor *fornecedores = NULL;
-   long int tamfornecedor = 0, codigoatual = 0, codigo;
+   long int tamfornecedor = 0, codigoatual = 0, codigo, auxtam = 0, posicao;
    int op;
 
    do
@@ -28,20 +28,109 @@ void menufornecedores()
       {
          if (op == 1)
          {
-            fornecedores = cadastrarfornecedor(fornecedores, &tamfornecedor, &codigoatual);
+            Fornecedor novofornecedor;
+            auxtam = tamfornecedor;
+
+            printf("Digite o nome: ");
+            scanf(" %[^\n]", novofornecedor.nomeFantasia);
+
+            printf("Digite a razão social: ");
+            scanf(" %[^\n]", novofornecedor.razaoSocial);
+
+            printf("Digite a inscrição estadual: ");
+            scanf(" %[^\n]", novofornecedor.inscricaoEstadual);
+
+            printf("Digite o CNPJ: ");
+            scanf(" %[^\n]", novofornecedor.cnpj);
+
+            printf("Digite a rua: ");
+            scanf(" %[^\n]", novofornecedor.endereco.rua);
+
+            printf("Digite o bairro: ");
+            scanf(" %[^\n]", novofornecedor.endereco.bairro);
+
+            printf("Digite a cidade: ");
+            scanf(" %[^\n]", novofornecedor.endereco.cidade);
+
+            printf("Digite o estado: ");
+            scanf(" %[^\n]", novofornecedor.endereco.estado);
+
+            printf("Digite o telefone: ");
+            scanf(" %[^\n]", novofornecedor.telefone);
+
+            printf("Digite o email: ");
+            scanf(" %[^\n]", novofornecedor.email);
+
+            fornecedores = cadastrarfornecedor(fornecedores, &tamfornecedor, &codigoatual, &novofornecedor);
+
+            if (tamfornecedor > auxtam)
+            {
+               printf("Fornecedor cadastrado com sucesso\n");
+            }
+            else
+            {
+               printf("Erro ao cadastrar fornecedor\n");
+            }
          }
          else if (op == 2)
          {
-            printf("digite o codigo");
+            printf("digite o codigo:");
             scanf("%ld", &codigo);
 
-            alterarfornecedor(fornecedores, tamfornecedor, codigo);
+            posicao = alterarfornecedor(fornecedores, tamfornecedor, codigo);
+
+            if (posicao == -1)
+            {
+               printf("Forncecedor não encontrado ou lista vazia.\n");
+            }
+            else
+            {
+               printf("Digite o nome: ");
+               scanf(" %[^\n]", fornecedores[posicao].nomeFantasia);
+
+               printf("Digite a razão social: ");
+               scanf(" %[^\n]", fornecedores[posicao].razaoSocial);
+
+               printf("Digite a inscrição estadual: ");
+               scanf(" %[^\n]", fornecedores[posicao].inscricaoEstadual);
+
+               printf("Digite o CNPJ: ");
+               scanf(" %[^\n]", fornecedores[posicao].cnpj);
+
+               printf("Digite o estado: ");
+               scanf(" %[^\n]", fornecedores[posicao].endereco.estado);
+
+               printf("Digite a cidade: ");
+               scanf(" %[^\n]", fornecedores[posicao].endereco.cidade);
+
+               printf("Digite o bairro: ");
+               scanf(" %[^\n]", fornecedores[posicao].endereco.bairro);
+
+               printf("Digite a rua: ");
+               scanf(" %[^\n]", fornecedores[posicao].endereco.rua);
+
+               printf("Digite o telefone: ");
+               scanf(" %[^\n]", fornecedores[posicao].telefone);
+
+               printf("Digite o email: ");
+               scanf(" %[^\n]", fornecedores[posicao].email);
+               printf("alteração feita com sucesso\n");
+            }
          }
          else if (op == 3)
          {
-            printf("digite o codigo");
+            printf("digite o codigo:");
             scanf("%ld", &codigo);
+            auxtam = tamfornecedor;
             fornecedores = excluirfornecedor(fornecedores, &tamfornecedor, codigo);
+            if (tamfornecedor < auxtam)
+            {
+               printf("Fornecedor excluido com sucesso\n");
+            }
+            else
+            {
+               printf("Forncedor não encontrado para exclusão\n");
+            }
          }
          else if (op == 4)
          {
@@ -52,108 +141,61 @@ void menufornecedores()
          {
             printf("digite o codigo");
             scanf("%ld", &codigo);
-            consultafornecedor(fornecedores, tamfornecedor,codigo);
+            posicao = consultafornecedor(fornecedores, tamfornecedor, codigo);
+            if (posicao == -1)
+            {
+               printf("Fornecedor não encontrado\n");
+            }
+            else
+            {
+               printf("Código: %ld\n", fornecedores[posicao].codigo);
+               printf("Nome Fantasia: %s\n", fornecedores[posicao].nomeFantasia);
+               printf("Razão Social: %s\n", fornecedores[posicao].razaoSocial);
+               printf("Inscrição Estadual: %s\n", fornecedores[posicao].inscricaoEstadual);
+               printf("CNPJ: %s\n", fornecedores[posicao].cnpj);
+               printf("Endereço: %s\t%s\t%s\t%s\n", fornecedores[posicao].endereco.estado, fornecedores[posicao].endereco.cidade,
+                      fornecedores[posicao].endereco.bairro, fornecedores[posicao].endereco.rua);
+               printf("Telefone: %s\n", fornecedores[posicao].telefone);
+               printf("Email: %s\n", fornecedores[posicao].email);
+            }
          }
       }
 
    } while (op != 6);
    free(fornecedores);
 }
-Fornecedor *cadastrarfornecedor(Fornecedor *fornecedores, long int *tamfornecedor, long int *codigoatual)
+Fornecedor *cadastrarfornecedor(Fornecedor *fornecedores, long int *tamfornecedor, long int *codigoatual, Fornecedor *novofornecedor)
 {
    Fornecedor *novo = realloc(fornecedores, (*tamfornecedor + 1) * sizeof(Fornecedor));
    if (novo == NULL)
    {
-      printf("Erro ao alocar memória\n");
       return fornecedores;
    }
 
    fornecedores = novo;
-
-   fornecedores[*tamfornecedor].codigo = *codigoatual;
-
-   printf("Digite o nome: ");
-   scanf(" %[^\n]", fornecedores[*tamfornecedor].nomeFantasia);
-
-   printf("Digite a razão social: ");
-   scanf(" %[^\n]", fornecedores[*tamfornecedor].razaoSocial);
-
-   printf("Digite a inscrição estadual: ");
-   scanf(" %[^\n]", fornecedores[*tamfornecedor].inscricaoEstadual);
-
-   printf("Digite o CNPJ: ");
-   scanf(" %[^\n]", fornecedores[*tamfornecedor].cnpj);
-
-   printf("Digite a rua: ");
-   scanf(" %[^\n]", fornecedores[*tamfornecedor].endereco.rua);
-
-   printf("Digite o bairro: ");
-   scanf(" %[^\n]", fornecedores[*tamfornecedor].endereco.bairro);
-
-   printf("Digite a cidade: ");
-   scanf(" %[^\n]", fornecedores[*tamfornecedor].endereco.cidade);
-
-   printf("Digite o estado: ");
-   scanf(" %[^\n]", fornecedores[*tamfornecedor].endereco.estado);
-
-   printf("Digite o telefone: ");
-   scanf(" %[^\n]", fornecedores[*tamfornecedor].telefone);
-
-   printf("Digite o email: ");
-   scanf(" %[^\n]", fornecedores[*tamfornecedor].email);
-   printf("Fornecedor cadastrado com sucesso\n");
+   novofornecedor->codigo = *codigoatual;
+   fornecedores[*tamfornecedor] = *novofornecedor;
    (*tamfornecedor)++;
    (*codigoatual)++;
    return fornecedores;
 }
 
-void alterarfornecedor(Fornecedor *fornecedores, long int tamfornecedor, long int codigo)
+long int alterarfornecedor(Fornecedor *fornecedores, long int tamfornecedor, long int codigo)
 {
    if (fornecedores == NULL)
    {
       printf("Lista de fornecedores vazia\n");
-      return;
+      return -1;
    }
 
    for (int i = 0; i < tamfornecedor; i++)
    {
       if (fornecedores[i].codigo == codigo)
       {
-         printf("Digite o nome: ");
-         scanf(" %[^\n]", fornecedores[i].nomeFantasia);
-
-         printf("Digite a razão social: ");
-         scanf(" %[^\n]", fornecedores[i].razaoSocial);
-
-         printf("Digite a inscrição estadual: ");
-         scanf(" %[^\n]", fornecedores[i].inscricaoEstadual);
-
-         printf("Digite o CNPJ: ");
-         scanf(" %[^\n]", fornecedores[i].cnpj);
-
-         printf("Digite o estado: ");
-         scanf(" %[^\n]", fornecedores[i].endereco.estado);
-
-         printf("Digite a cidade: ");
-         scanf(" %[^\n]", fornecedores[i].endereco.cidade);
-
-         printf("Digite o bairro: ");
-         scanf(" %[^\n]", fornecedores[i].endereco.bairro);
-
-         printf("Digite a rua: ");
-         scanf(" %[^\n]", fornecedores[i].endereco.rua);
-
-         printf("Digite o telefone: ");
-         scanf(" %[^\n]", fornecedores[i].telefone);
-
-         printf("Digite o email: ");
-         scanf(" %[^\n]", fornecedores[i].email);
-         printf("alteração feita com sucesso\n");
-
-         return;
+         return i;
       }
    }
-   printf("fornecedor não encontrado");
+   return -1;
 }
 
 void listarfornecedores(Fornecedor *fornecedores, long int tamfornecedor)
@@ -184,8 +226,7 @@ Fornecedor *excluirfornecedor(Fornecedor *fornecedores, long int *tamfornecedor,
    int encontrado = -1;
    if (fornecedores == NULL || *tamfornecedor == 0)
    {
-      printf("Lista de fornecedores vazia.\n");
-      return fornecedores;
+      return fornecedores; // ta vazio
    }
 
    for (int i = 0; i < *tamfornecedor; i++)
@@ -198,8 +239,7 @@ Fornecedor *excluirfornecedor(Fornecedor *fornecedores, long int *tamfornecedor,
    }
    if (encontrado == -1)
    {
-      printf(" fornecedor não encontrado\n");
-      return fornecedores;
+      return fornecedores; // não encontrou
    }
    else
    {
@@ -211,7 +251,6 @@ Fornecedor *excluirfornecedor(Fornecedor *fornecedores, long int *tamfornecedor,
 
       if (*tamfornecedor == 0)
       {
-         printf("excluido com sucesso\n");
          free(fornecedores);
          return NULL;
       }
@@ -225,34 +264,23 @@ Fornecedor *excluirfornecedor(Fornecedor *fornecedores, long int *tamfornecedor,
       else
       {
          fornecedores = aux;
-         printf("excluido com sucesso\n");
       }
    }
    return fornecedores;
 }
 
-void consultafornecedor(Fornecedor *fornecedores, long int tamfornecedor, long int codigo)
+long int consultafornecedor(Fornecedor *fornecedores, long int tamfornecedor, long int codigo)
 {
    if (fornecedores == NULL || tamfornecedor == 0)
    {
-      printf("Lista de fornecedores vazia.\n");
-      return;
+      return -1; // vazio
    }
    for (int i = 0; i < tamfornecedor; i++)
    {
       if (fornecedores[i].codigo == codigo)
       {
-         printf("Código: %ld\n", fornecedores[i].codigo);
-         printf("Nome Fantasia: %s\n", fornecedores[i].nomeFantasia);
-         printf("Razão Social: %s\n", fornecedores[i].razaoSocial);
-         printf("Inscrição Estadual: %s\n", fornecedores[i].inscricaoEstadual);
-         printf("CNPJ: %s\n", fornecedores[i].cnpj);
-         printf("Endereço: %s\t%s\t%s\t%s\n", fornecedores[i].endereco.estado, fornecedores[i].endereco.cidade,
-                fornecedores[i].endereco.bairro, fornecedores[i].endereco.rua);
-         printf("Telefone: %s\n", fornecedores[i].telefone);
-         printf("Email: %s\n", fornecedores[i].email);
-         return;
+         return i;
       }
    }
-   printf(" fornecedor não encontrado\n");
+   return -1;
 }
