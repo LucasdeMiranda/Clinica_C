@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "biblioteca.h"
+#include "view/biblioteca.h"
 
 void menuPacientes()
 {
@@ -31,31 +31,31 @@ void menuPacientes()
                 Paciente novopaciente;
                  auxtam=tampacientes;
                 printf("Digite o nome completo: ");
-                scanf(" %[^\n]", novopaciente.nomeCompleto);
+                scanf(" %199[^\n]", novopaciente.nomeCompleto);
 
                 printf("Digite o CPF: ");
-                scanf(" %[^\n]", &novopaciente.cpf);
+                scanf(" %49[^\n]", novopaciente.cpf);
 
                 printf("Digite a sigla do estado: ");
-                scanf(" %[^\n]", novopaciente.endereco.estado);
+                scanf(" %9[^\n]", novopaciente.endereco.estado);
 
                 printf("Digite a cidade: ");
-                scanf(" %[^\n]", novopaciente.endereco.cidade);
+                scanf(" %199[^\n]", novopaciente.endereco.cidade);
 
                 printf("Digite o bairro: ");
-                scanf(" %[^\n]", novopaciente.endereco.bairro);
+                scanf(" %199[^\n]", novopaciente.endereco.bairro);
 
                 printf("Digite a rua: ");
-                scanf(" %[^\n]", novopaciente.endereco.rua);
+                scanf(" %199[^\n]", novopaciente.endereco.rua);
 
                 printf("Digite seu telefone: ");
-                scanf(" %[^\n]", novopaciente.telefone);
+                scanf(" %19[^\n]", novopaciente.telefone);
 
                 printf("Digite sua data de nascimento: ");
-                scanf(" %[^\n]", novopaciente.dataNascimento);
+                scanf(" %39[^\n]", novopaciente.dataNascimento);
 
                 printf("Digite o histórico médico: ");
-                scanf(" %[^\n]", novopaciente.historicoMedico);
+                scanf(" %1999[^\n]", novopaciente.historicoMedico);
 
                 pacientes = cadastrarpaciente(pacientes, &tampacientes, &codigoatual, &novopaciente);
 
@@ -80,31 +80,31 @@ void menuPacientes()
                 else
                 {
                     printf("Digite o nome completo: ");
-                    scanf(" %[^\n]", pacientes[posicao].nomeCompleto);
+                    scanf(" %199[^\n]", pacientes[posicao].nomeCompleto);
 
                     printf("Digite o CPF: ");
-                    scanf(" %[^\n]", &pacientes[posicao].cpf);
+                    scanf(" %49[^\n]",pacientes[posicao].cpf);
 
                     printf("Digite a sigla do estado: ");
-                    scanf(" %[^\n]", pacientes[posicao].endereco.estado);
+                    scanf(" %9[^\n]", pacientes[posicao].endereco.estado);
 
                     printf("Digite a cidade: ");
-                    scanf(" %[^\n]", pacientes[posicao].endereco.cidade);
+                    scanf(" %199[^\n]", pacientes[posicao].endereco.cidade);
 
                     printf("Digite o bairro: ");
-                    scanf(" %[^\n]", pacientes[posicao].endereco.bairro);
+                    scanf(" %199[^\n]", pacientes[posicao].endereco.bairro);
 
                     printf("Digite a rua: ");
-                    scanf(" %[^\n]", pacientes[posicao].endereco.rua);
+                    scanf(" %199[^\n]", pacientes[posicao].endereco.rua);
 
                     printf("Digite seu telefone: ");
-                    scanf(" %[^\n]", &pacientes[posicao].telefone);
+                    scanf(" %19[^\n]",pacientes[posicao].telefone);
 
                     printf("Digite sua data de nascimento: ");
-                    scanf(" %[^\n]", pacientes[posicao].dataNascimento);
+                    scanf(" %39[^\n]", pacientes[posicao].dataNascimento);
 
                     printf("Digite o histórico médico: ");
-                    scanf(" %[^\n]", pacientes[posicao].historicoMedico);
+                    scanf(" %1999[^\n]", pacientes[posicao].historicoMedico);
                     printf("alteração feita com sucesso\n");
                 }
             }

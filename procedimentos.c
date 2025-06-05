@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "biblioteca.h"
+#include "view/biblioteca.h"
 
 void menuprocedimentos()
 {
     Procedimento *procedimentos = NULL;
-    long int tamprocedimento = 0, codigoatual = 0, codigo;
+    long int tamprocedimento = 0, codigoatual = 0, codigo, auxtam = 0, posicao;
     int op;
 
     do
@@ -28,8 +28,46 @@ void menuprocedimentos()
         {
             if (op == 1)
             {
-                procedimentos = cadastrarprocedimento(procedimentos, &tamprocedimento, &codigoatual);
+                Procedimento novoprocedimento;
+                auxtam = tamprocedimento;
+                printf("Digite a descrição do procedimento: ");
+                scanf(" %1999[^\n]", novoprocedimento.descricao);
+
+                printf("Digite o custo: ");
+                scanf("%f", &novoprocedimento.custo);
+
+                printf("Digite o tempo estimado em minutos: ");
+                scanf("%ld", &novoprocedimento.tempoEstimado);
+
+                printf("digite o código do ambiente médico:");
+                scanf("%ld", &novoprocedimento.codambientemedico);
+
+                printf("digite quantos materiais e medicamentos seram utilizados:");
+                scanf("%ld", &novoprocedimento.tamcodmedicamentosmateriais);
+                novoprocedimento.codmedicamentosemateriais = malloc(novoprocedimento.tamcodmedicamentosmateriais * sizeof(long int));
+
+                if (novoprocedimento.codmedicamentosemateriais == NULL)
+                {
+                    printf("Erro ao alocar memória para os códigos de medicamentos/materiais\n");
+                }
+                for (int i = 0; i < novoprocedimento.tamcodmedicamentosmateriais; i++)
+                {
+                    printf("Digite o código do material %d: ", i + 1);
+                    scanf("%ld", &novoprocedimento.codmedicamentosemateriais[i]);
+                }
+
+                procedimentos = cadastrarprocedimento(procedimentos, &tamprocedimento, &codigoatual, &novoprocedimento);
+                if (tamprocedimento > auxtam)
+                {
+                    printf("Procedimento cadastrado com sucesso\n");
+                    free(novoprocedimento.codmedicamentosemateriais);
+                }
+                else
+                {
+                    printf("Erro ao cadastrar procedimento\n");
+                }
             }
+
             else if (op == 2)
             {
                 printf("digite o codigo");
@@ -40,7 +78,16 @@ void menuprocedimentos()
             {
                 printf("digite o codigo");
                 scanf("%ld", &codigo);
+                auxtam = tamprocedimento;
                 procedimentos = excluirprocedimento(procedimentos, &tamprocedimento, codigo);
+                if (tamprocedimento < auxtam)
+                {
+                    printf("excluido com sucesso\n");
+                }
+                else
+                {
+                    printf("Procedimento não encontrado para exclusão\n");
+                }
             }
             else if (op == 4)
             {
@@ -50,7 +97,29 @@ void menuprocedimentos()
             {
                 printf("digite o codigo");
                 scanf("%ld", &codigo);
-                consultaprocedimento(procedimentos, tamprocedimento, codigo);
+                posicao = consultaprocedimento(procedimentos, tamprocedimento, codigo);
+
+                if (posicao == -1)
+                {
+                     printf("Procedimento não encontrado\n");
+                }
+                else
+                {
+                    printf("Código do procedimento: %ld\n", procedimentos[posicao].codigo);
+                    printf("Descrição: %s\n", procedimentos[posicao].descricao);
+                    printf("Custo: R$ %.2f\n", procedimentos[posicao].custo);
+                    printf("Tempo estimado: %ld minutos\n", procedimentos[posicao].tempoEstimado);
+                    printf("Código do ambiente médico: %ld\n", procedimentos[posicao].codambientemedico);
+                    printf("Quantidade de materiais/medicamentos: %ld\n", procedimentos[posicao].tamcodmedicamentosmateriais);
+
+                    if (procedimentos[posicao].codmedicamentosemateriais != NULL)
+                    {
+                        for (int j = 0; j < procedimentos[posicao].tamcodmedicamentosmateriais; j++)
+                        {
+                            printf("Codigo do material:%ld\n", procedimentos[posicao].codmedicamentosemateriais[j]);
+                        }
+                    }
+                }
             }
         }
 
@@ -61,49 +130,31 @@ void menuprocedimentos()
     }
     free(procedimentos);
 }
-Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int *codigoatual)
+Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int *codigoatual, Procedimento *novoprocedimento)
 {
-    Procedimento *novoprocedimento = realloc(procedimentos, (*tamprocedimento + 1) * sizeof(Procedimento));
+    Procedimento *novo = realloc(procedimentos, (*tamprocedimento + 1) * sizeof(Procedimento));
 
-    if (novoprocedimento == NULL)
+    if (novo == NULL)
     {
         printf("erro ao alocar memoria");
         return procedimentos;
     }
-    procedimentos = novoprocedimento;
-    procedimentos[*tamprocedimento].codigo = *codigoatual;
-
-    printf("Digite a descrição do procedimento: ");
-    scanf(" %[^\n]", procedimentos[*tamprocedimento].descricao);
-
-    printf("Digite o custo: ");
-    scanf("%f", &procedimentos[*tamprocedimento].custo);
-
-    printf("Digite o tempo estimado em minutos: ");
-    scanf("%ld", &procedimentos[*tamprocedimento].tempoEstimado);
-
-    printf("digite o código do ambiente médico:");
-    scanf("%ld", &procedimentos[*tamprocedimento].codambientemedico);
-
-    printf("digite quantos materiais e medicamentos seram utilizados:");
-    scanf("%ld", &procedimentos[*tamprocedimento].tamcodmedicamentosmateriais);
-
-    procedimentos[*tamprocedimento].codmedicamentosemateriais = malloc(procedimentos[*tamprocedimento].tamcodmedicamentosmateriais * sizeof(long int));
+    procedimentos = novo;
+    novoprocedimento->codigo = *codigoatual;
+     procedimentos[*tamprocedimento] = *novoprocedimento;
+    procedimentos[*tamprocedimento].codmedicamentosemateriais = malloc(novoprocedimento->tamcodmedicamentosmateriais * sizeof(long int));
     if (procedimentos[*tamprocedimento].codmedicamentosemateriais == NULL)
     {
         printf("Erro ao alocar memória para os códigos de medicamentos/materiais\n");
         return procedimentos;
     }
 
-    else
+    // Copiar os códigos de medicamentos/materiais
+    for (int i = 0; i < novoprocedimento->tamcodmedicamentosmateriais; i++)
     {
-        for (int i = 0; i < procedimentos[*tamprocedimento].tamcodmedicamentosmateriais; i++)
-        {
-            printf("Digite o código do material %d: ", i + 1);
-            scanf("%ld", &procedimentos[*tamprocedimento].codmedicamentosemateriais[i]);
-        }
+        procedimentos[*tamprocedimento].codmedicamentosemateriais[i] = novoprocedimento->codmedicamentosemateriais[i];
     }
-    printf("Procedimento cadastrado com sucesso\n");
+
     (*tamprocedimento)++;
     (*codigoatual)++;
     return procedimentos;
@@ -122,7 +173,7 @@ void alterarprocedimento(Procedimento *procedimentos, long int tamprocedimento, 
         if (procedimentos[i].codigo == codigo)
         {
             printf("Digite a descrição do procedimento: ");
-            scanf(" %[^\n]", procedimentos[i].descricao);
+            scanf(" %1999[^\n]", procedimentos[i].descricao);
 
             printf("Digite o custo: ");
             scanf("%f", &procedimentos[i].custo);
@@ -190,7 +241,6 @@ Procedimento *excluirprocedimento(Procedimento *procedimentos, long int *tamproc
     int encontrado = -1;
     if (procedimentos == NULL || *tamprocedimento == 0)
     {
-        printf("Lista de procedimentos vazia.\n");
         return procedimentos;
     }
     for (int i = 0; i < *tamprocedimento; i++)
@@ -206,7 +256,6 @@ Procedimento *excluirprocedimento(Procedimento *procedimentos, long int *tamproc
     }
     if (encontrado == -1)
     {
-        printf("procedimento não encontrado\n");
         return procedimentos;
     }
     else
@@ -219,7 +268,6 @@ Procedimento *excluirprocedimento(Procedimento *procedimentos, long int *tamproc
 
         if (*tamprocedimento == 0)
         {
-            printf("excluido com sucesso\n");
             free(procedimentos);
             return NULL;
         }
@@ -232,41 +280,23 @@ Procedimento *excluirprocedimento(Procedimento *procedimentos, long int *tamproc
         else
         {
             procedimentos = aux;
-            printf("excluido com sucesso\n");
         }
     }
     return procedimentos;
 }
 
-void consultaprocedimento(Procedimento *procedimentos, long int tamprocedimento, long int codigo)
+long int consultaprocedimento(Procedimento *procedimentos, long int tamprocedimento, long int codigo)
 {
     if (procedimentos == NULL || tamprocedimento == 0)
     {
-        printf("lista de procedimentos vazia\n");
-        return;
+        return -1; // vazio
     }
     for (int i = 0; i < tamprocedimento; i++)
     {
         if (procedimentos[i].codigo == codigo)
         {
-            printf("Código do procedimento: %ld\n", procedimentos[i].codigo);
-            printf("Descrição: %s\n", procedimentos[i].descricao);
-            printf("Custo: R$ %.2f\n", procedimentos[i].custo);
-            printf("Tempo estimado: %ld minutos\n", procedimentos[i].tempoEstimado);
-            printf("Código do ambiente médico: %ld\n", procedimentos[i].codambientemedico);
-            printf("Quantidade de materiais/medicamentos: %ld\n", procedimentos[i].tamcodmedicamentosmateriais);
-
-            if (procedimentos[i].codmedicamentosemateriais != NULL)
-            {
-                for (int j = 0; j < procedimentos[i].tamcodmedicamentosmateriais; j++)
-                {
-                    printf("Codigo do material:%ld\n", procedimentos[i].codmedicamentosemateriais[j]);
-                }
-                return;
-            }
+            return i;
         }
     }
-
-    printf("procedimento não encontrado\n");
-    return;
+    return -1;
 }

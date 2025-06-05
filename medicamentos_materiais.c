@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "biblioteca.h"
+#include "view/biblioteca.h"
 
 void menumedicamentos_materiais()
 {
@@ -31,10 +31,10 @@ void menumedicamentos_materiais()
                 MedicamentoMaterial novomedicamentomaterial;
                 auxtam = tammedicamentomaterial;
                 printf("Digite a descrição: ");
-                scanf(" %[^\n]", novomedicamentomaterial.descricao);
+                scanf(" %999[^\n]", novomedicamentomaterial.descricao);
 
                 printf("Digite o fabricante: ");
-                scanf(" %[^\n]", novomedicamentomaterial.fabricante);
+                scanf(" %299[^\n]", novomedicamentomaterial.fabricante);
 
                 printf("Digite o preço de custo: ");
                 scanf("%f", &novomedicamentomaterial.precoCusto);
@@ -73,10 +73,10 @@ void menumedicamentos_materiais()
                 else
                 {
                     printf("Digite a descrição: ");
-                    scanf(" %[^\n]", medicamentosmateriais[posicao].descricao);
+                    scanf(" %999[^\n]", medicamentosmateriais[posicao].descricao);
 
                     printf("Digite o fabricante: ");
-                    scanf(" %[^\n]", medicamentosmateriais[posicao].fabricante);
+                    scanf(" %299[^\n]", medicamentosmateriais[posicao].fabricante);
 
                     printf("Digite o preço de custo: ");
                     scanf("%f", &medicamentosmateriais[posicao].precoCusto);

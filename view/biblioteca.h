@@ -13,7 +13,7 @@ extern "C"
 typedef struct
 {
     char rua[200];
-    char bairro[40];
+    char bairro[200];
     char cidade[200];
     char estado[10]; // Ex: "SP"
 } Endereco;
@@ -33,8 +33,8 @@ typedef struct
 {
     long int codigo;
     char nomeCompleto[200];
-    char crm[20];
-    char especialidade[200];
+    char crm[50];
+    char especialidade[400];
     char cpf[50];
     char telefone[20];
     char email[300];
@@ -46,7 +46,7 @@ typedef struct
     char nomeFantasia[100];
     char razaoSocial[200];
     char inscricaoEstadual[200];
-    char cnpj[20];
+    char cnpj[40];
     Endereco endereco;
     char telefone[20];
     char email[300];
@@ -73,7 +73,7 @@ typedef struct
 typedef struct
 {
     long int codigo;
-    char descricao[1000];
+    char descricao[2000];
     float custo;
     long int tempoEstimado;
     long int *codmedicamentosemateriais; // esse vai ser um ponteiro para um vetor de codigos de maedicamentos e materiais
@@ -94,16 +94,15 @@ AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tam
 Fornecedor *cadastrarfornecedor(Fornecedor *fornecedores, long int *tamfornecedor, long int *codigoatual,Fornecedor *novofornecedor);
 MedicamentoMaterial *cadastrarmedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int *tammedicamentomaterial, long int *codigoatual, MedicamentoMaterial *novomedicamentomaterial);
 Paciente *cadastrarpaciente(Paciente *pacientes, long int *tampacientes, long int *codigoatual,Paciente *novopaciente);
-Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int *codigoatual);
-Profissional *cadastrarprofissionalsaude(Profissional *profissionais, long int *tamprofisionais, long int *codigoatual);
-
+Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int *codigoatual, Procedimento *novoprocedimento);
+Profissional *cadastrarprofissionalsaude(Profissional *profissionais, long int *tamprofisionais, long int *codigoatual,Profissional *novoprofisional);
 // edicoes
 long int alterarambientemedico(AmbienteMedico *ambientes, long int tamambiente, long int codigo);
 long int alterarfornecedor(Fornecedor *fornecedores, long int tamfornecedor, long int codigo);
 long int alterarmedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, long int codigo);
 long int alterarpaciente(Paciente *pacientes, long int tampacientes, long int codigo);
-void alterarprocedimento(Procedimento *procedimentos, long int tamprocedimento, long int codigo);
-void alterarprofissional(Profissional *profisionais, long int tamprofisional, long int codigo);
+void alterarprocedimento(Procedimento *procedimentos, long int tamprocedimento, long int codigo);//unica diferente porque dentro dela vc realoca o vetor de códigos e se fosse long int
+long int alterarprofissional(Profissional *profisionais, long int tamprofisional, long int codigo);
 
 // listagem
 void listarambiente(AmbienteMedico *ambientes, long int tamambiente);
@@ -126,7 +125,9 @@ long int consultaambiente(AmbienteMedico *ambientes, long int tamambiente, long 
 long int consultafornecedor(Fornecedor *fornecedores, long int tamfornecedor, long int codigo);
 long int consultamedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, long int codigo);
 long int consultapaciente(Paciente *pacientes, long int tampacientes, long int codigo);
-2
+long int consultaprocedimento(Procedimento *procedimentos, long int tamprocedimento, long int codigo);
+long int consultaprofisional(Profissional *profisionais, long int tamprofisional, long int codigo);
+
 
 
 #endif

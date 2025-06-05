@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "biblioteca.h"
+#include "view/biblioteca.h"
 
 void menufornecedores()
 {
@@ -32,34 +32,34 @@ void menufornecedores()
             auxtam = tamfornecedor;
 
             printf("Digite o nome: ");
-            scanf(" %[^\n]", novofornecedor.nomeFantasia);
+            scanf(" %99[^\n]", novofornecedor.nomeFantasia);
 
             printf("Digite a razão social: ");
-            scanf(" %[^\n]", novofornecedor.razaoSocial);
+            scanf(" %199[^\n]", novofornecedor.razaoSocial);
 
             printf("Digite a inscrição estadual: ");
-            scanf(" %[^\n]", novofornecedor.inscricaoEstadual);
+            scanf(" %199[^\n]", novofornecedor.inscricaoEstadual);
 
             printf("Digite o CNPJ: ");
-            scanf(" %[^\n]", novofornecedor.cnpj);
+            scanf(" %39[^\n]", novofornecedor.cnpj);
 
             printf("Digite a rua: ");
-            scanf(" %[^\n]", novofornecedor.endereco.rua);
+            scanf(" %199[^\n]", novofornecedor.endereco.rua);
 
             printf("Digite o bairro: ");
-            scanf(" %[^\n]", novofornecedor.endereco.bairro);
+            scanf(" %199[^\n]", novofornecedor.endereco.bairro);
 
             printf("Digite a cidade: ");
-            scanf(" %[^\n]", novofornecedor.endereco.cidade);
+            scanf(" %199[^\n]", novofornecedor.endereco.cidade);
 
             printf("Digite o estado: ");
-            scanf(" %[^\n]", novofornecedor.endereco.estado);
+            scanf(" %9[^\n]", novofornecedor.endereco.estado);
 
             printf("Digite o telefone: ");
-            scanf(" %[^\n]", novofornecedor.telefone);
+            scanf(" %19[^\n]", novofornecedor.telefone);
 
             printf("Digite o email: ");
-            scanf(" %[^\n]", novofornecedor.email);
+            scanf(" %299[^\n]", novofornecedor.email);
 
             fornecedores = cadastrarfornecedor(fornecedores, &tamfornecedor, &codigoatual, &novofornecedor);
 
@@ -86,34 +86,34 @@ void menufornecedores()
             else
             {
                printf("Digite o nome: ");
-               scanf(" %[^\n]", fornecedores[posicao].nomeFantasia);
+               scanf(" %99[^\n]", fornecedores[posicao].nomeFantasia);
 
                printf("Digite a razão social: ");
-               scanf(" %[^\n]", fornecedores[posicao].razaoSocial);
+               scanf(" %199[^\n]", fornecedores[posicao].razaoSocial);
 
                printf("Digite a inscrição estadual: ");
-               scanf(" %[^\n]", fornecedores[posicao].inscricaoEstadual);
+               scanf(" %199[^\n]", fornecedores[posicao].inscricaoEstadual);
 
                printf("Digite o CNPJ: ");
-               scanf(" %[^\n]", fornecedores[posicao].cnpj);
+               scanf(" %39[^\n]", fornecedores[posicao].cnpj);
 
                printf("Digite o estado: ");
-               scanf(" %[^\n]", fornecedores[posicao].endereco.estado);
+               scanf(" %9[^\n]", fornecedores[posicao].endereco.estado);
 
                printf("Digite a cidade: ");
-               scanf(" %[^\n]", fornecedores[posicao].endereco.cidade);
+               scanf(" %199[^\n]", fornecedores[posicao].endereco.cidade);
 
                printf("Digite o bairro: ");
-               scanf(" %[^\n]", fornecedores[posicao].endereco.bairro);
+               scanf(" %199[^\n]", fornecedores[posicao].endereco.bairro);
 
                printf("Digite a rua: ");
-               scanf(" %[^\n]", fornecedores[posicao].endereco.rua);
+               scanf(" %199[^\n]", fornecedores[posicao].endereco.rua);
 
                printf("Digite o telefone: ");
-               scanf(" %[^\n]", fornecedores[posicao].telefone);
+               scanf(" %19[^\n]", fornecedores[posicao].telefone);
 
                printf("Digite o email: ");
-               scanf(" %[^\n]", fornecedores[posicao].email);
+               scanf(" %299[^\n]", fornecedores[posicao].email);
                printf("alteração feita com sucesso\n");
             }
          }
