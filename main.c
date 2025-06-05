@@ -1,13 +1,12 @@
- #include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "controller/biblioteca.h"
 
 int main()
 {
-    int op;
-    getchar();
-    while (1)
+    int op=0;
+    do
     {
         printf("Bem vindo\n");
         printf("Selecione qual aréa do sistema desesja acessar\n");
@@ -18,7 +17,7 @@ int main()
         printf("5:Profisionais\n");
         printf("6:Procedimentos\n");
         printf("7:Sair\n");
-        scanf("%d",&op);
+        scanf("%d", &op);
 
         if (op == 1)
         {
@@ -44,15 +43,12 @@ int main()
         {
             menuprocedimentos();
         }
-        else if (op == 7)
-        {
-            break;
-        }
         else if (op < 1 || op > 7)
         {
             printf("opção inválida, tente novamente\n");
         }
-    }
+
+    } while (op != 7);
 
     return 0;
-}
+} 
