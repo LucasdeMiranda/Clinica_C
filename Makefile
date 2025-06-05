@@ -1,42 +1,38 @@
- # Compilador e flags
-CC = gcc
-CFLAGS = -Wall -std=c99 -Iview -Icontroller
+ CC = gcc
+CFLAGS = -Wall -Icontroller
+BUILD_DIR = build
 
-# Arquivos objeto (sem biblioteca.o)
-OBJ = main.o ambientes_medicosView.o ambientes_medicosController.o fornecedores.o medicamentos_materiais.o pacientes.o procedimentos.o profissionais.o
+# Fontes
+MAIN_SRC = main.c
+VIEW_SRCS = $(wildcard view/*.c)
+CONTROLLER_SRCS = $(wildcard controller/*.c)
+SRCS = $(MAIN_SRC) $(VIEW_SRCS) $(CONTROLLER_SRCS)
 
-# Executável
-EXEC = CLINICA
+# Objetos
+OBJS = $(patsubst %.c,$(BUILD_DIR)/%.o,$(notdir $(SRCS)))
 
-# Regra para compilar o programa
-$(EXEC): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) -o $(EXEC)
+# Alvo final
+TARGET = programa
 
-# Regras para compilar os arquivos .c em .o
-main.o: main.c view/biblioteca.h
-	$(CC) $(CFLAGS) -c main.c
+all: $(BUILD_DIR) $(TARGET)
 
-ambientes_medicosView.o: view/ambientes_medicosView.c view/biblioteca.h
-	$(CC) $(CFLAGS) -c view/ambientes_medicosView.c -o ambientes_medicosView.o
+# Cria diretório build se não existir
+$(BUILD_DIR):
+	mkdir -p $(BUILD_DIR)
 
-ambientes_medicosController.o: controller/ambientes_medicosController.c controller/ambientes_medicosController.h
-	$(CC) $(CFLAGS) -c controller/ambientes_medicosController.c -o ambientes_medicosController.o
+# Regra para compilar todos os .o
+$(BUILD_DIR)/%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-fornecedores.o: fornecedores.c
-	$(CC) $(CFLAGS) -c fornecedores.c
+$(BUILD_DIR)/%.o: view/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-medicamentos_materiais.o: medicamentos_materiais.c
-	$(CC) $(CFLAGS) -c medicamentos_materiais.c
+$(BUILD_DIR)/%.o: controller/%.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
-pacientes.o: pacientes.c view/biblioteca.h
-	$(CC) $(CFLAGS) -c pacientes.c
+# Linkagem final
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -mconsole -o $@ $^
 
-procedimentos.o: procedimentos.c
-	$(CC) $(CFLAGS) -c procedimentos.c
-
-profissionais.o: profissionais.c
-	$(CC) $(CFLAGS) -c profissionais.c
-
-# Limpeza dos arquivos gerados
 clean:
-	rm -f $(OBJ) $(EXEC) chat
+	rm -rf $(BUILD_DIR) $(TARGET)
