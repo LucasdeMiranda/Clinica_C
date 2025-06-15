@@ -14,7 +14,7 @@ Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tampr
     }
     procedimentos = novo;
     novoprocedimento->codigo = *codigoatual;
-     procedimentos[*tamprocedimento] = *novoprocedimento;
+    procedimentos[*tamprocedimento] = *novoprocedimento;
     procedimentos[*tamprocedimento].codmedicamentosemateriais = malloc(novoprocedimento->tamcodmedicamentosmateriais * sizeof(long int));
     if (procedimentos[*tamprocedimento].codmedicamentosemateriais == NULL)
     {
@@ -22,7 +22,7 @@ Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tampr
         return procedimentos;
     }
 
-    // Copiar os códigos de medicamentos/materiais
+    // copia os códigos de medicamentos/materiais
     for (int i = 0; i < novoprocedimento->tamcodmedicamentosmateriais; i++)
     {
         procedimentos[*tamprocedimento].codmedicamentosemateriais[i] = novoprocedimento->codmedicamentosemateriais[i];
@@ -45,7 +45,7 @@ void alterarprocedimento(Procedimento *procedimentos, long int tamprocedimento, 
     {
         if (procedimentos[i].codigo == codigo)
         {
-            printf("Digite a descrição do procedimento: ");
+            printf("Digite a descrição do procedimento:");
             scanf(" %1999[^\n]", procedimentos[i].descricao);
 
             printf("Digite o custo: ");

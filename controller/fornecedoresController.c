@@ -23,7 +23,6 @@ long int alterarfornecedor(Fornecedor *fornecedores, long int tamfornecedor, lon
 {
    if (fornecedores == NULL)
    {
-      printf("Lista de fornecedores vazia\n");
       return -1;
    }
 
