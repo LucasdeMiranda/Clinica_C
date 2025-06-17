@@ -3,67 +3,69 @@
 #include <string.h>
 #include "biblioteca.h"
 
-void menuprofisionais()
+void menuprofisionais(Profissional **profissionais, long int *tamprofissionais, long int *codigoatual)
 {
-    Profissional *profisionais = NULL;
-    long int tamprofisionais = 0, codigoatual = 0, codigo, auxtam = 0, posicao;
+    long int codigo, auxtam = 0, posicao;
     int op;
 
     do
     {
-
         op = 0, codigo = 0;
-        printf("1:Cadastrar profisional\n:");
-        printf("2:Alterar profisional\n:");
-        printf("3: Excluir profisional\n");
-        printf("4:Listar profisionais\n");
-        printf("5:Consultar profissional\n");
-        printf("6:Sair\n");
+        printf("1: Cadastrar profissional\n");
+        printf("2: Alterar profissional\n");
+        printf("3: Excluir profissional\n");
+        printf("4: Listar profissionais\n");
+        printf("5: Consultar profissional\n");
+        printf("6: Sair\n");
         scanf("%d", &op);
 
         if (op <= 0 || op > 6)
         {
-            printf("opção invalida! tente novamente\n");
+            printf("Opção inválida! Tente novamente\n");
         }
         else
         {
             if (op == 1)
             {
-                Profissional novoprofisional;
-                auxtam = tamprofisionais;
+                Profissional novoprofissional;
+                auxtam = *tamprofissionais;
+
                 printf("Digite o nome completo: ");
-                scanf(" %199[^\n]", novoprofisional.nomeCompleto);
+                scanf(" %199[^\n]", novoprofissional.nomeCompleto);
 
                 printf("Digite o CRM: ");
-                scanf(" %49[^\n]", novoprofisional.crm);
+                scanf(" %49[^\n]", novoprofissional.crm);
 
                 printf("Digite a especialidade: ");
-                scanf(" %399[^\n]", novoprofisional.especialidade);
+                scanf(" %399[^\n]", novoprofissional.especialidade);
 
                 printf("Digite o CPF: ");
-                scanf("  %49[^\n]", novoprofisional.cpf);
+                scanf(" %49[^\n]", novoprofissional.cpf);
 
                 printf("Digite o telefone: ");
-                scanf(" %20[^\n]", novoprofisional.telefone);
+                scanf(" %19[^\n]", novoprofissional.telefone);
 
                 printf("Digite o email: ");
-                scanf(" %299[^\n]", novoprofisional.email);
-                profisionais = cadastrarprofissionalsaude(profisionais, &tamprofisionais, &codigoatual, &novoprofisional);
-                if (tamprofisionais > auxtam)
+                scanf(" %299[^\n]", novoprofissional.email);
+
+                *profissionais = cadastrarprofissionalsaude(*profissionais, tamprofissionais, codigoatual, &novoprofissional);
+
+                if (*tamprofissionais > auxtam)
                 {
                     printf("Profissional cadastrado com sucesso\n");
                 }
                 else
                 {
-                    printf("Erro ao cadastrar profisional\n");
+                    printf("Erro ao cadastrar profissional\n");
                 }
             }
-
             else if (op == 2)
             {
-                printf("digite o codigo");
+                printf("Digite o código: ");
                 scanf("%ld", &codigo);
-                posicao = alterarprofissional(profisionais, tamprofisionais, codigo);
+
+                posicao = alterarprofissional(*profissionais, *tamprofissionais, codigo);
+
                 if (posicao == -1)
                 {
                     printf("Profissional não encontrado ou lista vazia\n");
@@ -71,34 +73,38 @@ void menuprofisionais()
                 else
                 {
                     printf("Digite o nome completo: ");
-                    scanf(" %199[^\n]", profisionais[posicao].nomeCompleto);
+                    scanf(" %199[^\n]", (*profissionais)[posicao].nomeCompleto);
 
                     printf("Digite o CRM: ");
-                    scanf(" %49[^\n]", profisionais[posicao].crm);
+                    scanf(" %49[^\n]", (*profissionais)[posicao].crm);
 
                     printf("Digite a especialidade: ");
-                    scanf(" %399[^\n]", profisionais[posicao].especialidade);
+                    scanf(" %399[^\n]", (*profissionais)[posicao].especialidade);
 
                     printf("Digite o CPF: ");
-                    scanf(" %49[^\n]", profisionais[posicao].cpf);
+                    scanf(" %49[^\n]", (*profissionais)[posicao].cpf);
 
                     printf("Digite o telefone: ");
-                    scanf(" %19[^\n]", profisionais[posicao].telefone);
+                    scanf(" %19[^\n]", (*profissionais)[posicao].telefone);
 
                     printf("Digite o email: ");
-                    scanf(" %299[^\n]", profisionais[posicao].email);
+                    scanf(" %299[^\n]", (*profissionais)[posicao].email);
+
                     printf("Profissional alterado com sucesso\n");
                 }
             }
             else if (op == 3)
             {
-                printf("digite o codigo");
+                printf("Digite o código: ");
                 scanf("%ld", &codigo);
-                auxtam = tamprofisionais;
-                profisionais = excluirprofisional(profisionais, &tamprofisionais, codigo);
-                if (tamprofisionais < auxtam)
+
+                auxtam = *tamprofissionais;
+
+                *profissionais = excluirprofissional(*profissionais, tamprofissionais, codigo);
+
+                if (*tamprofissionais < auxtam)
                 {
-                    printf(" Profissional excluido com sucesso\n");
+                    printf("Profissional excluído com sucesso\n");
                 }
                 else
                 {
@@ -107,30 +113,31 @@ void menuprofisionais()
             }
             else if (op == 4)
             {
-                listarprofissional(profisionais, tamprofisionais);
+                listarprofissional(*profissionais, *tamprofissionais);
             }
             else if (op == 5)
             {
-                printf("digite o codigo");
+                printf("Digite o código: ");
                 scanf("%ld", &codigo);
-                posicao = consultaprofisional(profisionais, tamprofisionais, codigo);
+
+                posicao = consultaprofissional(*profissionais, *tamprofissionais, codigo);
+
                 if (posicao == -1)
                 {
                     printf("Profissional não encontrado\n");
                 }
                 else
                 {
-                    printf("Código: %ld\n", profisionais[posicao].codigo);
-                    printf("Nome: %s\n", profisionais[posicao].nomeCompleto);
-                    printf("CRM: %s\n", profisionais[posicao].crm);
-                    printf("Especialidade: %s\n", profisionais[posicao].especialidade);
-                    printf("CPF: %s\n", profisionais[posicao].cpf);
-                    printf("Telefone: %s\n", profisionais[posicao].telefone);
-                    printf("Email: %s\n", profisionais[posicao].email);
+                    printf("Código: %ld\n", (*profissionais)[posicao].codigo);
+                    printf("Nome: %s\n", (*profissionais)[posicao].nomeCompleto);
+                    printf("CRM: %s\n", (*profissionais)[posicao].crm);
+                    printf("Especialidade: %s\n", (*profissionais)[posicao].especialidade);
+                    printf("CPF: %s\n", (*profissionais)[posicao].cpf);
+                    printf("Telefone: %s\n", (*profissionais)[posicao].telefone);
+                    printf("Email: %s\n", (*profissionais)[posicao].email);
                 }
             }
         }
 
     } while (op != 6);
-    free(profisionais);
 }

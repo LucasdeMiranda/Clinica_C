@@ -57,7 +57,7 @@ void listarprofissional(Profissional *profisionais, long int tamprofisional)
     return;
 }
 
-Profissional *excluirprofisional(Profissional *profisionais, long int *tamprofisional, long int codigo)
+Profissional *excluirprofissional(Profissional *profisionais, long int *tamprofisional, long int codigo)
 {
     int encontrado = -1;
     if (profisionais == NULL || *tamprofisional == 0)
@@ -102,7 +102,7 @@ Profissional *excluirprofisional(Profissional *profisionais, long int *tamprofis
     return profisionais;
 }
 
-long int consultaprofisional(Profissional *profisionais, long int tamprofisional, long int codigo)
+long int consultaprofissional(Profissional *profisionais, long int tamprofisional, long int codigo)
 {
     if (profisionais == NULL || tamprofisional == 0)
     {

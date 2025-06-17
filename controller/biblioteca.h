@@ -80,14 +80,29 @@ typedef struct
     long int codambientemedico;          // codigo do ambiente medico
     long int tamcodmedicamentosmateriais;
 } Procedimento;
+ 
 
-// menus auxiliares
-void menuambientesmedicos();
-void menufornecedores();
-void menumedicamentos_materiais();
-void menuPacientes();
-void menuprocedimentos();
-void menuprofisionais();
+typedef struct{
+ long int codigo,codpaciente, codprofissional,codprocedimento;
+ char data[20],horario[20];
+}Agendamento;
+
+
+// menus auxiliares memoria
+void menuambientesmedicos(AmbienteMedico **ambientes, long int *tamambiente, long int *codigoatual);
+void menufornecedores(Fornecedor **fornecedores, long int *tamfornecedor, long int *codigoatatual);
+void menumedicamentos_materiais(MedicamentoMaterial **medicamentosmateriais, long int *tammedicamentomaterial,long int *codigoatual);
+void menuPacientes(Paciente **pacientes, long int *tampacientes,long int *codigoatual);
+void menuprocedimentos(Procedimento **procedimentos, long int *tamprocedimento, long int *codigoatual);
+void menuprofisionais(Profissional **profissionais, long int *tamprofissionais, long int *codigoatual);
+
+void menuagendamento_controle(Agendamento **agendamentos,long int *tamagendamento,long int *codigoatual,Procedimento *procedimentos,
+long int *tamprocedimento,MedicamentoMaterial *medicamentosmateriais,
+long int tammedicamentomaterial,Paciente *pacientes,long int tampacientes,
+Profissional *profissionais,long int tamprofissionais);
+
+// menus auxiliares de arquivo
+void menuagendamento_controle_arquivo(int oparquivo);
 
 // cadastros
 AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tamambiente, long int *codigoatual, AmbienteMedico *novoambiente);
@@ -118,7 +133,7 @@ Fornecedor *excluirfornecedor(Fornecedor *fornecedores, long int *tamfornecedor,
 MedicamentoMaterial *excluimedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int *tammedicamentomaterial, long int codigo);
 Paciente *excluirpaciente(Paciente *pacientes, long int *tampacientes, long int codigo);
 Procedimento *excluirprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int codigo);
-Profissional *excluirprofisional(Profissional *profisionais, long int *tamprofisional, long int codigo);
+Profissional *excluirprofissional(Profissional *profisionais, long int *tamprofisional, long int codigo);
 
 // consulta
 long int consultaambiente(AmbienteMedico *ambientes, long int tamambiente, long int codigo);
@@ -126,7 +141,7 @@ long int consultafornecedor(Fornecedor *fornecedores, long int tamfornecedor, lo
 long int consultamedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, long int codigo);
 long int consultapaciente(Paciente *pacientes, long int tampacientes, long int codigo);
 long int consultaprocedimento(Procedimento *procedimentos, long int tamprocedimento, long int codigo);
-long int consultaprofisional(Profissional *profisionais, long int tamprofisional, long int codigo);
+long int consultaprofissional(Profissional *profisionais, long int tamprofisional, long int codigo);
 
 
 

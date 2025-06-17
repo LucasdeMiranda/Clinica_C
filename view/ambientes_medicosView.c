@@ -1,17 +1,18 @@
-#include <stdio.h>
+ #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "biblioteca.h"
 
-void menuambientesmedicos()
+void menuambientesmedicos(AmbienteMedico **ambientes, long int *tamambiente, long int *codigoatual)
 {
-    AmbienteMedico *ambientes = NULL;
-    long int tamambiente = 0, codigoatual = 0, codigo, auxtam = 0, posicao;//auxtam vai guardar uma copia do tamnho do betor que será muito util
+    long int codigo, auxtam = 0, posicao;
     int op;
 
     do
     {
-        op = 0, posicao = -1;
+        op = 0;
+        posicao = -1;
+
         printf("1: Cadastrar ambiente\n");
         printf("2: Alterar ambiente\n");
         printf("3: Excluir ambiente\n");
@@ -29,13 +30,14 @@ void menuambientesmedicos()
             if (op == 1)
             {
                 AmbienteMedico novoambiente;
-                auxtam = tamambiente;
+                auxtam = *tamambiente;
 
                 printf("Digite a descrição do procedimento: ");
                 scanf(" %999[^\n]", novoambiente.descricaoProcedimento);
 
-                ambientes = cadastrarambientemedico(ambientes, &tamambiente, &codigoatual, &novoambiente);
-                if (tamambiente > auxtam)
+                *ambientes = cadastrarambientemedico(*ambientes, tamambiente, codigoatual, &novoambiente);
+
+                if (*tamambiente > auxtam)
                 {
                     printf("Ambiente médico cadastrado com sucesso\n");
                 }
@@ -49,7 +51,7 @@ void menuambientesmedicos()
                 printf("Digite o código: ");
                 scanf("%ld", &codigo);
 
-                posicao = alterarambientemedico(ambientes, tamambiente, codigo);
+                posicao = alterarambientemedico(*ambientes, *tamambiente, codigo);
                 if (posicao == -1)
                 {
                     printf("Ambiente não encontrado ou lista vazia.\n");
@@ -57,8 +59,7 @@ void menuambientesmedicos()
                 else
                 {
                     printf("Digite a nova descrição do procedimento: ");
-                    scanf(" %999[^\n]", ambientes[posicao].descricaoProcedimento); // altera direto no vetor
-
+                    scanf(" %999[^\n]", (*ambientes)[posicao].descricaoProcedimento);
                     printf("Alteração feita com sucesso.\n");
                 }
             }
@@ -66,10 +67,11 @@ void menuambientesmedicos()
             {
                 printf("Digite o código: ");
                 scanf("%ld", &codigo);
-                auxtam = tamambiente;
-                ambientes = excluirambientemedico(ambientes, &tamambiente, codigo);
+                auxtam = *tamambiente;
 
-                if (tamambiente < auxtam)
+                *ambientes = excluirambientemedico(*ambientes, tamambiente, codigo);
+
+                if (*tamambiente < auxtam)
                 {
                     printf("Ambiente excluído com sucesso!\n");
                 }
@@ -80,25 +82,24 @@ void menuambientesmedicos()
             }
             else if (op == 4)
             {
-                listarambiente(ambientes, tamambiente);
+                listarambiente(*ambientes, *tamambiente);
             }
             else if (op == 5)
             {
                 printf("Digite o código: ");
                 scanf("%ld", &codigo);
-                posicao = consultaambiente(ambientes, tamambiente, codigo);
-                if(posicao==-1){
+                posicao = consultaambiente(*ambientes, *tamambiente, codigo);
+                if (posicao == -1)
+                {
                     printf("Ambiente não encontrado\n");
                 }
-                else{
-                   printf("Código: %ld\n", ambientes[posicao].codigo);
-                printf("Descrição do procedimento: %s\n", ambientes[posicao].descricaoProcedimento);
+                else
+                {
+                    printf("Código: %ld\n", (*ambientes)[posicao].codigo);
+                    printf("Descrição do procedimento: %s\n", (*ambientes)[posicao].descricaoProcedimento);
                 }
-                 
             }
         }
 
     } while (op != 6);
-
-    free(ambientes);
 }

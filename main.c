@@ -5,9 +5,21 @@
 
 int main()
 {
-    int op=0;
+    Procedimento *procedimentos = NULL;
+    AmbienteMedico *ambientes = NULL;
+    Fornecedor *fornecedores = NULL;
+    MedicamentoMaterial *medicamentosmateriais = NULL;
+    Paciente *pacientes = NULL;
+    Profissional *profissionais = NULL;
+    Agendamento *agendamentos=NULL;
+    long int tamprocedimento = 0, codigoatualprocedimentos = 0, tamambiente = 0, codigoatualambiente = 0,
+    tamfornecedor = 0, codigoatualfornecedor= 0, tammedicamentomaterial = 0, codigoatualmedicamentomaterial = 0,
+    tampacientes = 0, codigoatualpacientes = 0,tamprofissionais = 0, codigoatualprofissionais = 0,
+    tamagendamento=0,codigoatualagendamento=0;
+    int op = 0, op2 = 0, oparquivo = 0;
     do
     {
+
         printf("Bem vindo\n");
         printf("Selecione qual aréa do sistema desesja acessar\n");
         printf("1:Pacientes\n");
@@ -16,39 +28,80 @@ int main()
         printf("4:Medicamentos e Materiais\n");
         printf("5:Profisionais\n");
         printf("6:Procedimentos\n");
-        printf("7:Sair\n");
+        printf("7:Agendar Procedimento/Consulta\n");
+        printf("8:Sair\n");
         scanf("%d", &op);
 
         if (op == 1)
         {
-            menuPacientes();
+            menuPacientes(&pacientes,&tampacientes,&codigoatualpacientes);
         }
         else if (op == 2)
         {
-            menuambientesmedicos();
+            menuambientesmedicos(&ambientes, &tamambiente, &codigoatualambiente);
         }
         else if (op == 3)
         {
-            menufornecedores();
+            menufornecedores(&fornecedores,&tamfornecedor,&codigoatualfornecedor);
         }
         else if (op == 4)
         {
-            menumedicamentos_materiais();
+            menumedicamentos_materiais(&medicamentosmateriais,&tammedicamentomaterial,&codigoatualmedicamentomaterial);
         }
         else if (op == 5)
         {
-            menuprofisionais();
+            menuprofisionais(&profissionais,&tamprofissionais,&codigoatualprofissionais);
         }
         else if (op == 6)
         {
-            menuprocedimentos();
+            menuprocedimentos(&procedimentos, &tamprocedimento, &codigoatualprocedimentos);
         }
-        else if (op < 1 || op > 7)
+        else if (op == 7)
+        {
+            printf("1:Memoria\n2:Arquivo\n");
+            scanf("%d", &op2);
+            if (op2 == 1)
+            {
+                menuagendamento_controle(&agendamentos,&tamagendamento,&codigoatualagendamento,
+                procedimentos,tamprocedimento,medicamentosmateriais,
+                tammedicamentomaterial,pacientes,tampacientes,profissionais,tamprofissionais);
+            }
+            else if (op2 == 2)
+            {
+                printf("1:Arquivo texto \n 2:Arquivo binario\n");
+                scanf("%d", &oparquivo);
+                if (oparquivo <= 0 || op > 2)
+                {
+                    printf("opção de arquivo invalida tente novamente\n");
+                }
+                else
+                {
+                    menuagendamento_controle_arquivo(oparquivo);
+                }
+            }
+            else
+            {
+                printf("opção invalida tente novamente\n");
+            }
+        }
+        else if (op == 8)
+        {
+            for (int i = 0; i < tamprocedimento; i++){
+                free((procedimentos)[i].codmedicamentosemateriais);
+            }
+            free(procedimentos);
+            free(ambientes);
+            free(fornecedores);
+            free(medicamentosmateriais);
+            free(pacientes);
+            free(profissionais);
+        }
+        else if (op < 1 || op > 8)
         {
             printf("opção inválida, tente novamente\n");
         }
 
-    } while (op != 7);
+    } while (op != 8);
 
     return 0;
-} 
+}
