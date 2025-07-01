@@ -9,6 +9,10 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+typedef struct {
+    long int codigo;
+    long int qnt; // quantidade usada daquele material
+} Codmedicamentosmateriais;
 
 typedef struct
 {
@@ -70,17 +74,16 @@ typedef struct
     long int estoqueMinimo;
 } MedicamentoMaterial;
 
-typedef struct
+ typedef struct
 {
     long int codigo;
     char descricao[2000];
     float custo;
     long int tempoEstimado;
-    long int *codmedicamentosemateriais; // esse vai ser um ponteiro para um vetor de codigos de maedicamentos e materiais
+    Codmedicamentosmateriais *codmedicamentosemateriais;
     long int codambientemedico;          // codigo do ambiente medico
     long int tamcodmedicamentosmateriais;
 } Procedimento;
- 
 
 typedef struct{
  long int codigo,codpaciente, codprofissional,codprocedimento;
@@ -93,11 +96,12 @@ void menuambientesmedicos(AmbienteMedico **ambientes, long int *tamambiente, lon
 void menufornecedores(Fornecedor **fornecedores, long int *tamfornecedor, long int *codigoatatual);
 void menumedicamentos_materiais(MedicamentoMaterial **medicamentosmateriais, long int *tammedicamentomaterial,long int *codigoatual);
 void menuPacientes(Paciente **pacientes, long int *tampacientes,long int *codigoatual);
-void menuprocedimentos(Procedimento **procedimentos, long int *tamprocedimento, long int *codigoatual);
+void menuprocedimentos(Procedimento **procedimentos, long int *tamprocedimento, long int *codigoatual,AmbienteMedico *ambientes,MedicamentoMaterial *medicamentosmateriais,
+ long int tamambientes,long int tammedicamentomaterial);
 void menuprofisionais(Profissional **profissionais, long int *tamprofissionais, long int *codigoatual);
 
 void menuagendamento_controle(Agendamento **agendamentos,long int *tamagendamento,long int *codigoatual,Procedimento *procedimentos,
-long int *tamprocedimento,MedicamentoMaterial *medicamentosmateriais,
+long int tamprocedimento,MedicamentoMaterial **medicamentosmateriais,
 long int tammedicamentomaterial,Paciente *pacientes,long int tampacientes,
 Profissional *profissionais,long int tamprofissionais);
 
@@ -109,7 +113,13 @@ AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tam
 Fornecedor *cadastrarfornecedor(Fornecedor *fornecedores, long int *tamfornecedor, long int *codigoatual,Fornecedor *novofornecedor);
 MedicamentoMaterial *cadastrarmedicamentomaterial(MedicamentoMaterial *medicamentosmateriais, long int *tammedicamentomaterial, long int *codigoatual, MedicamentoMaterial *novomedicamentomaterial);
 Paciente *cadastrarpaciente(Paciente *pacientes, long int *tampacientes, long int *codigoatual,Paciente *novopaciente);
-Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int *codigoatual, Procedimento *novoprocedimento);
+Procedimento* cadastrarprocedimento(Procedimento* procedimentos, long int* tamprocedimento, long int* codigoatual,
+                                   Procedimento* novoprocedimento, AmbienteMedico* ambientes, MedicamentoMaterial* medicamentosmateriais,
+                                   long int tamambientes, long int tammedicamentomaterial);
+Agendamento *cadastraragendamento(Agendamento *agendamentos, long int *tamagendamentos, long int *codigoatual,
+                                  Agendamento *novoagendamento, Paciente *pacientes, long int tampacientes, Profissional *profissionais, long int tamprofissionais,
+                                  Procedimento *procedimentos, long int tamprocedimento,
+                                  MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial);
 Profissional *cadastrarprofissionalsaude(Profissional *profissionais, long int *tamprofisionais, long int *codigoatual,Profissional *novoprofisional);
 // edicoes
 long int alterarambientemedico(AmbienteMedico *ambientes, long int tamambiente, long int codigo);

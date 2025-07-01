@@ -3,26 +3,62 @@
 #include <string.h>
 #include "biblioteca.h"
 
-Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int *codigoatual, Procedimento *novoprocedimento)
+ Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int *codigoatual,
+                                    Procedimento *novoprocedimento, AmbienteMedico *ambientes, MedicamentoMaterial *medicamentosmateriais,
+                                    long int tamambientes, long int tammedicamentomaterial)
 {
-    Procedimento *novo = realloc(procedimentos, (*tamprocedimento + 1) * sizeof(Procedimento));
+    int encontraambiente = -1;
+    for (int i = 0; i < tamambientes; i++)
+    {
+        if (novoprocedimento->codambientemedico == ambientes[i].codigo)
+        {
+             encontraambiente = 0;
+            break;
+        }
+    }
+    if (encontraambiente == -1)
+    {
+        return procedimentos;
+    }
 
+    // Verifica se todos os materiais/medicamentos existem
+    for (int i = 0; i < novoprocedimento->tamcodmedicamentosmateriais; i++)
+    {
+        long int codbuscado = novoprocedimento->codmedicamentosemateriais[i].codigo;
+        int encontrado = -1;
+        for (int j = 0; j < tammedicamentomaterial; j++)
+        {
+            if (medicamentosmateriais[j].codigo == codbuscado)
+            {
+                encontrado = 0;
+                break;
+            }
+        }
+        if (encontrado == -1)
+        {
+            return procedimentos;
+        }
+    }
+
+    Procedimento *novo = realloc(procedimentos, (*tamprocedimento + 1) * sizeof(Procedimento));
     if (novo == NULL)
     {
         printf("erro ao alocar memoria");
         return procedimentos;
     }
+
     procedimentos = novo;
     novoprocedimento->codigo = *codigoatual;
     procedimentos[*tamprocedimento] = *novoprocedimento;
-    procedimentos[*tamprocedimento].codmedicamentosemateriais = malloc(novoprocedimento->tamcodmedicamentosmateriais * sizeof(long int));
+
+    // Aloca novo vetor de structs Codmedicamentosmateriais
+    procedimentos[*tamprocedimento].codmedicamentosemateriais = malloc(novoprocedimento->tamcodmedicamentosmateriais * sizeof(Codmedicamentosmateriais));
+    
     if (procedimentos[*tamprocedimento].codmedicamentosemateriais == NULL)
     {
-        printf("Erro ao alocar memória para os códigos de medicamentos/materiais\n");
+        printf("Erro ao alocar memória para os medicamentos/materiais\n");
         return procedimentos;
     }
-
-    // copia os códigos de medicamentos/materiais
     for (int i = 0; i < novoprocedimento->tamcodmedicamentosmateriais; i++)
     {
         procedimentos[*tamprocedimento].codmedicamentosemateriais[i] = novoprocedimento->codmedicamentosemateriais[i];
@@ -60,7 +96,7 @@ void alterarprocedimento(Procedimento *procedimentos, long int tamprocedimento, 
             printf("digite quantos materiais e medicamentos seram utilizados:");
             scanf("%ld", &procedimentos[i].tamcodmedicamentosmateriais);
 
-            long int *novo = realloc(procedimentos[i].codmedicamentosemateriais, procedimentos[i].tamcodmedicamentosmateriais * sizeof(long int));
+            Codmedicamentosmateriais *novo = realloc(procedimentos[i].codmedicamentosemateriais, procedimentos[i].tamcodmedicamentosmateriais * sizeof(Codmedicamentosmateriais));
             if (novo == NULL)
             {
                 printf("erro ao realocar meomoria para o vetor de codigos de materiais e medicamentos\n");
@@ -72,7 +108,10 @@ void alterarprocedimento(Procedimento *procedimentos, long int tamprocedimento, 
                 for (int j = 0; j < procedimentos[i].tamcodmedicamentosmateriais; j++)
                 {
                     printf("Digite o código do material %d: ", j + 1);
-                    scanf("%ld", &procedimentos[i].codmedicamentosemateriais[j]);
+                    scanf("%ld", &procedimentos[i].codmedicamentosemateriais[j].codigo);
+                    printf("Digite a quantidade do material %d: ", j + 1);
+                    scanf("%ld", &procedimentos[i].codmedicamentosemateriais[j].qnt);
+                    
                 }
                 printf("Procedimento alterado com sucesso!\n");
                 return;
@@ -82,14 +121,14 @@ void alterarprocedimento(Procedimento *procedimentos, long int tamprocedimento, 
     printf("Código não encontrado.\n");
     return;
 }
-
-void listarprocedimento(Procedimento *procedimentos, long int tamprocedimento)
+ void listarprocedimento(Procedimento *procedimentos, long int tamprocedimento)
 {
     if (procedimentos == NULL || tamprocedimento == 0)
     {
         printf("Lista de procedimentos vazia\n");
         return;
     }
+
     for (int i = 0; i < tamprocedimento; i++)
     {
         printf("Código do procedimento: %ld\n", procedimentos[i].codigo);
@@ -98,16 +137,23 @@ void listarprocedimento(Procedimento *procedimentos, long int tamprocedimento)
         printf("Tempo estimado: %ld minutos\n", procedimentos[i].tempoEstimado);
         printf("Código do ambiente médico: %ld\n", procedimentos[i].codambientemedico);
         printf("Quantidade de materiais/medicamentos: %ld\n", procedimentos[i].tamcodmedicamentosmateriais);
+
         if (procedimentos[i].codmedicamentosemateriais != NULL)
         {
             for (int j = 0; j < procedimentos[i].tamcodmedicamentosmateriais; j++)
             {
-                printf("Codigo do material:%ld\n", procedimentos[i].codmedicamentosemateriais[j]);
+                printf("Código do material: %ld - Quantidade usada: %ld\n",
+                    procedimentos[i].codmedicamentosemateriais[j].codigo,
+                    procedimentos[i].codmedicamentosemateriais[j].qnt);
             }
         }
+
+        printf("\n");
     }
+
     return;
 }
+
 
 Procedimento *excluirprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int codigo)
 {

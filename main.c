@@ -54,7 +54,7 @@ int main()
         }
         else if (op == 6)
         {
-            menuprocedimentos(&procedimentos, &tamprocedimento, &codigoatualprocedimentos);
+            menuprocedimentos(&procedimentos, &tamprocedimento, &codigoatualprocedimentos,ambientes,medicamentosmateriais,tamambiente,tammedicamentomaterial);
         }
         else if (op == 7)
         {
@@ -63,7 +63,7 @@ int main()
             if (op2 == 1)
             {
                 menuagendamento_controle(&agendamentos,&tamagendamento,&codigoatualagendamento,
-                procedimentos,tamprocedimento,medicamentosmateriais,
+                procedimentos,tamprocedimento,&medicamentosmateriais,
                 tammedicamentomaterial,pacientes,tampacientes,profissionais,tamprofissionais);
             }
             else if (op2 == 2)
@@ -95,6 +95,7 @@ int main()
             free(medicamentosmateriais);
             free(pacientes);
             free(profissionais);
+            free(agendamentos);
         }
         else if (op < 1 || op > 8)
         {
