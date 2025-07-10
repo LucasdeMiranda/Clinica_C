@@ -235,7 +235,7 @@ long int importarpaciente(Paciente **pacientes, char *nome, long int *tampacient
         return -1;
     }
 
-    fprintf(arquivo, "<dados>\n"); // <- CORREÇÃO AQUI
+    fprintf(arquivo, "<dados>\n");
     fprintf(arquivo, "<!-- Tabela de Pacientes -->\n");
     fprintf(arquivo, "<tabela nome=\"paciente\">\n");
 
