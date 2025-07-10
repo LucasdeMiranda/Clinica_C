@@ -1,0 +1,23 @@
+<dados>
+<!-- Tabela de Pacientes -->
+<tabela nome="paciente">
+<registro>
+<codigo>0</codigo>
+<nome>João da Silva</nome>
+<cpf>123.456.789-00</cpf>
+<telefone>11 99999-8888</telefone>
+<endereco>Rua A, 123,  Bairro X,  Cidade Y,  Estado Z</endereco>
+<data_nascimento>1980-05-25</data_nascimento>
+<historico>Hipertensão arterial</historico>
+</registro>
+<registro>
+<codigo>1</codigo>
+<nome>Maria Oliveira</nome>
+<cpf>987.654.321-00</cpf>
+<telefone>21 98888-7777</telefone>
+<endereco>Av. Principal, 456,  Bairro Z,  Cidade W,  Estado V</endereco>
+<data_nascimento>1992-09-10</data_nascimento>
+<historico>Alergia a penicilina</historico>
+</registro>
+</tabela>
+</dados>

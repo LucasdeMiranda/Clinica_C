@@ -160,4 +160,7 @@ long int consultaprofissional(Profissional *profisionais, long int tamprofisiona
  long int importarpaciente(Paciente **pacientes, char *nome, long int *tampacientes, long int *codigoatual) ;
 
 
+//exportar
+
+ long int exportarpaciente(Paciente *pacientes, char *nome, long int tampacientes);
 #endif

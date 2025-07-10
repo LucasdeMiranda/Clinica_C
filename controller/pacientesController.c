@@ -223,3 +223,42 @@ long int importarpaciente(Paciente **pacientes, char *nome, long int *tampacient
     fclose(arquivo);
     return 0;
 }
+
+  long int exportarpaciente(Paciente *pacientes, char *nome, long int tampacientes) {
+    FILE *arquivo = fopen(nome, "w");
+    if (arquivo == NULL) {
+        return -1;
+    }
+
+    if (pacientes == NULL) {
+        fclose(arquivo);
+        return -1;
+    }
+
+    fprintf(arquivo, "<dados>\n"); // <- CORREÇÃO AQUI
+    fprintf(arquivo, "<!-- Tabela de Pacientes -->\n");
+    fprintf(arquivo, "<tabela nome=\"paciente\">\n");
+
+    for (long int i = 0; i < tampacientes; i++) {
+        fprintf(arquivo, "<registro>\n");
+        fprintf(arquivo, "<codigo>%ld</codigo>\n", pacientes[i].codigo);
+        fprintf(arquivo, "<nome>%s</nome>\n", pacientes[i].nomeCompleto);
+        fprintf(arquivo, "<cpf>%s</cpf>\n", pacientes[i].cpf);
+        fprintf(arquivo, "<telefone>%s</telefone>\n", pacientes[i].telefone);
+        fprintf(arquivo, "<endereco>%s, %ld, %s, %s, %s</endereco>\n",
+                pacientes[i].endereco.rua,
+                pacientes[i].endereco.numero,
+                pacientes[i].endereco.bairro,
+                pacientes[i].endereco.cidade,
+                pacientes[i].endereco.estado);
+        fprintf(arquivo, "<data_nascimento>%s</data_nascimento>\n", pacientes[i].dataNascimento);
+        fprintf(arquivo, "<historico>%s</historico>\n", pacientes[i].historicoMedico);
+        fprintf(arquivo, "</registro>\n");
+    }
+
+    fprintf(arquivo, "</tabela>\n");
+    fprintf(arquivo, "</dados>\n");
+
+    fclose(arquivo);
+    return 0; // sucesso ao exportar
+}
