@@ -20,6 +20,7 @@ typedef struct
     char bairro[200];
     char cidade[200];
     char estado[10]; // Ex: "SP"
+    long int numero;
 } Endereco;
 
 typedef struct
@@ -95,7 +96,7 @@ typedef struct{
 void menuambientesmedicos(AmbienteMedico **ambientes, long int *tamambiente, long int *codigoatual);
 void menufornecedores(Fornecedor **fornecedores, long int *tamfornecedor, long int *codigoatatual);
 void menumedicamentos_materiais(MedicamentoMaterial **medicamentosmateriais, long int *tammedicamentomaterial,long int *codigoatual);
-void menuPacientes(Paciente **pacientes, long int *tampacientes,long int *codigoatual);
+void menupacientes(Paciente **pacientes, long int *tampacientes,long int *codigoatual);
 void menuprocedimentos(Procedimento **procedimentos, long int *tamprocedimento, long int *codigoatual,AmbienteMedico *ambientes,MedicamentoMaterial *medicamentosmateriais,
  long int tamambientes,long int tammedicamentomaterial);
 void menuprofisionais(Profissional **profissionais, long int *tamprofissionais, long int *codigoatual);
@@ -153,6 +154,10 @@ long int consultapaciente(Paciente *pacientes, long int tampacientes, long int c
 long int consultaprocedimento(Procedimento *procedimentos, long int tamprocedimento, long int codigo);
 long int consultaprofissional(Profissional *profisionais, long int tamprofisional, long int codigo);
 
+
+//importar
+
+ long int importarpaciente(Paciente **pacientes, char *nome, long int *tampacientes, long int *codigoatual) ;
 
 
 #endif

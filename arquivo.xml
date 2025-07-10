@@ -1,0 +1,100 @@
+<dados>
+<!-- Tabela de Pacientes -->
+<tabela nome="paciente">
+<registro>
+<codigo>1</codigo>
+<nome>João da Silva</nome>
+<cpf>123.456.789-00</cpf>
+<telefone>11 99999-8888</telefone>
+<endereco>Rua A, 123, Bairro X, Cidade Y, Estado Z</endereco>
+<data_nascimento>1980-05-25</data_nascimento>
+<historico>Hipertensão arterial</historico>
+</registro>
+<registro>
+<codigo>2</codigo>
+<nome>Maria Oliveira</nome>
+<cpf>987.654.321-00</cpf>
+<telefone>21 98888-7777</telefone>
+<endereco>Av. Principal, 456, Bairro Z, Cidade W, Estado V</endereco>
+<data_nascimento>1992-09-10</data_nascimento>
+<historico>Alergia a penicilina</historico>
+</registro>
+</tabela>
+<!-- Tabela de Profissionais de Saúde -->
+<tabela nome="profissional">
+<registro>
+<codigo>1</codigo>
+<nome>Dra. Ana Paula Mendes</nome>
+<crm>12345</crm>
+<especialidade>Cardiologia</especialidade>
+<telefone>31 97777-1111</telefone>
+<email>ana.mendes@clinica.com</email>
+</registro>
+<registro>
+<codigo>2</codigo>
+<nome>Dr. Carlos Almeida</nome>
+<crm>67890</crm>
+<especialidade>Pediatria</especialidade>
+<telefone>41 98888-2222</telefone>
+<email>carlos.almeida@clinica.com</email>
+</registro>
+</tabela>
+<!-- Tabela de Agendamentos -->
+<tabela nome="agendamento">
+<registro>
+<codigo>1</codigo>
+<paciente>1</paciente> <!-- Referência ao código do paciente -->
+<profissional>1</profissional> <!-- Referência ao código do profissional -->
+<data>2025-04-10</data>
+<hora>09:00</hora>
+<procedimento>Consulta</procedimento>
+</registro>
+<registro>
+<codigo>2</codigo>
+
+<paciente>2</paciente>
+<profissional>2</profissional>
+<data>2025-04-11</data>
+<hora>14:00</hora>
+<procedimento>Exame de rotina</procedimento>
+</registro>
+</tabela>
+<!-- Tabela de Prontuários -->
+<tabela nome="prontuario">
+<registro>
+<codigo>1</codigo>
+<paciente>1</paciente>
+<diagnostico>Hipertensão controlada</diagnostico>
+<prescricao>Losartana 50mg - 1x ao dia</prescricao>
+<historico_consultas>3 consultas realizadas em 2025</historico_consultas>
+</registro>
+<registro>
+<codigo>2</codigo>
+<paciente>2</paciente>
+<diagnostico>Reação alérgica</diagnostico>
+<prescricao>Antihistamínico - 1x ao dia</prescricao>
+<historico_consultas>2 consultas realizadas em 2025</historico_consultas>
+</registro>
+</tabela>
+<!-- Tabela de Medicamentos -->
+<tabela nome="medicamento">
+<registro>
+<codigo>101</codigo>
+<descricao>Losartana 50mg</descricao>
+<fabricante>MedPharma</fabricante>
+<preco_custo>10.50</preco_custo>
+<preco_venda>15.75</preco_venda>
+<quantidade_estoque>100</quantidade_estoque>
+<estoque_minimo>20</estoque_minimo>
+</registro>
+<registro>
+<codigo>102</codigo>
+<descricao>Antihistamínico</descricao>
+<fabricante>BioHealth</fabricante>
+<preco_custo>5.00</preco_custo>
+<preco_venda>8.50</preco_venda>
+<quantidade_estoque>50</quantidade_estoque>
+<estoque_minimo>10</estoque_minimo>
+</registro>
+</tabela>
+</dados>

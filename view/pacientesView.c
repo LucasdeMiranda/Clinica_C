@@ -3,7 +3,7 @@
 #include <string.h>
 #include "biblioteca.h"
 
-void menuPacientes(Paciente **pacientes, long int *tampacientes, long int *codigoatual)
+void menupacientes(Paciente **pacientes, long int *tampacientes, long int *codigoatual)
 {
     long int codigo, posicao, auxtam = 0;
     int op;
@@ -47,6 +47,9 @@ void menuPacientes(Paciente **pacientes, long int *tampacientes, long int *codig
 
                 printf("Digite a rua: ");
                 scanf(" %199[^\n]", novopaciente.endereco.rua);
+
+                printf("Digite o numero: ");
+                scanf("%ld",&novopaciente.endereco.numero);
 
                 printf("Digite seu telefone: ");
                 scanf(" %19[^\n]", novopaciente.telefone);
@@ -99,6 +102,9 @@ void menuPacientes(Paciente **pacientes, long int *tampacientes, long int *codig
                     printf("Digite a rua: ");
                     scanf(" %199[^\n]", (*pacientes)[posicao].endereco.rua);
 
+                    printf("Digite o numero: ");
+                    scanf("%ld",&(*pacientes)[posicao].endereco.numero);
+
                     printf("Digite seu telefone: ");
                     scanf(" %19[^\n]", (*pacientes)[posicao].telefone);
 
@@ -149,10 +155,11 @@ void menuPacientes(Paciente **pacientes, long int *tampacientes, long int *codig
                     printf("Código: %ld\n", (*pacientes)[posicao].codigo);
                     printf("Nome: %s\n", (*pacientes)[posicao].nomeCompleto);
                     printf("CPF: %s\n", (*pacientes)[posicao].cpf);
-                    printf("Endereço: %s \t %s \t %s \t %s\n", (*pacientes)[posicao].endereco.estado,
+                    printf("Endereço: %s \t %s \t %s \t %s \t %ld\n", (*pacientes)[posicao].endereco.estado,
                            (*pacientes)[posicao].endereco.cidade,
                            (*pacientes)[posicao].endereco.bairro,
-                           (*pacientes)[posicao].endereco.rua);
+                           (*pacientes)[posicao].endereco.rua,
+                        (*pacientes)[posicao].endereco.numero);
                     printf("Telefone: %s\n", (*pacientes)[posicao].telefone);
                     printf("Data de nascimento: %s\n", (*pacientes)[posicao].dataNascimento);
                     printf("Histórico médico: %s\n", (*pacientes)[posicao].historicoMedico);

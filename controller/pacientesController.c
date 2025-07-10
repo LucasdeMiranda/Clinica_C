@@ -51,8 +51,8 @@ void listarpacientes(Paciente *pacientes, long int tampacientes)
         printf("Codigo:%ld\n", pacientes[i].codigo);
         printf("Nome:%s\n", pacientes[i].nomeCompleto);
         printf("Cpf:%s\n", pacientes[i].cpf);
-        printf("Endereço:%s \t %s\t %s \t %s\n", pacientes[i].endereco.estado, pacientes[i].endereco.cidade,
-               pacientes[i].endereco.bairro, pacientes[i].endereco.rua);
+        printf("Endereço:%s \t %s\t %s \t %s %ld\n", pacientes[i].endereco.estado, pacientes[i].endereco.cidade,
+               pacientes[i].endereco.bairro, pacientes[i].endereco.rua, pacientes[i].endereco.numero);
         printf("Telefone:%s\n", pacientes[i].telefone);
         printf("Data de nascimento:%s\n", pacientes[i].dataNascimento);
         printf("Historico médico:%s\n", pacientes[i].historicoMedico);
@@ -124,4 +124,102 @@ long int consultapaciente(Paciente *pacientes, long int tampacientes, long int c
         }
     }
     return -1; // não encontrado
+}
+
+long int importarpaciente(Paciente **pacientes, char *nome, long int *tampacientes, long int *codigoatual)
+{
+    char linha[1000];
+    FILE *arquivo = fopen(nome, "r");
+    char enderco[1000], *token; // token será usado para repartir a string de endereco
+    if (arquivo == NULL)
+    {
+        return -1;
+    }
+
+    Paciente novopaciente;
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL)
+    {
+
+        if (strstr(linha, "<tabela nome=\"paciente\">") != NULL)
+        {
+            // A partir daqui, processamos os registros de paciente
+            while (fgets(linha, sizeof(linha), arquivo) != NULL && strstr(linha, "</tabela>") == NULL)
+            {
+                if (strstr(linha, "<codigo>") != NULL)
+                {
+                    sscanf(linha, "<codigo>%ld</codigo>", &novopaciente.codigo);
+                }
+
+                if (strstr(linha, "<nome>") != NULL)
+                {
+                    sscanf(linha, "<nome>%199[^<]</nome>", novopaciente.nomeCompleto);
+                }
+
+                if (strstr(linha, "<cpf>") != NULL)
+                {
+                    sscanf(linha, "<cpf>%49[^<]</cpf>", novopaciente.cpf);
+                }
+
+                if (strstr(linha, "<telefone>") != NULL)
+                {
+                    sscanf(linha, "<telefone>%19[^<]</telefone>", novopaciente.telefone);
+                }
+
+                if (strstr(linha, "<endereco>") != NULL)
+                {
+                    sscanf(linha, "<endereco>%[^<]</endereco>", enderco);
+                    token = strtok(enderco, ","); // Rua
+                    if (token != NULL)
+                    {
+                        strncpy(novopaciente.endereco.rua, token, sizeof(novopaciente.endereco.rua));
+                    }
+
+                    token = strtok(NULL, ","); // Número
+                    if (token != NULL)
+                    {
+                        novopaciente.endereco.numero = strtol(token, NULL, 10);//serve pra tranformar string em numero
+                        // o ultimo parametro é a base do numero 
+                    }
+
+                    token = strtok(NULL, ","); // Bairro
+                    if (token != NULL)
+                    {
+                        strncpy(novopaciente.endereco.bairro, token, sizeof(novopaciente.endereco.bairro));
+                    }
+
+                    token = strtok(NULL, ","); // Cidade
+                    if (token != NULL)
+                    {
+                        strncpy(novopaciente.endereco.cidade, token, sizeof(novopaciente.endereco.cidade));
+                    }
+
+                    token = strtok(NULL, ","); // Estado
+                    if (token != NULL)
+                    {
+                        strncpy(novopaciente.endereco.estado, token, sizeof(novopaciente.endereco.estado));
+                    }
+                }
+
+                if (strstr(linha, "<data_nascimento>") != NULL)
+                {
+                    sscanf(linha, "<data_nascimento>%10[^<]</data_nascimento>", novopaciente.dataNascimento);
+                }
+
+                if (strstr(linha, "<historico>") != NULL)
+                {
+                    sscanf(linha, "<historico>%199[^<]</historico>", novopaciente.historicoMedico);
+                }
+
+                if (strstr(linha, "</registro>") != NULL)
+                {
+                    *pacientes = cadastrarpaciente(*pacientes, tampacientes, codigoatual, &novopaciente);
+                }
+            }
+            break;
+        }
+    }
+
+    fclose(arquivo);
+    return 0;
 }

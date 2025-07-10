@@ -31,7 +31,7 @@ scanf(" %19[^\n]", novoagendamento.data);
 printf("Digite o horario:");
 scanf(" %19[^\n]", novoagendamento.horario);
 *agendamentos=cadastraragendamento(*agendamentos,tamagendamento,codigoatual,&novoagendamento,pacientes,tampacientes,profissionais,
-tamprofissionais,procedimentos,tamprocedimento,medicamentosmateriais,tammedicamentomaterial);
+tamprofissionais,procedimentos,tamprocedimento,*medicamentosmateriais,tammedicamentomaterial);
  if(*tamagendamento>auxtam){
   printf("Agendamento realizado com sucesso\n");
  }
