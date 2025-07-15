@@ -105,6 +105,8 @@ long int tammedicamentomaterial){
       if(novoentradaestoque->codmedicamentosmateriaisrecebidos[i].codigo==medicamentomaterial[j].codigo){
        medicamentomaterial[j].precoCusto=novoentradaestoque->codmedicamentosmateriaisrecebidos[i].precocustounid;
        medicamentomaterial[j].precoVenda=medicamentomaterial[j].precoCusto+freteproduto+impostoproduto+((medicamentomaterial[j].precoCusto+freteproduto+impostoproduto)*0.15);
+       medicamentomaterial[j].quantidadeEstoque += novoentradaestoque->codmedicamentosmateriaisrecebidos[i].qnt;
+
       }
     }
   }

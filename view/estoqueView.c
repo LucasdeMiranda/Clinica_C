@@ -25,8 +25,10 @@ void menuestoque(Entradaestoque **entradaestoque, MedicamentoMaterial **medicame
         {
             Entradaestoque novoentradaestoque;
             aux = *tamentradaestoque;
-            printf("digite ofornecedor");
+            printf("digite o fornecedor:");
             scanf(" %999[^\n]", novoentradaestoque.fornecedor);
+             printf("digite o codigo do fornecedor:");
+            scanf("%ld",&novoentradaestoque.codfornecedor);
             printf("digite o cnpj:");
             scanf(" %999[^\n]", novoentradaestoque.cnpj);
             printf("digite o frete:");

@@ -102,8 +102,26 @@ typedef struct{
 char cnpj[1000], fornecedor[1000];
 float  frete, imposto,totaldetudo;
 Codmateriaisrecebidos *codmedicamentosmateriaisrecebidos;
+long int codfornecedor;
 long int tammedicamentosmateriaisrecebidos;
 }Entradaestoque;
+
+typedef struct{
+char data[100];
+int tipo;// 0 para lançamento a vista 1 para retirada 2 para a receber 
+float valor;
+long int codigoagendamento;//para os a vista 
+}LacamentosRetiradas;
+ 
+
+typedef struct{
+long int codigoagendamento;//para os que são para frente
+long int codigo;
+float valor;
+char data[100];
+}Receber;
+
+ 
 
 // menus auxiliares memoria
 void menuambientesmedicos(AmbienteMedico **ambientes, long int *tamambiente, long int *codigoatual);
@@ -119,7 +137,10 @@ long int tammedicamentomaterial,Paciente *pacientes,long int tampacientes,
 Profissional *profissionais,long int tamprofissionais);
 void menuestoque(Entradaestoque **entradaestoque, MedicamentoMaterial 
 **medicamentosmateriais, long int tammedicamentomaterial, long int *tamentradaestoque);
-
+ void menucaixa(float *saldototal, LacamentosRetiradas **lancamentosretiradas, Receber **receber,
+               long int *tamlancamentosretiradas, long int *tamreceber, long int *codigoatualreceber,
+               Agendamento *agendamentos, long int tamagendamento, Procedimento *procedimentos,
+               long int tamprocedimento, Entradaestoque *entradaestoque, long int tamentradaestoque);
 // cadastros
 AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tamambiente, long int *codigoatual, AmbienteMedico *novoambiente);
 Fornecedor *cadastrarfornecedor(Fornecedor *fornecedores, long int *tamfornecedor, long int *codigoatual,Fornecedor *novofornecedor);
@@ -173,7 +194,7 @@ long int consultaprofissional(Profissional *profisionais, long int tamprofisiona
 //exportar
  long int exportarpaciente(Paciente *pacientes, char *nome, long int tampacientes);
 
- //abrir arquivos e colocar na memoria
+ //abrir arquivos e importar  e exportar
  long int abrirtxtpaciente(Paciente **pacientes,long int *tampacientes,long int *codigoatual,char *nome);
 
  //estoque
@@ -181,7 +202,21 @@ Entradaestoque *cadastrarentradaestoque(Entradaestoque *entradaestoque, long int
                                         MedicamentoMaterial *medicamentosmateriais, long int tammedicamentosmaterial,
                                         Entradaestoque *novoentradaestoque);
  void estoqueminimo(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial);
- 
 void alterarpreco(Entradaestoque *novoentradaestoque, MedicamentoMaterial *medicamentomaterial, 
 long int tammedicamentomaterial);
+
+// caixa 
+LacamentosRetiradas *cadastrarlancamentoretirada(LacamentosRetiradas *lacamentosretiradas,
+                                                 long int *tamlacamentosretiradas,
+                                                 LacamentosRetiradas *novolacamentoretirada, Agendamento *agendamentos,
+                                                 long int tamagendamento, Procedimento *procedimentos, 
+                                                 long int tamprocedimento,float *saldototal);
+ Receber *cadastrarreceber(Receber *receber, long int *tamreceber, long int *codigoatual,
+                           Receber *novoreceber, Agendamento *agendamentos, long int tamagendamento,
+                           Procedimento *procedimentos, long int tamprocedimento);
+long int efetuarpagamento(long int codigofornecedor, float *saldototal,char *data,Entradaestoque *entradaestoque, long int tamentradaestoque,
+    LacamentosRetiradas **lancamentosentradas,long int *tamlancamentosentradas);
+void imprimirLancamentosRetiradas(LacamentosRetiradas *lancamentos, long int tamlancamentosretiradas);
+Receber *excluirreceber(Receber *receber, long int *tamreceber, long int codigo, 
+                        LacamentosRetiradas **lancamentosentradas, long int *tamlancamentosentradas, float *saldototal);
 #endif

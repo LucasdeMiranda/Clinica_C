@@ -32,7 +32,7 @@ Agendamento *cadastraragendamento(Agendamento *agendamentos, long int *tamagenda
     }
     if (eprofissional == -1)
     {
-        return -1; // não encontrado profissional
+        return agendamentos; // não encontrado profissional
     }
     for (int i = 0; i < tamprocedimento; i++)
     {
@@ -62,51 +62,55 @@ Agendamento *cadastraragendamento(Agendamento *agendamentos, long int *tamagenda
         }
     }
 
-    if (agendamentos != NULL && tamagendamentos > 0)
+     if (agendamentos != NULL && *tamagendamentos > 0)
+{
+    for (int i = 0; i < *tamagendamentos; i++)
     {
-        for (int i = 0; i < *tamagendamentos; i++)
+        if (strcmp(novoagendamento->data, agendamentos[i].data) == 0 &&
+            strcmp(novoagendamento->horario, agendamentos[i].horario) == 0)
         {
-
-            if (strcmp(novoagendamento->data, agendamentos[i].data) == 0 && strcmp(novoagendamento->horario, agendamentos[i].horario) == 0)
+            if (novoagendamento->codprocedimento == agendamentos[i].codprocedimento)
             {
-                if (novoagendamento->codprocedimento == agendamentos[i].codprocedimento)
-                {
-                    flag = -1;
-                    return agendamentos; // siginifica que o ambiente que o procedimento usa ja vai ser usado nesse dia
-                }
-                if (novoagendamento->codprofissional == agendamentos[i].codprofissional)
-                {
-                    flag = -1;
-                    return agendamentos; // profissional ja vai atender nesse horario
-                }
+                flag = -1; // conflito de ambiente
+                return agendamentos;
+            }
+            if (novoagendamento->codprofissional == agendamentos[i].codprofissional)
+            {
+                flag = -1; // conflito de profissional
+                return agendamentos;
             }
         }
     }
-    else if (agendamentos == NULL || flag == 0)
-    {
-        // aqui que começa o cadastro
-        Agendamento *novo = realloc(agendamentos, (*tamagendamentos + 1) * sizeof(Agendamento));
-        if (novo == NULL)
-        {
-            return agendamentos; // 2 vai ser pra que deu erro ao alocar a memoria
-        }
+}
 
-        agendamentos = novo;
-        novoagendamento->codigo = *codigoatual;
-        agendamentos[*tamagendamentos] = *novoagendamento;
-        for (int i = 0; i < procedimentos[aux].tamcodmedicamentosmateriais; i++)
+// ✅ CADASTRO FORA DO IF/ELSE, pois pode ocorrer mesmo quando já há agendamentos
+if (flag == 0)
+{
+    Agendamento *novo = realloc(agendamentos, (*tamagendamentos + 1) * sizeof(Agendamento));
+    if (novo == NULL)
+    {
+        return agendamentos; // erro de alocação
+    }
+
+    agendamentos = novo;
+    novoagendamento->codigo = *codigoatual;
+    agendamentos[*tamagendamentos] = *novoagendamento;
+
+    for (int i = 0; i < procedimentos[aux].tamcodmedicamentosmateriais; i++)
+    {
+        for (int j = 0; j < tammedicamentomaterial; j++)
         {
-            for (int j = 0; j < tammedicamentomaterial; j++)
+            if (procedimentos[aux].codmedicamentosemateriais[i].codigo == medicamentosmateriais[j].codigo)
             {
-                if (procedimentos[aux].codmedicamentosemateriais[i].codigo == medicamentosmateriais[j].codigo)
-                {
-                    medicamentosmateriais[j].quantidadeEstoque = medicamentosmateriais[j].quantidadeEstoque - procedimentos[aux].codmedicamentosemateriais[i].qnt;
-                }
+                medicamentosmateriais[j].quantidadeEstoque -= procedimentos[aux].codmedicamentosemateriais[i].qnt;
             }
         }
-        (*tamagendamentos)++;
-        (*codigoatual)++;
-
-        return agendamentos;
     }
+
+    (*tamagendamentos)++;
+    (*codigoatual)++;
+}
+
+return agendamentos;
+
 }

@@ -7,8 +7,7 @@ AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tam
 {
     AmbienteMedico *novo = realloc(ambientes, (*tamambiente + 1) * sizeof(AmbienteMedico));
     if (novo == NULL)
-    {
-        printf("Erro ao alocar memória\n");
+    { //erro ao alocar memoria
         return ambientes;
     }
 
