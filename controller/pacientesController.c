@@ -235,7 +235,7 @@ long int importarpaciente(Paciente **pacientes, char *nome, long int *tampacient
         return -1;
     }
 
-    fprintf(arquivo, "<dados>\n"); // <- CORREÇÃO AQUI
+    fprintf(arquivo, "<dados>\n");
     fprintf(arquivo, "<!-- Tabela de Pacientes -->\n");
     fprintf(arquivo, "<tabela nome=\"paciente\">\n");
 
@@ -262,3 +262,55 @@ long int importarpaciente(Paciente **pacientes, char *nome, long int *tampacient
     fclose(arquivo);
     return 0; // sucesso ao exportar
 }
+
+//essa função vai ser a responsavel por abrir o arquivo txt joga pra memoria
+long int abrirtxtpaciente(Paciente **pacientes, long int *tampacientes, long int *codigoatual, char *nome) {
+    FILE *arquivo = fopen(nome, "r");
+    if (arquivo == NULL) {
+        return -1;
+    }
+
+    char linha[1000];
+    Paciente novopaciente;
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        char *token = strtok(linha, ";");
+        if (token != NULL) novopaciente.codigo = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";");
+        if (token != NULL) strncpy(novopaciente.nomeCompleto, token, sizeof(novopaciente.nomeCompleto));
+
+        token = strtok(NULL, ";");
+        if (token != NULL) strncpy(novopaciente.cpf, token, sizeof(novopaciente.cpf));
+
+        token = strtok(NULL, ";");
+        if (token != NULL) strncpy(novopaciente.endereco.rua, token, sizeof(novopaciente.endereco.rua));
+
+        token = strtok(NULL, ";");
+        if (token != NULL) strncpy(novopaciente.endereco.bairro, token, sizeof(novopaciente.endereco.bairro));
+
+        token = strtok(NULL, ";");
+        if (token != NULL) strncpy(novopaciente.endereco.cidade, token, sizeof(novopaciente.endereco.cidade));
+
+        token = strtok(NULL, ";");
+        if (token != NULL) strncpy(novopaciente.endereco.estado, token, sizeof(novopaciente.endereco.estado));
+
+        token = strtok(NULL, ";");
+        if (token != NULL) novopaciente.endereco.numero = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";");
+        if (token != NULL) strncpy(novopaciente.telefone, token, sizeof(novopaciente.telefone));
+
+        token = strtok(NULL, ";");
+        if (token != NULL) strncpy(novopaciente.dataNascimento, token, sizeof(novopaciente.dataNascimento));
+
+        token = strtok(NULL, ";\n");
+        if (token != NULL) strncpy(novopaciente.historicoMedico, token, sizeof(novopaciente.historicoMedico));
+
+        *pacientes = cadastrarpaciente(*pacientes, tampacientes, codigoatual, &novopaciente);
+    }
+
+    fclose(arquivo);
+    return 0;
+}
+

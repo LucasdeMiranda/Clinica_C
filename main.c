@@ -12,11 +12,12 @@ int main()
     Paciente *pacientes = NULL;
     Profissional *profissionais = NULL;
     Agendamento *agendamentos = NULL;
+    Entradaestoque *entradaestoque=NULL;
     long int tamprocedimento = 0, codigoatualprocedimentos = 0, tamambiente = 0, codigoatualambiente = 0,
              tamfornecedor = 0, codigoatualfornecedor = 0, tammedicamentomaterial = 0, codigoatualmedicamentomaterial = 0,
-             tampacientes = 0, codigoatualpacientes = 0, tamprofissionais = 0, codigoatualprofissionais = 0,
+             tampacientes = 0, tamentradaestoque=0,codigoatualpacientes = 0, tamprofissionais = 0, codigoatualprofissionais = 0,
              tamagendamento = 0, codigoatualagendamento = 0;
-    int op1, op2, leitura;
+    int op1, op2, leitura,oparma,r1;
 
     char *agendamentostxt = "agendamentos.txt", ambientestxt = "ambientes.txt",
          *fornecedorestxt = "fornecedores.txt", *medicamentosmateriaistxt = "medicamentosmateriais.txt",
@@ -26,6 +27,24 @@ int main()
          *medicamentosmateriaisbin = "medicamentosmateriais.bin", *pacientesbin = "pacientes.bin",
          *procedimentosbin = "procedimentos.bin",
          *profissionaisbin = "profissionais.bin", *nome = "arquivo.xml", *pacientexml = "paciente.xml";
+      
+    
+    printf("1:Memoria\n 2:txt\n 3:bin\n4:sair\n");
+    scanf("%d", &oparma);
+    
+    if(oparma==2){
+        r1=abrirtxtpaciente(&pacientes,&tampacientes,&codigoatualambiente,pacientestxt);
+        if(r1==-1){
+            printf("erro ao abrir arquivo de pacientes\n");
+        }
+        else{
+            printf("sucesso ao abrir arquivos pacientes\n");
+        }
+    }
+
+
+
+
 
     do
     {
@@ -41,7 +60,9 @@ int main()
         printf("7:Agendar Procedimento/Consulta\n");
         printf("8:Importar dados\n");
         printf("9:Exportar dados\n");
-        printf("10:Sair\n");
+        printf("10:Estoque\n");
+        printf("11:Verificar caixa\n");
+        printf("12:Sair\n");
         scanf("%d", &op2);
 
         if (op2 == 1)
@@ -81,8 +102,8 @@ int main()
             printf("3:Fornecedores\n");
             printf("4:Medicamentos e Materiais\n");
             printf("5:Profisionais\n");
-            printf("6:Procedimentos\n");
-            printf("7:Procedimento/Consulta\n");
+            printf("6:Agendamentos\n");
+        
             scanf("%d", &op1);
             if (op1 < 1 || op1 > 7)
             {
@@ -131,7 +152,10 @@ int main()
                 }
             }
         }
-        else if (op2 == 10)
+        else if(op2==10){
+            menuestoque(&entradaestoque,&medicamentosmateriais,tammedicamentomaterial,&tamentradaestoque);
+        }
+        else if (op2 == 12)
         {
             for (int i = 0; i < tamprocedimento; i++)
             {
@@ -145,12 +169,12 @@ int main()
             free(profissionais);
             free(agendamentos);
         }
-        else if (op2 < 1 || op2 > 10)
+        else if (op2 < 1 || op2 > 12)
         {
             printf("opção inválida, tente novamente\n");
         }
 
-    } while (op2 != 10);
+    } while (op2 != 12);
 
     return 0;
 }

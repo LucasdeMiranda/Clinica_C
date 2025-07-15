@@ -43,7 +43,7 @@
     Procedimento *novo = realloc(procedimentos, (*tamprocedimento + 1) * sizeof(Procedimento));
     if (novo == NULL)
     {
-        printf("erro ao alocar memoria");
+        //erro ao alocar memoria
         return procedimentos;
     }
 
@@ -56,7 +56,7 @@
     
     if (procedimentos[*tamprocedimento].codmedicamentosemateriais == NULL)
     {
-        printf("Erro ao alocar memória para os medicamentos/materiais\n");
+        //Erro ao alocar memória para os medicamentos/materiais
         return procedimentos;
     }
     for (int i = 0; i < novoprocedimento->tamcodmedicamentosmateriais; i++)

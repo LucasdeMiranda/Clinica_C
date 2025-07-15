@@ -14,6 +14,13 @@ typedef struct {
     long int qnt; // quantidade usada daquele material
 } Codmedicamentosmateriais;
 
+typedef struct{
+long int codigo;
+char descricao[1000];
+float precocustounid,total;
+long int qnt;//quantidade recebida
+}Codmateriaisrecebidos; //vai ser o reponsavel por armazenar as informações da nota fiscal do estoque
+
 typedef struct
 {
     char rua[200];
@@ -91,6 +98,12 @@ typedef struct{
  char data[20],horario[20];
 }Agendamento;
 
+typedef struct{
+char cnpj[1000], fornecedor[1000];
+float  frete, imposto,totaldetudo;
+Codmateriaisrecebidos *codmedicamentosmateriaisrecebidos;
+long int tammedicamentosmateriaisrecebidos;
+}Entradaestoque;
 
 // menus auxiliares memoria
 void menuambientesmedicos(AmbienteMedico **ambientes, long int *tamambiente, long int *codigoatual);
@@ -98,16 +111,14 @@ void menufornecedores(Fornecedor **fornecedores, long int *tamfornecedor, long i
 void menumedicamentos_materiais(MedicamentoMaterial **medicamentosmateriais, long int *tammedicamentomaterial,long int *codigoatual);
 void menupacientes(Paciente **pacientes, long int *tampacientes,long int *codigoatual);
 void menuprocedimentos(Procedimento **procedimentos, long int *tamprocedimento, long int *codigoatual,AmbienteMedico *ambientes,MedicamentoMaterial *medicamentosmateriais,
- long int tamambientes,long int tammedicamentomaterial);
+long int tamambientes,long int tammedicamentomaterial);
 void menuprofisionais(Profissional **profissionais, long int *tamprofissionais, long int *codigoatual);
-
 void menuagendamento_controle(Agendamento **agendamentos,long int *tamagendamento,long int *codigoatual,Procedimento *procedimentos,
 long int tamprocedimento,MedicamentoMaterial **medicamentosmateriais,
 long int tammedicamentomaterial,Paciente *pacientes,long int tampacientes,
 Profissional *profissionais,long int tamprofissionais);
-
-// menus auxiliares de arquivo
-void menuagendamento_controle_arquivo(int oparquivo);
+void menuestoque(Entradaestoque **entradaestoque, MedicamentoMaterial 
+**medicamentosmateriais, long int tammedicamentomaterial, long int *tamentradaestoque);
 
 // cadastros
 AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tamambiente, long int *codigoatual, AmbienteMedico *novoambiente);
@@ -156,11 +167,21 @@ long int consultaprofissional(Profissional *profisionais, long int tamprofisiona
 
 
 //importar
-
  long int importarpaciente(Paciente **pacientes, char *nome, long int *tampacientes, long int *codigoatual) ;
 
 
 //exportar
-
  long int exportarpaciente(Paciente *pacientes, char *nome, long int tampacientes);
+
+ //abrir arquivos e colocar na memoria
+ long int abrirtxtpaciente(Paciente **pacientes,long int *tampacientes,long int *codigoatual,char *nome);
+
+ //estoque
+Entradaestoque *cadastrarentradaestoque(Entradaestoque *entradaestoque, long int *tamentradaestoque,
+                                        MedicamentoMaterial *medicamentosmateriais, long int tammedicamentosmaterial,
+                                        Entradaestoque *novoentradaestoque);
+ void estoqueminimo(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial);
+ 
+void alterarpreco(Entradaestoque *novoentradaestoque, MedicamentoMaterial *medicamentomaterial, 
+long int tammedicamentomaterial);
 #endif
