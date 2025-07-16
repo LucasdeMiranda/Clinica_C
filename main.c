@@ -30,7 +30,8 @@ int main()
          *agendamentosbin = "agendamentos.bin", *ambientesbin = "ambientes.bin", *fornecedoresbin = "fornecedores.bin",
          *medicamentosmateriaisbin = "medicamentosmateriais.bin", *pacientesbin = "pacientes.bin",
          *procedimentosbin = "procedimentos.bin",
-         *profissionaisbin = "profissionais.bin", *nome = "arquivo.xml", *pacientexml = "paciente.xml";
+         *profissionaisbin = "profissionais.bin", *nome = "arquivo.xml", *pacientexml = "paciente.xml", *relatorio="relatorio.csv",
+         *ambientesmedicosxml="ambientes.xml", *fornecedoresxml="fornecedores.xml",*medicamentosxml="medicamentos.xml";
 
 
          float saldototal=10000;//saldo total disponivel no caixa ja coloquei um saldo incial para testes
@@ -81,7 +82,8 @@ int main()
         printf("9:Exportar dados\n");
         printf("10:Estoque\n");
         printf("11:Verificar caixa\n");
-        printf("12:Sair\n");
+        printf("12:Relatorios\n");
+        printf("13:Sair\n");
         scanf("%d", &op2);
 
         if (op2 == 1)
@@ -122,6 +124,7 @@ int main()
             printf("4:Medicamentos e Materiais\n");
             printf("5:Profisionais\n");
             printf("6:Agendamentos\n");
+            printf("7:Procedimentos\n");
         
             scanf("%d", &op1);
             if (op1 < 1 || op1 > 7)
@@ -133,13 +136,48 @@ int main()
                 leitura = importarpaciente(&pacientes, nome, &tampacientes, &codigoatualpacientes);
                 if (leitura == -1)
                 {
-                    printf("erro ao importar\n");
+                    printf("erro ao importar pacientes\n");
                 }
                 else
                 {
                     printf("pacientes importados com sucesso\n");
                 }
             }
+            else if(op1==2){
+                leitura= importarambiente(&ambientes,nome,&tamambiente,&codigoatualambiente);
+                if (leitura == -1)
+                {
+                    printf("erro ao importar ambientes\n");
+                }
+                else
+                {
+                    printf("ambientes importados com sucesso\n");
+                }
+            }
+            else if(op1==3){
+                leitura=importarfornecedor(&fornecedores,nome,&tamfornecedor,&codigoatualfornecedor);
+                 if (leitura == -1)
+                {
+                    printf("erro ao importar fornecedores\n");
+                }
+                else
+                {
+                    printf("fornecedores importados com sucesso\n");
+                }
+            }
+            else if(op1==4){
+                leitura=importarmedicamento(&medicamentosmateriais,nome,&tammedicamentomaterial,
+                    &codigoatualmedicamentomaterial);
+                     if (leitura == -1)
+                {
+                    printf("erro ao importar medicamentos\n");
+                }
+                else
+                {
+                    printf("medicamentos importados com sucesso\n");
+                }
+            }
+
         }
 
         else if (op2 == 9)
@@ -149,8 +187,8 @@ int main()
             printf("3:Fornecedores\n");
             printf("4:Medicamentos e Materiais\n");
             printf("5:Profisionais\n");
-            printf("6:Procedimentos\n");
-            printf("7:Procedimento/Consulta\n");
+            printf("6:Agendamentos\n");
+            printf("7:Procedimentos\n");
             scanf("%d", &op1);
 
             if (op1 < 1 || op1 > 7)
@@ -168,6 +206,40 @@ int main()
                 else
                 {
                     printf("pacientes exportados com sucesso\n");
+                }
+            }
+            else if(op1==2){
+                leitura= exportarambiente(ambientes,ambientesmedicosxml,tamambiente);
+                 if (leitura == -1)
+                {
+                    printf("erro ao abrir arquivo ou não havia ambientes");
+                }
+                else
+                {
+                    printf("ambientes exportados com sucesso\n");
+                }
+            }
+            else if(op1==3){
+                leitura=exportarfornecedor(fornecedores,fornecedoresxml,tamfornecedor);
+                 if (leitura == -1)
+                {
+                    printf("erro ao abrir arquivo ou não havia fornecedores");
+                }
+                else
+                {
+                    printf("fornecedores exportados com sucesso\n");
+                }
+                
+            }
+            else if(op1==4){
+                leitura=exportarmedicamento(medicamentosmateriais,medicamentosxml,tammedicamentomaterial);
+                if (leitura == -1)
+                {
+                    printf("erro ao abrir arquivo ou não havia medicamentos");
+                }
+                else
+                {
+                    printf("medicamentos exportados com sucesso\n");
                 }
             }
         }
@@ -193,12 +265,12 @@ int main()
             free(profissionais);
             free(agendamentos);
         }
-        else if (op2 < 1 || op2 > 12)
+        else if (op2 < 1 || op2 > 13)
         {
             printf("opção inválida, tente novamente\n");
         }
 
-    } while (op2 != 12);
+    } while (op2 != 13);
 
     return 0;
 }

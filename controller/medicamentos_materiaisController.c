@@ -120,3 +120,87 @@ long int consultamedicamentomaterial(MedicamentoMaterial *medicamentosmateriais,
     }
     return -1;
 }
+
+long int importarmedicamento(MedicamentoMaterial **medicamentosmateriais, char *nome, long int *tammedicamentomaterial, long int *codigoatualmedicamentomaterial)
+{
+    char linha[1000];
+    FILE *arquivo = fopen(nome, "r");
+    if (arquivo == NULL)
+        return -1;
+
+    MedicamentoMaterial novo;
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL)
+    {
+        if (strstr(linha, "<tabela nome=\"medicamento\">") != NULL)
+        {
+            while (fgets(linha, sizeof(linha), arquivo) != NULL && strstr(linha, "</tabela>") == NULL)
+            {
+                if (strstr(linha, "<codigo>") != NULL)
+                    sscanf(linha, "<codigo>%ld</codigo>", &novo.codigo);
+
+                if (strstr(linha, "<descricao>") != NULL)
+                    sscanf(linha, "<descricao>%999[^<]</descricao>", novo.descricao);
+
+                if (strstr(linha, "<fabricante>") != NULL)
+                    sscanf(linha, "<fabricante>%299[^<]</fabricante>", novo.fabricante);
+
+                if (strstr(linha, "<preco_custo>") != NULL)
+                    sscanf(linha, "<preco_custo>%f</preco_custo>", &novo.precoCusto);
+
+                if (strstr(linha, "<preco_venda>") != NULL)
+                    sscanf(linha, "<preco_venda>%f</preco_venda>", &novo.precoVenda);
+
+                if (strstr(linha, "<quantidade_estoque>") != NULL)
+                    sscanf(linha, "<quantidade_estoque>%ld</quantidade_estoque>", &novo.quantidadeEstoque);
+
+                if (strstr(linha, "<estoque_minimo>") != NULL)
+                    sscanf(linha, "<estoque_minimo>%ld</estoque_minimo>", &novo.estoqueMinimo);
+
+                if (strstr(linha, "</registro>") != NULL)
+                {
+                    novo.codfornecedor = -1; // Não vem no XML
+                    *medicamentosmateriais = realloc(*medicamentosmateriais, (*tammedicamentomaterial + 1) * sizeof(MedicamentoMaterial));
+                    (*medicamentosmateriais)[*tammedicamentomaterial] = novo;
+                    (*tammedicamentomaterial)++;
+                    if (novo.codigo >= *codigoatualmedicamentomaterial)
+                        *codigoatualmedicamentomaterial = novo.codigo + 1;
+                }
+            }
+            break;
+        }
+    }
+
+    fclose(arquivo);
+    return 0;
+}
+
+long int exportarmedicamento(MedicamentoMaterial *medicamentosmateriais, char *nome, long int tammedicamentomaterial)
+{
+    FILE *arquivo = fopen(nome, "w");
+    if (arquivo == NULL || medicamentosmateriais == NULL)
+        return -1;
+
+    fprintf(arquivo, "<dados>\n");
+    fprintf(arquivo, "<!-- Tabela de Medicamentos -->\n");
+    fprintf(arquivo, "<tabela nome=\"medicamento\">\n");
+
+    for (long int i = 0; i < tammedicamentomaterial; i++)
+    {
+        fprintf(arquivo, "<registro>\n");
+        fprintf(arquivo, "<codigo>%ld</codigo>\n", medicamentosmateriais[i].codigo);
+        fprintf(arquivo, "<descricao>%s</descricao>\n", medicamentosmateriais[i].descricao);
+        fprintf(arquivo, "<fabricante>%s</fabricante>\n", medicamentosmateriais[i].fabricante);
+        fprintf(arquivo, "<preco_custo>%.2f</preco_custo>\n", medicamentosmateriais[i].precoCusto);
+        fprintf(arquivo, "<preco_venda>%.2f</preco_venda>\n", medicamentosmateriais[i].precoVenda);
+        fprintf(arquivo, "<quantidade_estoque>%ld</quantidade_estoque>\n", medicamentosmateriais[i].quantidadeEstoque);
+        fprintf(arquivo, "<estoque_minimo>%ld</estoque_minimo>\n", medicamentosmateriais[i].estoqueMinimo);
+        fprintf(arquivo, "</registro>\n");
+    }
+
+    fprintf(arquivo, "</tabela>\n");
+    fprintf(arquivo, "</dados>\n");
+    fclose(arquivo);
+
+    return 0;
+}

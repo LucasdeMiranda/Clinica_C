@@ -122,3 +122,112 @@ long int consultafornecedor(Fornecedor *fornecedores, long int tamfornecedor, lo
    }
    return -1;
 }
+
+long int importarfornecedor(Fornecedor **fornecedores, char *nome, long int *tamfornecedor, long int *codigoatualfornecedor)
+{
+    char linha[1000];
+    FILE *arquivo = fopen(nome, "r");
+    if (arquivo == NULL)
+    {
+        return -1;
+    }
+
+    char endereco[1000], *token;
+    Fornecedor novo;
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL)
+    {
+        if (strstr(linha, "<tabela nome=\"fornecedor\">") != NULL)
+        {
+            while (fgets(linha, sizeof(linha), arquivo) != NULL && strstr(linha, "</tabela>") == NULL)
+            {
+                if (strstr(linha, "<codigo>") != NULL)
+                    sscanf(linha, "<codigo>%ld</codigo>", &novo.codigo);
+
+                if (strstr(linha, "<nome_fantasia>") != NULL)
+                    sscanf(linha, "<nome_fantasia>%99[^<]</nome_fantasia>", novo.nomeFantasia);
+
+                if (strstr(linha, "<razao_social>") != NULL)
+                    sscanf(linha, "<razao_social>%199[^<]</razao_social>", novo.razaoSocial);
+
+                if (strstr(linha, "<inscricao_estadual>") != NULL)
+                    sscanf(linha, "<inscricao_estadual>%199[^<]</inscricao_estadual>", novo.inscricaoEstadual);
+
+                if (strstr(linha, "<cnpj>") != NULL)
+                    sscanf(linha, "<cnpj>%39[^<]</cnpj>", novo.cnpj);
+
+                if (strstr(linha, "<endereco>") != NULL)
+                {
+                    sscanf(linha, "<endereco>%[^<]</endereco>", endereco);
+                    token = strtok(endereco, ",");
+                    if (token != NULL) strncpy(novo.endereco.rua, token, sizeof(novo.endereco.rua));
+                    token = strtok(NULL, ",");
+                    if (token != NULL) novo.endereco.numero = strtol(token, NULL, 10);
+                    token = strtok(NULL, ",");
+                    if (token != NULL) strncpy(novo.endereco.bairro, token, sizeof(novo.endereco.bairro));
+                    token = strtok(NULL, ",");
+                    if (token != NULL) strncpy(novo.endereco.cidade, token, sizeof(novo.endereco.cidade));
+                    token = strtok(NULL, ",");
+                    if (token != NULL) strncpy(novo.endereco.estado, token, sizeof(novo.endereco.estado));
+                }
+
+                if (strstr(linha, "<telefone>") != NULL)
+                    sscanf(linha, "<telefone>%19[^<]</telefone>", novo.telefone);
+
+                if (strstr(linha, "<email>") != NULL)
+                    sscanf(linha, "<email>%299[^<]</email>", novo.email);
+
+                if (strstr(linha, "</registro>") != NULL)
+                {
+                    *fornecedores = realloc(*fornecedores, (*tamfornecedor + 1) * sizeof(Fornecedor));
+                    (*fornecedores)[*tamfornecedor] = novo;
+                    (*tamfornecedor)++;
+                    if (novo.codigo >= *codigoatualfornecedor)
+                        *codigoatualfornecedor = novo.codigo + 1;
+                }
+            }
+            break;
+        }
+    }
+
+    fclose(arquivo);
+    return 0;
+}
+
+long int exportarfornecedor(Fornecedor *fornecedores, char *nome, long int tamfornecedor)
+{
+    FILE *arquivo = fopen(nome, "w");
+    if (arquivo == NULL || fornecedores == NULL)
+    {
+        return -1;
+    }
+
+    fprintf(arquivo, "<dados>\n");
+    fprintf(arquivo, "<!-- Tabela de Fornecedores -->\n");
+    fprintf(arquivo, "<tabela nome=\"fornecedor\">\n");
+
+    for (long int i = 0; i < tamfornecedor; i++)
+    {
+        fprintf(arquivo, "<registro>\n");
+        fprintf(arquivo, "<codigo>%ld</codigo>\n", fornecedores[i].codigo);
+        fprintf(arquivo, "<nome_fantasia>%s</nome_fantasia>\n", fornecedores[i].nomeFantasia);
+        fprintf(arquivo, "<razao_social>%s</razao_social>\n", fornecedores[i].razaoSocial);
+        fprintf(arquivo, "<inscricao_estadual>%s</inscricao_estadual>\n", fornecedores[i].inscricaoEstadual);
+        fprintf(arquivo, "<cnpj>%s</cnpj>\n", fornecedores[i].cnpj);
+        fprintf(arquivo, "<endereco>%s, %ld, %s, %s, %s</endereco>\n",
+                fornecedores[i].endereco.rua,
+                fornecedores[i].endereco.numero,
+                fornecedores[i].endereco.bairro,
+                fornecedores[i].endereco.cidade,
+                fornecedores[i].endereco.estado);
+        fprintf(arquivo, "<telefone>%s</telefone>\n", fornecedores[i].telefone);
+        fprintf(arquivo, "<email>%s</email>\n", fornecedores[i].email);
+        fprintf(arquivo, "</registro>\n");
+    }
+
+    fprintf(arquivo, "</tabela>\n");
+    fprintf(arquivo, "</dados>\n");
+    fclose(arquivo);
+
+    return 0;
+}

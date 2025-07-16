@@ -97,4 +97,41 @@
 <estoque_minimo>10</estoque_minimo>
 </registro>
 </tabela>
+<!-- Tabela de Ambientes Médicos -->
+<tabela nome="ambiente">
+<registro>
+<codigo>1</codigo>
+<descricao>Consultório 101 - Clínica Geral</descricao>
+</registro>
+<registro>
+<codigo>2</codigo>
+<descricao>Sala 203 - Exames Laboratoriais</descricao>
+</registro>
+</tabela>
+<dados>
+<!-- Tabela de Fornecedores -->
+<tabela nome="fornecedor">
+<registro>
+<codigo>1</codigo>
+<nome_fantasia>Distribuidora Saúde</nome_fantasia>
+<razao_social>Distribuidora de Produtos Médicos LTDA</razao_social>
+<inscricao_estadual>123456789</inscricao_estadual>
+<cnpj>12.345.678/0001-99</cnpj>
+<endereco>Rua Central, 100, Centro, São Paulo, SP</endereco>
+<telefone>11 99999-8888</telefone>
+<email>contato@saude.com</email>
+</registro>
+<registro>
+<codigo>2</codigo>
+<nome_fantasia>Medicamentos Brasil</nome_fantasia>
+<razao_social>Medicamentos Brasil Importação e Exportação</razao_social>
+<inscricao_estadual>987654321</inscricao_estadual>
+<cnpj>98.765.432/0001-88</cnpj>
+<endereco>Avenida Norte, 200, Jardim, Recife, PE</endereco>
+<telefone>81 98888-7777</telefone>
+<email>vendas@medbrasil.com</email>
+</registro>
+</tabela>
+</dados>
+
 </dados>

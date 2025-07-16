@@ -189,12 +189,18 @@ long int consultaprofissional(Profissional *profisionais, long int tamprofisiona
 
 //importar
  long int importarpaciente(Paciente **pacientes, char *nome, long int *tampacientes, long int *codigoatual) ;
+ long int importarambiente(AmbienteMedico **ambientes, char *nome, long int *tamambientes, long int *codigoatual);
+ long int importarfornecedor(Fornecedor **fornecedores, char *nome, long int *tamfornecedor, long int *codigoatualfornecedor);
+ long int importarmedicamento(MedicamentoMaterial **medicamentosmateriais, char *nome, long int *tammedicamentomaterial, long int *codigoatualmedicamentomaterial);
 
 
 //exportar
- long int exportarpaciente(Paciente *pacientes, char *nome, long int tampacientes);
+long int exportarpaciente(Paciente *pacientes, char *nome, long int tampacientes);
+long int exportarambiente(AmbienteMedico *ambientes, char *nome, long int tamambientes);
+long int exportarfornecedor(Fornecedor *fornecedores, char *nome, long int tamfornecedor);
+long int exportarmedicamento(MedicamentoMaterial *medicamentosmateriais, char *nome, long int tammedicamentomaterial);
 
- //abrir arquivos e importar  e exportar
+ //abrir arquivos e importar  e exportar txt e bin
  long int abrirtxtpaciente(Paciente **pacientes,long int *tampacientes,long int *codigoatual,char *nome);
 
  //estoque

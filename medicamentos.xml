@@ -1,0 +1,23 @@
+<dados>
+<!-- Tabela de Medicamentos -->
+<tabela nome="medicamento">
+<registro>
+<codigo>101</codigo>
+<descricao>Losartana 50mg</descricao>
+<fabricante>MedPharma</fabricante>
+<preco_custo>10.50</preco_custo>
+<preco_venda>15.75</preco_venda>
+<quantidade_estoque>100</quantidade_estoque>
+<estoque_minimo>20</estoque_minimo>
+</registro>
+<registro>
+<codigo>102</codigo>
+<descricao>Antihistamínico</descricao>
+<fabricante>BioHealth</fabricante>
+<preco_custo>5.00</preco_custo>
+<preco_venda>8.50</preco_venda>
+<quantidade_estoque>50</quantidade_estoque>
+<estoque_minimo>10</estoque_minimo>
+</registro>
+</tabela>
+</dados>

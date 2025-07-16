@@ -119,3 +119,73 @@ long int consultaambiente(AmbienteMedico *ambientes, long int tamambiente, long 
      
     return -1;
 }
+
+long int importarambiente(AmbienteMedico **ambientes, char *nome, long int *tamambientes, long int *codigoatual) {
+    FILE *arquivo = fopen(nome, "r");
+    if (arquivo == NULL) {
+        return -1;
+    }
+    char linha[1000];
+    AmbienteMedico novo;
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        if (strstr(linha, "<tabela nome=\"ambiente\">") != NULL) {
+            while (fgets(linha, sizeof(linha), arquivo) != NULL && strstr(linha, "</tabela>") == NULL) {
+                if (strstr(linha, "<codigo>") != NULL) {
+                    sscanf(linha, "<codigo>%ld</codigo>", &novo.codigo);
+                }
+
+                if (strstr(linha, "<descricao>") != NULL) {
+                    sscanf(linha, "<descricao>%999[^<]</descricao>", novo.descricaoProcedimento);
+                }
+
+                if (strstr(linha, "</registro>") != NULL) {
+                    AmbienteMedico *temp = realloc(*ambientes, (*tamambientes + 1) * sizeof(AmbienteMedico));
+                    if (temp == NULL) {
+                        fclose(arquivo);
+                        return -1;
+                    }
+                    *ambientes = temp;
+                    (*ambientes)[*tamambientes] = novo;
+                    (*tamambientes)++;
+
+                    if (novo.codigo >= *codigoatual) {
+                        *codigoatual = novo.codigo + 1;
+                    }
+                }
+            }
+            break; // já leu a tabela
+        }
+    }
+
+    fclose(arquivo);
+    return 0;
+}
+
+long int exportarambiente(AmbienteMedico *ambientes, char *nome, long int tamambientes) {
+    FILE *arquivo = fopen(nome, "w");
+    if (arquivo == NULL) {
+        return -1;
+    }
+
+    if (ambientes == NULL) {
+        fclose(arquivo);
+        return -1;
+    }
+
+    fprintf(arquivo, "<dados>\n");
+    fprintf(arquivo, "<!-- Tabela de Ambientes Médicos -->\n");
+    fprintf(arquivo, "<tabela nome=\"ambiente\">\n");
+
+    for (long int i = 0; i < tamambientes; i++) {
+        fprintf(arquivo, "<registro>\n");
+        fprintf(arquivo, "<codigo>%ld</codigo>\n", ambientes[i].codigo);
+        fprintf(arquivo, "<descricao>%s</descricao>\n", ambientes[i].descricaoProcedimento);
+        fprintf(arquivo, "</registro>\n");
+    }
+
+    fprintf(arquivo, "</tabela>\n");
+    fprintf(arquivo, "</dados>\n");
+
+    fclose(arquivo);
+    return 0;
+}
