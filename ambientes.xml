@@ -2,11 +2,11 @@
 <!-- Tabela de Ambientes Médicos -->
 <tabela nome="ambiente">
 <registro>
-<codigo>1</codigo>
+<codigo>0</codigo>
 <descricao>Consultório 101 - Clínica Geral</descricao>
 </registro>
 <registro>
-<codigo>2</codigo>
+<codigo>1</codigo>
 <descricao>Sala 203 - Exames Laboratoriais</descricao>
 </registro>
 </tabela>

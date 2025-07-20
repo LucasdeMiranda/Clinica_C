@@ -3,7 +3,7 @@
 #include <string.h>
 #include "biblioteca.h"
 
- Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int *codigoatual,
+Procedimento *cadastrarprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int *codigoatual,
                                     Procedimento *novoprocedimento, AmbienteMedico *ambientes, MedicamentoMaterial *medicamentosmateriais,
                                     long int tamambientes, long int tammedicamentomaterial)
 {
@@ -12,7 +12,7 @@
     {
         if (novoprocedimento->codambientemedico == ambientes[i].codigo)
         {
-             encontraambiente = 0;
+            encontraambiente = 0;
             break;
         }
     }
@@ -43,7 +43,7 @@
     Procedimento *novo = realloc(procedimentos, (*tamprocedimento + 1) * sizeof(Procedimento));
     if (novo == NULL)
     {
-        //erro ao alocar memoria
+        // erro ao alocar memoria
         return procedimentos;
     }
 
@@ -53,10 +53,10 @@
 
     // Aloca novo vetor de structs Codmedicamentosmateriais
     procedimentos[*tamprocedimento].codmedicamentosemateriais = malloc(novoprocedimento->tamcodmedicamentosmateriais * sizeof(Codmedicamentosmateriais));
-    
+
     if (procedimentos[*tamprocedimento].codmedicamentosemateriais == NULL)
     {
-        //Erro ao alocar memória para os medicamentos/materiais
+        // Erro ao alocar memória para os medicamentos/materiais
         return procedimentos;
     }
     for (int i = 0; i < novoprocedimento->tamcodmedicamentosmateriais; i++)
@@ -111,7 +111,6 @@ void alterarprocedimento(Procedimento *procedimentos, long int tamprocedimento, 
                     scanf("%ld", &procedimentos[i].codmedicamentosemateriais[j].codigo);
                     printf("Digite a quantidade do material %d: ", j + 1);
                     scanf("%ld", &procedimentos[i].codmedicamentosemateriais[j].qnt);
-                    
                 }
                 printf("Procedimento alterado com sucesso!\n");
                 return;
@@ -121,7 +120,7 @@ void alterarprocedimento(Procedimento *procedimentos, long int tamprocedimento, 
     printf("Código não encontrado.\n");
     return;
 }
- void listarprocedimento(Procedimento *procedimentos, long int tamprocedimento)
+void listarprocedimento(Procedimento *procedimentos, long int tamprocedimento)
 {
     if (procedimentos == NULL || tamprocedimento == 0)
     {
@@ -143,8 +142,8 @@ void alterarprocedimento(Procedimento *procedimentos, long int tamprocedimento, 
             for (int j = 0; j < procedimentos[i].tamcodmedicamentosmateriais; j++)
             {
                 printf("Código do material: %ld - Quantidade usada: %ld\n",
-                    procedimentos[i].codmedicamentosemateriais[j].codigo,
-                    procedimentos[i].codmedicamentosemateriais[j].qnt);
+                       procedimentos[i].codmedicamentosemateriais[j].codigo,
+                       procedimentos[i].codmedicamentosemateriais[j].qnt);
             }
         }
 
@@ -153,7 +152,6 @@ void alterarprocedimento(Procedimento *procedimentos, long int tamprocedimento, 
 
     return;
 }
-
 
 Procedimento *excluirprocedimento(Procedimento *procedimentos, long int *tamprocedimento, long int codigo)
 {
@@ -218,4 +216,53 @@ long int consultaprocedimento(Procedimento *procedimentos, long int tamprocedime
         }
     }
     return -1;
+}
+
+ 
+
+
+long int exportarprocedimento(Procedimento *procedimentos, char *nome, long int tamprocedimento)
+{
+    FILE *arquivo = fopen(nome, "w");
+    if (arquivo == NULL)
+        return -1;
+
+    if (procedimentos == NULL)
+    {
+        fclose(arquivo);
+        return -1;
+    }
+
+    fprintf(arquivo, "<dados>\n");
+    fprintf(arquivo, "<!-- Tabela de Procedimentos -->\n");
+    fprintf(arquivo, "<tabela nome=\"procedimento\">\n");
+
+    for (long int i = 0; i < tamprocedimento; i++)
+    {
+        fprintf(arquivo, "<registro>\n");
+        fprintf(arquivo, "<codigo>%ld</codigo>\n", procedimentos[i].codigo);
+        fprintf(arquivo, "<descricao>%s</descricao>\n", procedimentos[i].descricao);
+        fprintf(arquivo, "<custo>%.2f</custo>\n", procedimentos[i].custo);
+        fprintf(arquivo, "<tempo_estimado>%ld</tempo_estimado>\n", procedimentos[i].tempoEstimado);
+        fprintf(arquivo, "<ambiente_medico>%ld</ambiente_medico>\n", procedimentos[i].codambientemedico);
+
+        fprintf(arquivo, "<medicamentos>\n");
+        fprintf(arquivo, "<quantidade>%ld</quantidade>\n", procedimentos[i].tamcodmedicamentosmateriais);
+
+        for (long int j = 0; j < procedimentos[i].tamcodmedicamentosmateriais; j++)
+        {
+            fprintf(arquivo, "<codigo quantidade=\"%ld\">%ld</codigo>\n",
+                    procedimentos[i].codmedicamentosemateriais[j].qnt,
+                    procedimentos[i].codmedicamentosemateriais[j].codigo);
+        }
+
+        fprintf(arquivo, "</medicamentos>\n");
+        fprintf(arquivo, "</registro>\n");
+    }
+
+    fprintf(arquivo, "</tabela>\n");
+    fprintf(arquivo, "</dados>\n");
+
+    fclose(arquivo);
+    return 0;
 }

@@ -120,7 +120,6 @@ long int consultamedicamentomaterial(MedicamentoMaterial *medicamentosmateriais,
     }
     return -1;
 }
-
 long int importarmedicamento(MedicamentoMaterial **medicamentosmateriais, char *nome, long int *tammedicamentomaterial, long int *codigoatualmedicamentomaterial)
 {
     char linha[1000];
@@ -145,6 +144,9 @@ long int importarmedicamento(MedicamentoMaterial **medicamentosmateriais, char *
                 if (strstr(linha, "<fabricante>") != NULL)
                     sscanf(linha, "<fabricante>%299[^<]</fabricante>", novo.fabricante);
 
+                if (strstr(linha, "<codfornecedor>") != NULL)
+                    sscanf(linha, "<codfornecedor>%ld</codfornecedor>", &novo.codfornecedor);
+
                 if (strstr(linha, "<preco_custo>") != NULL)
                     sscanf(linha, "<preco_custo>%f</preco_custo>", &novo.precoCusto);
 
@@ -159,12 +161,11 @@ long int importarmedicamento(MedicamentoMaterial **medicamentosmateriais, char *
 
                 if (strstr(linha, "</registro>") != NULL)
                 {
-                    novo.codfornecedor = -1; // Não vem no XML
-                    *medicamentosmateriais = realloc(*medicamentosmateriais, (*tammedicamentomaterial + 1) * sizeof(MedicamentoMaterial));
-                    (*medicamentosmateriais)[*tammedicamentomaterial] = novo;
-                    (*tammedicamentomaterial)++;
-                    if (novo.codigo >= *codigoatualmedicamentomaterial)
-                        *codigoatualmedicamentomaterial = novo.codigo + 1;
+                    *medicamentosmateriais = cadastrarmedicamentomaterial(
+                        *medicamentosmateriais,
+                        tammedicamentomaterial,
+                        codigoatualmedicamentomaterial,
+                        &novo);
                 }
             }
             break;
@@ -203,4 +204,77 @@ long int exportarmedicamento(MedicamentoMaterial *medicamentosmateriais, char *n
     fclose(arquivo);
 
     return 0;
+}
+
+long int importarmedicamentotxt(MedicamentoMaterial **medicamentos, long int *tammedicamentos, long int *codigoatual, char *nome)
+{
+    FILE *arquivo = fopen(nome, "r");
+    if (arquivo == NULL)
+    {
+        return -1;
+    }
+
+    char linha[2048];
+    MedicamentoMaterial novo;
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL)
+    {
+        char *token = strtok(linha, ";");
+        if (token != NULL)
+            novo.codigo = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";");
+        if (token != NULL)
+            strncpy(novo.descricao, token, sizeof(novo.descricao));
+
+        token = strtok(NULL, ";");
+        if (token != NULL)
+            strncpy(novo.fabricante, token, sizeof(novo.fabricante));
+
+        token = strtok(NULL, ";");
+        if (token != NULL)
+            novo.codfornecedor = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";");
+        if (token != NULL)
+            novo.precoCusto = strtof(token, NULL);
+
+        token = strtok(NULL, ";");
+        if (token != NULL)
+            novo.precoVenda = strtof(token, NULL);
+
+        token = strtok(NULL, ";");
+        if (token != NULL)
+            novo.quantidadeEstoque = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";\n");
+        if (token != NULL)
+            novo.estoqueMinimo = strtol(token, NULL, 10);
+
+        *medicamentos = cadastrarmedicamentomaterial(*medicamentos, tammedicamentos, codigoatual, &novo);
+    }
+
+    fclose(arquivo);
+    return 0;
+}
+
+void exportarmedicamentotxt(MedicamentoMaterial *medicamentos, char *nome, long int tammedicamentos) {
+    FILE *arquivo = fopen(nome, "w");
+    if (arquivo == NULL) {
+        return; // erro ao abrir arquivo
+    }
+
+    for (long int i = 0; i < tammedicamentos; i++) {
+        fprintf(arquivo, "%ld;%s;%s;%ld;%.2f;%.2f;%ld;%ld\n",
+                medicamentos[i].codigo,
+                medicamentos[i].descricao,
+                medicamentos[i].fabricante,
+                medicamentos[i].codfornecedor,
+                medicamentos[i].precoCusto,
+                medicamentos[i].precoVenda,
+                medicamentos[i].quantidadeEstoque,
+                medicamentos[i].estoqueMinimo);
+    }
+
+    fclose(arquivo);
 }

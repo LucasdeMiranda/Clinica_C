@@ -1,0 +1,3 @@
+0;Consultório clínico geral
+1;Sala de pequenos procedimentos
+2;dfgh

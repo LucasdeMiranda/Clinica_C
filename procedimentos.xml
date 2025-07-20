@@ -1,0 +1,17 @@
+<dados>
+<!-- Tabela de Procedimentos -->
+<tabela nome="procedimento">
+<registro>
+<codigo>0</codigo>
+<descricao>Exame de sangue completo</descricao>
+<custo>150.00</custo>
+<tempo_estimado>30</tempo_estimado>
+<ambiente_medico>0</ambiente_medico>
+<medicamentos>
+<quantidade>2</quantidade>
+<codigo quantidade="0">0</codigo>
+<codigo quantidade="0">0</codigo>
+</medicamentos>
+</registro>
+</tabela>
+</dados>

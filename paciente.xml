@@ -3,30 +3,21 @@
 <tabela nome="paciente">
 <registro>
 <codigo>0</codigo>
-<nome>Fulano da Silva</nome>
-<cpf>12345678900</cpf>
-<telefone>11999999999</telefone>
-<endereco>Rua A, 123, Centro, São Paulo, SP</endereco>
-<data_nascimento>12/05/2000</data_nascimento>
-<historico>Alergia a amendoim</historico>
+<nome>João da Silva</nome>
+<cpf>123.456.789-00</cpf>
+<telefone>11 99999-8888</telefone>
+<endereco>Rua A,123, Bairro X,Cidade Y,Estado Z</endereco>
+<data_nascimento>1980-05-25</data_nascimento>
+<historico>Hipertensão arterial</historico>
 </registro>
 <registro>
 <codigo>1</codigo>
 <nome>Maria Oliveira</nome>
-<cpf>98765432100</cpf>
-<telefone>21988887777</telefone>
-<endereco>Av. Brasil, 456, Jardim América, Rio de Janeiro, RJ</endereco>
-<data_nascimento>01/01/1985</data_nascimento>
-<historico>Diabética</historico>
-</registro>
-<registro>
-<codigo>2</codigo>
-<nome>José Santos</nome>
-<cpf>11122233344</cpf>
-<telefone>41977776666</telefone>
-<endereco>Rua das Flores, 789, Bairro Alto, Curitiba, PR</endereco>
-<data_nascimento>23/09/1975</data_nascimento>
-<historico>Hipertenso</historico>
+<cpf>987.654.321-00</cpf>
+<telefone>21 98888-7777</telefone>
+<endereco>Av. Principal,456,Bairro Z,Formiga,Estado V</endereco>
+<data_nascimento>1992-09-10</data_nascimento>
+<historico>Alergia a penicilina</historico>
 </registro>
 </tabela>
 </dados>

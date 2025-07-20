@@ -6,9 +6,24 @@
 LacamentosRetiradas *cadastrarlancamentoretirada(LacamentosRetiradas *lacamentosretiradas,
                                                  long int *tamlacamentosretiradas,
                                                  LacamentosRetiradas *novolacamentoretirada, Agendamento *agendamentos,
-                                                 long int tamagendamento, Procedimento *procedimentos, long int tamprocedimento,float *saldototal)
+                                                 long int tamagendamento, Procedimento *procedimentos, 
+                                                 long int tamprocedimento,float *saldototal,Entradaestoque *entradaestoque,long int tamentradaestoque)
 {
     long int posicao = -1;
+if(novolacamentoretirada->codigoagendamento==-1){//se agendamento =1 significa que vamos registrar um  pagar e não receber
+    for(long int i=0;i<*tamlacamentosretiradas;i++){
+        if(novolacamentoretirada->codigoentradaestoque==lacamentosretiradas[i].codigoentradaestoque){
+            return lacamentosretiradas;//ja pagou por essa entrada de materiais portanto ja pagou para o fornecedo
+        }
+    }
+}
+     if(novolacamentoretirada->codigoentradaestoque==-1){
+    for(long int i=0;i<*tamlacamentosretiradas;i++){
+        if(novolacamentoretirada->codigoagendamento==lacamentosretiradas[i].codigoagendamento){
+            return lacamentosretiradas;//já foi pago por esse agendamento
+        }
+    }
+}
 
     if (novolacamentoretirada->tipo == 0)
     {
@@ -56,13 +71,21 @@ LacamentosRetiradas *cadastrarlancamentoretirada(LacamentosRetiradas *lacamentos
         return lacamentosretiradas;
     }
 
-    return lacamentosretiradas; // garante retorno mesmo se nenhum if for executado
+    return lacamentosretiradas; 
 }
  Receber *cadastrarreceber(Receber *receber, long int *tamreceber, long int *codigoatual,
                            Receber *novoreceber, Agendamento *agendamentos, long int tamagendamento,
                            Procedimento *procedimentos, long int tamprocedimento)
 {
     long int posicao = -1;
+
+    // Verifica se o agendamento já está registrado em receber
+for (long int i = 0; i < *tamreceber; i++) {
+    if (receber[i].codigoagendamento == novoreceber->codigoagendamento) {
+        // ja fo cadastrado
+        return receber;
+    }
+}
 
     // Verifica se o agendamento existe
     for (long int i = 0; i < tamagendamento; i++)
@@ -109,12 +132,12 @@ LacamentosRetiradas *cadastrarlancamentoretirada(LacamentosRetiradas *lacamentos
 
 
 
-long int efetuarpagamento(long int codigofornecedor, float *saldototal, char *data, Entradaestoque *entradaestoque, long int tamentradaestoque, LacamentosRetiradas **lancamentosentradas, long int *tamlancamentosentradas)
+long int efetuarpagamento(long int codigoentradaestoque, float *saldototal, char *data, Entradaestoque *entradaestoque, long int tamentradaestoque, LacamentosRetiradas **lancamentosentradas, long int *tamlancamentosentradas)
 {
     int resultado = -1;
     for (long int i = 0; i < tamentradaestoque; i++)
     {
-        if (codigofornecedor == entradaestoque[i].codfornecedor)
+        if (codigoentradaestoque == entradaestoque[i].codigo)
         {
             resultado = i;
             break;
@@ -129,20 +152,11 @@ long int efetuarpagamento(long int codigofornecedor, float *saldototal, char *da
         LacamentosRetiradas novolancamentoretirada;
         strcpy(novolancamentoretirada.data, data);
         novolancamentoretirada.tipo = 1;
-
-        // Calcular total dos materiais recebidos
-        float totalmateriais = 0;
-        for (long int j = 0; j < entradaestoque[resultado].tammedicamentosmateriaisrecebidos; j++)
-        {
-            totalmateriais += entradaestoque[resultado].codmedicamentosmateriaisrecebidos[j].qnt *
-                              entradaestoque[resultado].codmedicamentosmateriaisrecebidos[j].precocustounid;
-        }
-
-        // Soma frete + imposto + total dos materiais
-        novolancamentoretirada.valor = entradaestoque[resultado].frete +
-                                       entradaestoque[resultado].imposto +
-                                       totalmateriais;
-
+        novolancamentoretirada.codigoentradaestoque=codigoentradaestoque;
+        novolancamentoretirada.codigoagendamento=-1;
+        // esse campo total de tudo ja registra o total dos produtos pela quantidade e o preço de custo + frete + imposto
+        novolancamentoretirada.valor = entradaestoque[resultado].totaldetudo;
+                            
         // chama a função pra cadastrar
         *lancamentosentradas = cadastrarlancamentoretirada(
             *lancamentosentradas,
@@ -151,7 +165,7 @@ long int efetuarpagamento(long int codigofornecedor, float *saldototal, char *da
             NULL, // sem agendamentos nesse caso
             0,
             NULL,
-            0,saldototal);
+            0,saldototal,entradaestoque,tamentradaestoque);
 
         *saldototal -= novolancamentoretirada.valor;
 
@@ -186,7 +200,8 @@ void imprimirLancamentosRetiradas(LacamentosRetiradas *lancamentos, long int tam
 }
 // como receber é um vetor de contas a receber quando da baixa tem que tira ele do vetor
 Receber *excluirreceber(Receber *receber, long int *tamreceber, long int codigo, 
-                        LacamentosRetiradas **lancamentosentradas, long int *tamlancamentosentradas, float *saldototal)
+                        LacamentosRetiradas **lancamentosentradas, long int *tamlancamentosentradas, 
+                        float *saldototal,Entradaestoque *entradaestoque,long int tamentradaestoque)
 {
     long int encontrado = -1;
     for (long int i = 0; i < *tamreceber; i++)
@@ -209,6 +224,9 @@ Receber *excluirreceber(Receber *receber, long int *tamreceber, long int codigo,
         strcpy(novolancamentoretirada.data, receber[encontrado].data);
         novolancamentoretirada.tipo = 2;
         novolancamentoretirada.valor = receber[encontrado].valor;
+        novolancamentoretirada.codigoagendamento=receber[encontrado].codigoagendamento;
+        novolancamentoretirada.codigoentradaestoque=-1;// esse -1 um pra simboloizar que não é uma conta pra pagar a um fornecedor ou seja não é de entrada estoque
+        
 
         // Cadastrar o lançamento
         *lancamentosentradas = cadastrarlancamentoretirada(
@@ -217,7 +235,7 @@ Receber *excluirreceber(Receber *receber, long int *tamreceber, long int codigo,
             &novolancamentoretirada,
             NULL, 0,
             NULL, 0,
-            saldototal
+            saldototal,entradaestoque,tamentradaestoque
         );
         for (long int j = encontrado; j < (*tamreceber) - 1; j++)
         {

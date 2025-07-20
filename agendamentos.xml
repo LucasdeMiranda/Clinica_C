@@ -1,0 +1,21 @@
+<dados>
+<!-- Tabela de Agendamentos -->
+<tabela nome="agendamento">
+<registro>
+<codigo>0</codigo>
+<paciente>1</paciente>
+<profissional>0</profissional>
+<procedimento>1</procedimento>
+<data>2025-04-10</data>
+<hora>09:00</hora>
+</registro>
+<registro>
+<codigo>1</codigo>
+<paciente>2</paciente>
+<profissional>0</profissional>
+<procedimento>0</procedimento>
+<data>2025-04-11</data>
+<hora>14:00</hora>
+</registro>
+</tabela>
+</dados>

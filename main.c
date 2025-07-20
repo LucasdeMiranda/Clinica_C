@@ -12,59 +12,104 @@ int main()
     Paciente *pacientes = NULL;
     Profissional *profissionais = NULL;
     Agendamento *agendamentos = NULL;
-    Entradaestoque *entradaestoque=NULL;
-    LacamentosRetiradas *lacamentosretiradas=NULL;
-    Receber *receber=NULL;
-   
+    Entradaestoque *entradaestoque = NULL;
+    LacamentosRetiradas *lacamentosretiradas = NULL;
+    Receber *receber = NULL;
+
     long int tamprocedimento = 0, codigoatualprocedimentos = 0, tamambiente = 0, codigoatualambiente = 0,
              tamfornecedor = 0, codigoatualfornecedor = 0, tammedicamentomaterial = 0, codigoatualmedicamentomaterial = 0,
-             tampacientes = 0, tamentradaestoque=0,codigoatualpacientes = 0, tamprofissionais = 0, codigoatualprofissionais = 0,
-             tamagendamento = 0, codigoatualagendamento = 0,tamlancamentosretiradas=0,tamreceber=0,codigoatualreceber=0;
+             tampacientes = 0, tamentradaestoque = 0, codigoatualentradaestoque=0,codigoatualpacientes = 0, tamprofissionais = 0, codigoatualprofissionais = 0,
+             tamagendamento = 0, codigoatualagendamento = 0, tamlancamentosretiradas = 0, tamreceber = 0, codigoatualreceber = 0;
 
-    int op1, op2, leitura,oparma,r1;
+    int op1, op2, leitura, oparma, r1,p,a,f,m;
 
-    char *agendamentostxt = "agendamentos.txt", ambientestxt = "ambientes.txt",
+    char *agendamentostxt = "agendamentos.txt", *ambientestxt="ambientes.txt",
          *fornecedorestxt = "fornecedores.txt", *medicamentosmateriaistxt = "medicamentosmateriais.txt",
          *pacientestxt = "pacientes.txt", *procedimentostxt = "procedimentos.txt",
          *profissionaistxt = "profissionais.txt",
          *agendamentosbin = "agendamentos.bin", *ambientesbin = "ambientes.bin", *fornecedoresbin = "fornecedores.bin",
          *medicamentosmateriaisbin = "medicamentosmateriais.bin", *pacientesbin = "pacientes.bin",
          *procedimentosbin = "procedimentos.bin",
-         *profissionaisbin = "profissionais.bin", *nome = "arquivo.xml", *pacientexml = "paciente.xml", *relatorio="relatorio.csv",
-         *ambientesmedicosxml="ambientes.xml", *fornecedoresxml="fornecedores.xml",*medicamentosxml="medicamentos.xml";
+         *profissionaisbin = "profissionais.bin", *nome = "arquivo.xml", *pacientexml = "paciente.xml", *relatorio = "relatorio.csv",
+         *ambientesmedicosxml = "ambientes.xml", *fornecedoresxml = "fornecedores.xml", *medicamentosxml = "medicamentos.xml",
+         *profissionaisxml = "profissionais.xml", *agendamentosxml = "agendamentos.xml", *procedimentosxml = "procedimentos.xml";
 
+    float saldototal = 10000; // saldo total disponivel no caixa ja coloquei um saldo incial para testes
 
-         float saldototal=10000;//saldo total disponivel no caixa ja coloquei um saldo incial para testes
-      
-    
-    do {
+    do
+    {
         printf("Escolha o modo de armazenamento:\n");
         printf("1: Memoria\n2: Arquivo txt\n3: Arquivo bin\n4: Sair\n");
         scanf("%d", &oparma);
-        if (oparma < 1 || oparma > 4) {
+        if (oparma < 1 || oparma > 4)
+        {
             printf("Opcao invalida. Tente novamente.\n");
         }
     } while (oparma < 1 || oparma > 4);
 
-    if (oparma == 4) {
+    if (oparma == 4)
+    {
         printf("Encerrando programa.\n");
         return 0;
     }
 
     // Faz a leitura inicial conforme o modo escolhido
-    if (oparma == 2) {
-        leitura = abrirtxtpaciente(&pacientes, &tampacientes, &codigoatualpacientes, pacientestxt);
-        if (leitura == -1) {
+    if (oparma == 2)
+    {
+        p=importarpacientetxt(&pacientes, &tampacientes, &codigoatualpacientes, pacientestxt);
+        f=importarfornecedortxt(&fornecedores,&tamfornecedor,&codigoatualfornecedor,fornecedorestxt);
+        m=importarmedicamentotxt(&medicamentosmateriais,&tammedicamentomaterial,&codigoatualmedicamentomaterial,medicamentosmateriaistxt);
+        p=importarprofissionaltxt(&profissionais,&tamprofissionais,&codigoatualprofissionais,profissionaistxt);
+        a=importarambientemedicotxt(&ambientes,&tamambiente,&codigoatualambiente,ambientestxt);
+         
+        if (p == -1)
+        {
             printf("Erro ao abrir arquivo de pacientes\n");
-        } else {
+        }
+        else
+        {
             printf("Pacientes carregados com sucesso do TXT\n");
         }
-    }  
-         
-     
+        
+        if (f == -1)
+        {
+            printf("Erro ao abrir arquivo de  fornecedores\n");
+        }
+        else
+        {
+            printf("fornecedores carregados com sucesso do TXT\n");
+        }
+          if (m == -1)
+        {
+            printf("Erro ao abrir arquivo de  medicamentos\n");
+        }
+        else
+        {
+            printf("medicamentos carregados com sucesso do TXT\n");
+        }
 
+         if (p == -1)
+        {
+            printf("Erro ao abrir arquivo de  profissionais \n");
+        }
+        else
+        {
+            printf("profissionais carregados com sucesso do TXT\n");
+        }
 
+        if (a == -1)
+        {
+            printf("Erro ao abrir arquivo de  ambientes \n");
+        }
+        else
+        {
+            printf("ambientes carregados com sucesso do TXT\n");
+        }
+        
+        
+        
 
+    }
 
     do
     {
@@ -125,7 +170,7 @@ int main()
             printf("5:Profisionais\n");
             printf("6:Agendamentos\n");
             printf("7:Procedimentos\n");
-        
+
             scanf("%d", &op1);
             if (op1 < 1 || op1 > 7)
             {
@@ -143,8 +188,9 @@ int main()
                     printf("pacientes importados com sucesso\n");
                 }
             }
-            else if(op1==2){
-                leitura= importarambiente(&ambientes,nome,&tamambiente,&codigoatualambiente);
+            else if (op1 == 2)
+            {
+                leitura=importarambiente(&ambientes,nome,&tamambiente,&codigoatualambiente);
                 if (leitura == -1)
                 {
                     printf("erro ao importar ambientes\n");
@@ -154,9 +200,10 @@ int main()
                     printf("ambientes importados com sucesso\n");
                 }
             }
-            else if(op1==3){
-                leitura=importarfornecedor(&fornecedores,nome,&tamfornecedor,&codigoatualfornecedor);
-                 if (leitura == -1)
+            else if (op1 == 3)
+            {
+                leitura = importarfornecedor(&fornecedores, nome, &tamfornecedor, &codigoatualfornecedor);
+                if (leitura == -1)
                 {
                     printf("erro ao importar fornecedores\n");
                 }
@@ -165,10 +212,11 @@ int main()
                     printf("fornecedores importados com sucesso\n");
                 }
             }
-            else if(op1==4){
-                leitura=importarmedicamento(&medicamentosmateriais,nome,&tammedicamentomaterial,
-                    &codigoatualmedicamentomaterial);
-                     if (leitura == -1)
+            else if (op1 == 4)
+            {
+                leitura = importarmedicamento(&medicamentosmateriais, nome, &tammedicamentomaterial,
+                                              &codigoatualmedicamentomaterial);
+                if (leitura == -1)
                 {
                     printf("erro ao importar medicamentos\n");
                 }
@@ -177,7 +225,37 @@ int main()
                     printf("medicamentos importados com sucesso\n");
                 }
             }
-
+            else if (op1 == 5)
+            {
+                leitura = importarprofissional(&profissionais, nome, &tamprofissionais, &codigoatualprofissionais);
+                if (leitura == -1)
+                {
+                    printf("erro ao importar profissionais\n");
+                }
+                else
+                {
+                    printf("profissionais importados com sucesso\n");
+                }
+            }
+            else if (op1 == 6)
+            {
+                leitura = importaragendamento(&agendamentos, nome, &tamagendamento,
+                                              &codigoatualagendamento, pacientes, tampacientes, profissionais,
+                                              tamprofissionais, procedimentos, tamprocedimento,
+                                              medicamentosmateriais, tammedicamentomaterial);
+                if (leitura == -1)
+                {
+                    printf("erro ao importar agendamentos\n");
+                }
+                else
+                {
+                    printf("agendamentos importados com sucesso\n");
+                }
+            }
+            else if (op1 == 7)
+            {
+                
+            }
         }
 
         else if (op2 == 9)
@@ -198,7 +276,7 @@ int main()
 
             else if (op1 == 1)
             {
-                leitura = exportarpaciente(pacientes,pacientexml,tampacientes);
+                leitura = exportarpaciente(pacientes, pacientexml, tampacientes);
                 if (leitura == -1)
                 {
                     printf("erro ao abrir arquivo ou não havia pacientes");
@@ -208,9 +286,10 @@ int main()
                     printf("pacientes exportados com sucesso\n");
                 }
             }
-            else if(op1==2){
-                leitura= exportarambiente(ambientes,ambientesmedicosxml,tamambiente);
-                 if (leitura == -1)
+            else if (op1 == 2)
+            {
+                leitura = exportarambiente(ambientes, ambientesmedicosxml, tamambiente);
+                if (leitura == -1)
                 {
                     printf("erro ao abrir arquivo ou não havia ambientes");
                 }
@@ -219,9 +298,10 @@ int main()
                     printf("ambientes exportados com sucesso\n");
                 }
             }
-            else if(op1==3){
-                leitura=exportarfornecedor(fornecedores,fornecedoresxml,tamfornecedor);
-                 if (leitura == -1)
+            else if (op1 == 3)
+            {
+                leitura = exportarfornecedor(fornecedores, fornecedoresxml, tamfornecedor);
+                if (leitura == -1)
                 {
                     printf("erro ao abrir arquivo ou não havia fornecedores");
                 }
@@ -229,10 +309,10 @@ int main()
                 {
                     printf("fornecedores exportados com sucesso\n");
                 }
-                
             }
-            else if(op1==4){
-                leitura=exportarmedicamento(medicamentosmateriais,medicamentosxml,tammedicamentomaterial);
+            else if (op1 == 4)
+            {
+                leitura = exportarmedicamento(medicamentosmateriais, medicamentosxml, tammedicamentomaterial);
                 if (leitura == -1)
                 {
                     printf("erro ao abrir arquivo ou não havia medicamentos");
@@ -242,18 +322,68 @@ int main()
                     printf("medicamentos exportados com sucesso\n");
                 }
             }
+            else if (op1 == 5)
+            {
+                leitura = exportarprofissional(profissionais, profissionaisxml, tamprofissionais);
+                if (leitura == -1)
+                {
+                    printf("erro ao abrir arquivo ou não havia profissionais");
+                }
+                else
+                {
+                    printf("profissionaiss exportados com sucesso\n");
+                }
+            }
+            else if (op1 == 6)
+            {
+                leitura = exportaragendamento(agendamentos, agendamentosxml, tamagendamento);
+                if (leitura == -1)
+                {
+                    printf("erro ao abrir arquivo ou não havia agendamentos");
+                }
+                else
+                {
+                    printf("agendamentos exportados com sucesso\n");
+                }
+            }
+            else if (op1 == 7)
+            {
+                leitura = exportarprocedimento(procedimentos, procedimentosxml, tamprocedimento);
+                if (leitura == -1)
+                {
+                    printf("erro ao abrir arquivo ou não havia procedimentos");
+                }
+                else
+                {
+                    printf("procedimentos exportados com sucesso\n");
+                }
+            }
         }
-        else if(op2==10){
-            menuestoque(&entradaestoque,&medicamentosmateriais,tammedicamentomaterial,&tamentradaestoque);
-        }
-        else if(op2==11){
-            menucaixa(&saldototal,&lacamentosretiradas,&receber,
-                &tamlancamentosretiradas,&tamreceber,
-                &codigoatualreceber,agendamentos,tamagendamento,procedimentos,tamprocedimento,entradaestoque,tamentradaestoque);
-        }
-        else if (op2 == 12)
+        else if (op2 == 10)
         {
-            for (int i = 0; i < tamprocedimento; i++)
+            menuestoque(&entradaestoque, &medicamentosmateriais, tammedicamentomaterial, &tamentradaestoque,&codigoatualentradaestoque);
+        }
+        else if (op2 == 11)
+        {
+            menucaixa(&saldototal, &lacamentosretiradas, &receber,
+                      &tamlancamentosretiradas, &tamreceber,
+                      &codigoatualreceber, agendamentos, tamagendamento, procedimentos, tamprocedimento, entradaestoque, tamentradaestoque);
+        }
+        else if(op2==12){
+          menurelatorios(agendamentos,tamagendamento,ambientes,tamambiente,lacamentosretiradas,
+            tamlancamentosretiradas,entradaestoque,tamentradaestoque,
+            fornecedores,tamagendamento,medicamentosmateriais,
+            tammedicamentomaterial,pacientes,tampacientes,procedimentos,
+            tamprocedimento,profissionais,tamprofissionais,receber,tamreceber);
+        }
+        else if (op2 == 13 && oparma==2)
+        {
+            exportarpacientetxt(pacientes,pacientestxt,tampacientes);
+            exportarfornecedortxt(fornecedores,fornecedorestxt,tamfornecedor);
+            exportarmedicamentotxt(medicamentosmateriais,medicamentosmateriaistxt,tammedicamentomaterial);
+            exportarprofissionaltxt(profissionais,profissionaistxt,tamprofissionais);
+            exportarambientemedicotxt(ambientes,ambientestxt,tamambiente);
+            for (long int i = 0; i < tamprocedimento; i++)
             {
                 free((procedimentos)[i].codmedicamentosemateriais);
             }
@@ -264,7 +394,14 @@ int main()
             free(pacientes);
             free(profissionais);
             free(agendamentos);
+            free(receber);
+            free(lacamentosretiradas);
+            for(long int i=0;i<tamentradaestoque;i++){
+             free((entradaestoque)[i].codmedicamentosmateriaisrecebidos);
+            }
+            free(entradaestoque);
         }
+
         else if (op2 < 1 || op2 > 13)
         {
             printf("opção inválida, tente novamente\n");

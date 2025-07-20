@@ -6,7 +6,7 @@
 <nome>João da Silva</nome>
 <cpf>123.456.789-00</cpf>
 <telefone>11 99999-8888</telefone>
-<endereco>Rua A, 123, Bairro X, Cidade Y, Estado Z</endereco>
+<endereco>Rua A,123, Bairro X,Cidade Y,Estado Z</endereco>
 <data_nascimento>1980-05-25</data_nascimento>
 <historico>Hipertensão arterial</historico>
 </registro>
@@ -15,7 +15,7 @@
 <nome>Maria Oliveira</nome>
 <cpf>987.654.321-00</cpf>
 <telefone>21 98888-7777</telefone>
-<endereco>Av. Principal, 456, Bairro Z, Cidade W, Estado V</endereco>
+<endereco>Av. Principal,456,Bairro Z,Formiga,Estado V</endereco>
 <data_nascimento>1992-09-10</data_nascimento>
 <historico>Alergia a penicilina</historico>
 </registro>
@@ -23,7 +23,7 @@
 <!-- Tabela de Profissionais de Saúde -->
 <tabela nome="profissional">
 <registro>
-<codigo>1</codigo>
+<codigo>0</codigo>
 <nome>Dra. Ana Paula Mendes</nome>
 <crm>12345</crm>
 <especialidade>Cardiologia</especialidade>
@@ -31,7 +31,7 @@
 <email>ana.mendes@clinica.com</email>
 </registro>
 <registro>
-<codigo>2</codigo>
+<codigo>1</codigo>
 <nome>Dr. Carlos Almeida</nome>
 <crm>67890</crm>
 <especialidade>Pediatria</especialidade>
@@ -39,76 +39,59 @@
 <email>carlos.almeida@clinica.com</email>
 </registro>
 </tabela>
-<!-- Tabela de Agendamentos -->
+ <!-- Tabela de Agendamentos -->
 <tabela nome="agendamento">
 <registro>
 <codigo>1</codigo>
-<paciente>1</paciente> <!-- Referência ao código do paciente -->
-<profissional>1</profissional> <!-- Referência ao código do profissional -->
+<paciente>1</paciente>
+<profissional>0</profissional>
+<procedimento>1</procedimento>
 <data>2025-04-10</data>
 <hora>09:00</hora>
-<procedimento>Consulta</procedimento>
 </registro>
 <registro>
 <codigo>2</codigo>
-
 <paciente>2</paciente>
-<profissional>2</profissional>
+<profissional>0</profissional>
+<procedimento>0</procedimento>
 <data>2025-04-11</data>
 <hora>14:00</hora>
-<procedimento>Exame de rotina</procedimento>
 </registro>
 </tabela>
-<!-- Tabela de Prontuários -->
-<tabela nome="prontuario">
+<!-- Tabela de Ambientes Médicos -->
+<tabela nome="ambiente">
 <registro>
-<codigo>1</codigo>
-<paciente>1</paciente>
-<diagnostico>Hipertensão controlada</diagnostico>
-<prescricao>Losartana 50mg - 1x ao dia</prescricao>
-<historico_consultas>3 consultas realizadas em 2025</historico_consultas>
+<codigo>0</codigo>
+<descricao>Consultório 101 - Clínica Geral</descricao>
 </registro>
 <registro>
-<codigo>2</codigo>
-<paciente>2</paciente>
-<diagnostico>Reação alérgica</diagnostico>
-<prescricao>Antihistamínico - 1x ao dia</prescricao>
-<historico_consultas>2 consultas realizadas em 2025</historico_consultas>
+<codigo>1</codigo>
+<descricao>Sala 203 - Exames Laboratoriais</descricao>
 </registro>
 </tabela>
 <!-- Tabela de Medicamentos -->
 <tabela nome="medicamento">
 <registro>
-<codigo>101</codigo>
+<codigo>1</codigo>
 <descricao>Losartana 50mg</descricao>
 <fabricante>MedPharma</fabricante>
+<codfornecedor>1</codfornecedor>
 <preco_custo>10.50</preco_custo>
 <preco_venda>15.75</preco_venda>
 <quantidade_estoque>100</quantidade_estoque>
 <estoque_minimo>20</estoque_minimo>
 </registro>
 <registro>
-<codigo>102</codigo>
+<codigo>2</codigo>
 <descricao>Antihistamínico</descricao>
 <fabricante>BioHealth</fabricante>
+<codfornecedor>2</codfornecedor>
 <preco_custo>5.00</preco_custo>
 <preco_venda>8.50</preco_venda>
 <quantidade_estoque>50</quantidade_estoque>
 <estoque_minimo>10</estoque_minimo>
 </registro>
 </tabela>
-<!-- Tabela de Ambientes Médicos -->
-<tabela nome="ambiente">
-<registro>
-<codigo>1</codigo>
-<descricao>Consultório 101 - Clínica Geral</descricao>
-</registro>
-<registro>
-<codigo>2</codigo>
-<descricao>Sala 203 - Exames Laboratoriais</descricao>
-</registro>
-</tabela>
-<dados>
 <!-- Tabela de Fornecedores -->
 <tabela nome="fornecedor">
 <registro>
@@ -117,7 +100,7 @@
 <razao_social>Distribuidora de Produtos Médicos LTDA</razao_social>
 <inscricao_estadual>123456789</inscricao_estadual>
 <cnpj>12.345.678/0001-99</cnpj>
-<endereco>Rua Central, 100, Centro, São Paulo, SP</endereco>
+<endereco>Rua Central,100,Centro,São Paulo,SP</endereco>
 <telefone>11 99999-8888</telefone>
 <email>contato@saude.com</email>
 </registro>
@@ -132,6 +115,30 @@
 <email>vendas@medbrasil.com</email>
 </registro>
 </tabela>
-</dados>
-
+<!-- Tabela de Procedimentos -->
+<tabela nome="procedimento">
+<registro>
+<codigo>1</codigo>
+<descricao>Exame de sangue completo</descricao>
+<custo>150.00</custo>
+<tempo_estimado>30</tempo_estimado>
+<ambiente_medico>0</ambiente_medico>
+<medicamentos>
+<quantidade>2</quantidade>
+<codigo_material quantidade="2">1</codigo_material>
+<codigo_material quantidade="1">2</codigo_material>
+</medicamentos>
+</registro>
+<registro>
+<codigo>2</codigo>
+<descricao>Consulta clínica geral</descricao>
+<custo>80.00</custo>
+<tempo_estimado>20</tempo_estimado>
+<ambiente_medico>1</ambiente_medico>
+<medicamentos>
+<quantidade>1</quantidade>
+<codigo_material quantidade="1">2</codigo_material>
+</medicamentos>
+</registro>
+</tabela>
 </dados>

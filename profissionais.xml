@@ -1,0 +1,21 @@
+<dados>
+<!-- Tabela de Profissionais de Saúde -->
+<tabela nome="profissional">
+<registro>
+<codigo>0</codigo>
+<nome>Dra. Ana Paula Mendes</nome>
+<crm>12345</crm>
+<especialidade>Cardiologia</especialidade>
+<telefone>31 97777-1111</telefone>
+<email>ana.mendes@clinica.com</email>
+</registro>
+<registro>
+<codigo>1</codigo>
+<nome>Dr. Carlos Almeida</nome>
+<crm>67890</crm>
+<especialidade>Pediatria</especialidade>
+<telefone>41 98888-2222</telefone>
+<email>carlos.almeida@clinica.com</email>
+</registro>
+</tabela>
+</dados>

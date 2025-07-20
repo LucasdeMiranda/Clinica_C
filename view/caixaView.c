@@ -10,7 +10,7 @@ void menucaixa(float *saldototal, LacamentosRetiradas **lancamentosretiradas, Re
 {
     int op, op2,resultado;
     char data[100];
-    long int aux, auxreceber,codigofornecedor,codigo;
+    long int aux, auxreceber,codigoentradaestoque,codigo;  
     do
     {
         printf("1:Receber pelo procedimento realizado:\n");
@@ -41,8 +41,10 @@ void menucaixa(float *saldototal, LacamentosRetiradas **lancamentosretiradas, Re
                 printf("Digite o codigo do agendamento a ser pago:");
                 scanf("%ld", &novolancamentoretirada.codigoagendamento);
                 novolancamentoretirada.tipo = 0;
+                novolancamentoretirada.codigoentradaestoque=-1;// não é uma conta a pagar
                 *lancamentosretiradas = cadastrarlancamentoretirada(*lancamentosretiradas, tamlancamentosretiradas,
-                                                                    &novolancamentoretirada, agendamentos, tamagendamento, procedimentos, tamprocedimento,saldototal);
+                                                                    &novolancamentoretirada, agendamentos, tamagendamento, procedimentos,
+                                                                    tamprocedimento,saldototal,entradaestoque,tamentradaestoque);
                 if (*tamlancamentosretiradas > aux)
                 {
                     printf("Lançamento cadastrado com sucesso\n");
@@ -58,7 +60,8 @@ void menucaixa(float *saldototal, LacamentosRetiradas **lancamentosretiradas, Re
                 auxreceber=*tamreceber;
               printf("digite o codigo:");
               scanf("%ld",&codigo);
-            *receber = excluirreceber(*receber, tamreceber, codigo, lancamentosretiradas, tamlancamentosretiradas, saldototal);
+            *receber = excluirreceber(*receber, tamreceber, codigo, lancamentosretiradas, tamlancamentosretiradas,
+                saldototal,entradaestoque,tamentradaestoque);
 
               if(*tamreceber<auxreceber){
                 printf("conta a receber excluida com sucesso\n");
@@ -90,11 +93,11 @@ void menucaixa(float *saldototal, LacamentosRetiradas **lancamentosretiradas, Re
             }
         }
         else if(op==3){
-            printf("Digite o codigo do fornecedor");
-            scanf("%ld",&codigofornecedor);
+            printf("Digite o codigo da entrada de estoque");
+            scanf("%ld",&codigoentradaestoque);
             printf("digite a data");
             scanf(" %99[^\n]", data);
-            resultado=efetuarpagamento(codigofornecedor,saldototal,data,entradaestoque,tamentradaestoque,lancamentosretiradas,tamlancamentosretiradas);
+            resultado=efetuarpagamento(codigoentradaestoque,saldototal,data,entradaestoque,tamentradaestoque,lancamentosretiradas,tamlancamentosretiradas);
 
             if(resultado==-1){
                 printf("erro ao efetuar pagamento aos fornecedores\n");

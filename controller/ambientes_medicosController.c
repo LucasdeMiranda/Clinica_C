@@ -7,7 +7,7 @@ AmbienteMedico *cadastrarambientemedico(AmbienteMedico *ambientes, long int *tam
 {
     AmbienteMedico *novo = realloc(ambientes, (*tamambiente + 1) * sizeof(AmbienteMedico));
     if (novo == NULL)
-    { //erro ao alocar memoria
+    { // erro ao alocar memoria
         return ambientes;
     }
 
@@ -116,44 +116,43 @@ long int consultaambiente(AmbienteMedico *ambientes, long int tamambiente, long 
             return i;
         }
     }
-     
+
     return -1;
 }
 
-long int importarambiente(AmbienteMedico **ambientes, char *nome, long int *tamambientes, long int *codigoatual) {
+long int importarambiente(AmbienteMedico **ambientes, char *nome, long int *tamambientes, long int *codigoatual)
+{
     FILE *arquivo = fopen(nome, "r");
-    if (arquivo == NULL) {
+    if (arquivo == NULL)
+    {
         return -1;
     }
+
     char linha[1000];
     AmbienteMedico novo;
-    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
-        if (strstr(linha, "<tabela nome=\"ambiente\">") != NULL) {
-            while (fgets(linha, sizeof(linha), arquivo) != NULL && strstr(linha, "</tabela>") == NULL) {
-                if (strstr(linha, "<codigo>") != NULL) {
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL)
+    {
+        if (strstr(linha, "<tabela nome=\"ambiente\">") != NULL)
+        {
+            while (fgets(linha, sizeof(linha), arquivo) != NULL && strstr(linha, "</tabela>") == NULL)
+            {
+                if (strstr(linha, "<codigo>") != NULL)
+                {
                     sscanf(linha, "<codigo>%ld</codigo>", &novo.codigo);
                 }
 
-                if (strstr(linha, "<descricao>") != NULL) {
+                if (strstr(linha, "<descricao>") != NULL)
+                {
                     sscanf(linha, "<descricao>%999[^<]</descricao>", novo.descricaoProcedimento);
                 }
 
-                if (strstr(linha, "</registro>") != NULL) {
-                    AmbienteMedico *temp = realloc(*ambientes, (*tamambientes + 1) * sizeof(AmbienteMedico));
-                    if (temp == NULL) {
-                        fclose(arquivo);
-                        return -1;
-                    }
-                    *ambientes = temp;
-                    (*ambientes)[*tamambientes] = novo;
-                    (*tamambientes)++;
-
-                    if (novo.codigo >= *codigoatual) {
-                        *codigoatual = novo.codigo + 1;
-                    }
+                if (strstr(linha, "</registro>") != NULL)
+                {
+                    *ambientes = cadastrarambientemedico(*ambientes, tamambientes, codigoatual, &novo);
                 }
             }
-            break; // já leu a tabela
+            break;
         }
     }
 
@@ -161,13 +160,16 @@ long int importarambiente(AmbienteMedico **ambientes, char *nome, long int *tama
     return 0;
 }
 
-long int exportarambiente(AmbienteMedico *ambientes, char *nome, long int tamambientes) {
+long int exportarambiente(AmbienteMedico *ambientes, char *nome, long int tamambientes)
+{
     FILE *arquivo = fopen(nome, "w");
-    if (arquivo == NULL) {
+    if (arquivo == NULL)
+    {
         return -1;
     }
 
-    if (ambientes == NULL) {
+    if (ambientes == NULL)
+    {
         fclose(arquivo);
         return -1;
     }
@@ -176,7 +178,8 @@ long int exportarambiente(AmbienteMedico *ambientes, char *nome, long int tamamb
     fprintf(arquivo, "<!-- Tabela de Ambientes Médicos -->\n");
     fprintf(arquivo, "<tabela nome=\"ambiente\">\n");
 
-    for (long int i = 0; i < tamambientes; i++) {
+    for (long int i = 0; i < tamambientes; i++)
+    {
         fprintf(arquivo, "<registro>\n");
         fprintf(arquivo, "<codigo>%ld</codigo>\n", ambientes[i].codigo);
         fprintf(arquivo, "<descricao>%s</descricao>\n", ambientes[i].descricaoProcedimento);
@@ -188,4 +191,42 @@ long int exportarambiente(AmbienteMedico *ambientes, char *nome, long int tamamb
 
     fclose(arquivo);
     return 0;
+}
+
+long int importarambientemedicotxt(AmbienteMedico **ambientes, long int *tamambiente, long int *codigoatual, char *nome) {
+    FILE *arquivo = fopen(nome, "r");
+    if (arquivo == NULL) {
+        return -1;
+    }
+
+    char linha[1100];
+    AmbienteMedico novoambiente;
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        char *token = strtok(linha, ";");
+        if (token != NULL)
+            novoambiente.codigo = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";\n");
+        if (token != NULL)
+            strncpy(novoambiente.descricaoProcedimento, token, sizeof(novoambiente.descricaoProcedimento));
+
+        *ambientes = cadastrarambientemedico(*ambientes, tamambiente, codigoatual, &novoambiente);
+    }
+
+    fclose(arquivo);
+    return 0;
+}
+
+void exportarambientemedicotxt(AmbienteMedico *ambientes, char *nome, long int tamambiente) {
+    FILE *arquivo = fopen(nome, "w");
+    if (arquivo == NULL) {
+        return; // erro
+    }
+
+    for (long int i = 0; i < tamambiente; i++) {
+        fprintf(arquivo, "%ld;%s\n", ambientes[i].codigo, ambientes[i].descricaoProcedimento);
+    }
+
+    fclose(arquivo);
 }

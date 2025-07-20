@@ -5,7 +5,7 @@
 
 Entradaestoque *cadastrarentradaestoque(Entradaestoque *entradaestoque, long int *tamentradaestoque,
                                         MedicamentoMaterial *medicamentosmateriais, long int tammedicamentosmaterial,
-                                        Entradaestoque *novoentradaestoque)
+                                        Entradaestoque *novoentradaestoque, long int *codigoatual)
 {
   // Verifica se todos os materiais/medicamentos existem
   for (int i = 0; i < novoentradaestoque->tammedicamentosmateriaisrecebidos; i++)
@@ -33,6 +33,7 @@ Entradaestoque *cadastrarentradaestoque(Entradaestoque *entradaestoque, long int
   }
 
   entradaestoque = novo;
+  novoentradaestoque->codigo=*codigoatual;
   entradaestoque[*tamentradaestoque] = *novoentradaestoque;
 
   // Aloca novo vetor de structs Codmedicamentosmateriais
@@ -71,6 +72,7 @@ entradaestoque[*tamentradaestoque].totaldetudo=entradaestoque[*tamentradaestoque
 entradaestoque[*tamentradaestoque].imposto+ entradaestoque[*tamentradaestoque].frete;
 
   (*tamentradaestoque)++;
+  (*codigoatual)++;
   return entradaestoque;
 }
 
@@ -87,9 +89,11 @@ void estoqueminimo(MedicamentoMaterial *medicamentosmateriais, long int tammedic
   }
 }
 
+//modifica os preços dos medicamentos e materias com base nos calculos feitos com frete e imposto
 void alterarpreco(Entradaestoque *novoentradaestoque, MedicamentoMaterial *medicamentomaterial, 
 long int tammedicamentomaterial){
   float freteproduto=0, impostoproduto=0;
+  //total de produtos recebidos é necessario para o calculo do imposto e frete sob cada produto temons que somar o valor do frete e do imposto por produto ao preço
   long int totalprodutos=0;
   for(int i=0;i<novoentradaestoque->tammedicamentosmateriaisrecebidos;i++){
     totalprodutos=totalprodutos+novoentradaestoque->codmedicamentosmateriaisrecebidos[i].qnt;
