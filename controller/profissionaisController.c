@@ -266,3 +266,50 @@ void exportarprofissionaltxt(Profissional *profissionais, char *nome, long int t
 
     fclose(arquivo);
 }
+
+long int importarprofissionalbin(Profissional **profissionais, long int *tamprofissionais, long int *codigoatual, const char *nomearquivo)
+{
+    FILE *arquivo = fopen(nomearquivo, "rb");
+    if (!arquivo)
+    {
+        return -1; // erro ao abrir arquivo
+    }
+
+    long int total;
+    if (fread(&total, sizeof(long int), 1, arquivo) != 1)
+    {
+        fclose(arquivo);
+        return -2; // erro ao ler total
+    }
+
+    for (long int i = 0; i < total; i++)
+    {
+        Profissional temp;
+        if (fread(&temp, sizeof(Profissional), 1, arquivo) != 1)
+        {
+            fclose(arquivo);
+            return -3; // erro na leitura do registro
+        }
+
+        *profissionais = cadastrarprofissionalsaude(*profissionais, tamprofissionais, codigoatual, &temp);
+    }
+
+    fclose(arquivo);
+    return 0; // sucesso
+}
+
+void exportarprofissionalbin(Profissional *profissionais, long int tamprofissionais, const char *nomearquivo)
+{
+    FILE *arquivo = fopen(nomearquivo, "wb");
+    if (!arquivo)
+    {
+        printf("Erro ao abrir arquivo para escrita binária.\n");
+        return;
+    }
+
+    fwrite(&tamprofissionais, sizeof(long int), 1, arquivo);
+    fwrite(profissionais, sizeof(Profissional), tamprofissionais, arquivo);
+
+    fclose(arquivo);
+}
+

@@ -278,3 +278,52 @@ void exportarmedicamentotxt(MedicamentoMaterial *medicamentos, char *nome, long 
 
     fclose(arquivo);
 }
+
+long int importarmedicamentomaterialbin(MedicamentoMaterial **medicamentosmateriais, long int *tammedicamentomaterial, long int *codigoatual, const char *nomearquivo)
+{
+    FILE *arquivo = fopen(nomearquivo, "rb");
+    if (!arquivo)
+    {
+        return -1; // erro ao abrir o arquivo
+    }
+
+    long int total;
+    if (fread(&total, sizeof(long int), 1, arquivo) != 1)
+    {
+        fclose(arquivo);
+        return -2; // erro ao ler o total
+    }
+
+    for (long int i = 0; i < total; i++)
+    {
+        MedicamentoMaterial temp;
+        if (fread(&temp, sizeof(MedicamentoMaterial), 1, arquivo) != 1)
+        {
+            fclose(arquivo);
+            return -3; // erro ao ler um registro
+        }
+
+        *medicamentosmateriais = cadastrarmedicamentomaterial(*medicamentosmateriais, tammedicamentomaterial, codigoatual, &temp);
+    }
+
+    fclose(arquivo);
+    return 0; // sucesso
+}
+
+void exportarmedicamentomaterialbin(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, const char *nomearquivo)
+{
+    FILE *arquivo = fopen(nomearquivo, "wb");
+    if (!arquivo)
+    {
+        printf("Erro ao abrir o arquivo para escrita binária.\n");
+        return;
+    }
+
+    fwrite(&tammedicamentomaterial, sizeof(long int), 1, arquivo);
+    fwrite(medicamentosmateriais, sizeof(MedicamentoMaterial), tammedicamentomaterial, arquivo);
+
+    fclose(arquivo);
+}
+
+
+

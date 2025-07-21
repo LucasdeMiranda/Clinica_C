@@ -2,7 +2,7 @@
 <!-- Tabela de Agendamentos -->
 <tabela nome="agendamento">
 <registro>
-<codigo>0</codigo>
+<codigo>1</codigo>
 <paciente>1</paciente>
 <profissional>0</profissional>
 <procedimento>1</procedimento>

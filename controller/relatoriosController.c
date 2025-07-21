@@ -1185,7 +1185,7 @@ void relatorioprocedimentoprofissional(Agendamento *agendamentos, long int tamag
     }
 }
 
-void relatorioprocedimentosemfiltro(Agendamento *agendamentos, long int tamagendamento, Procedimento *procedimentos, long int tamprocedimento,int opcsv)
+void relatorioprocedimentosemfiltro(Agendamento *agendamentos, long int tamagendamento, Procedimento *procedimentos, long int tamprocedimento, int opcsv)
 {
     if (agendamentos == NULL)
     {
@@ -1219,7 +1219,6 @@ void relatorioprocedimentosemfiltro(Agendamento *agendamentos, long int tamagend
             return;
         }
 
- 
         fprintf(arquivo, "Data,Cod Procedimento,Cod Paciente,Cod Profissional,Valor Total\n");
         for (long int i = 0; i < tamagendamento; i++)
         {
@@ -1241,3 +1240,438 @@ void relatorioprocedimentosemfiltro(Agendamento *agendamentos, long int tamagend
         printf("Relatório salvo em relatorio.csv\n");
     }
 }
+
+void relatoriosbasicofornecedores(Fornecedor *fornecedores, long int tamfornecedores, char *estado, int opcsv)
+{
+    if (fornecedores == NULL)
+    {
+        printf("ERRO: lista vazia\n");
+        return;
+    }
+
+    if (opcsv == 1)
+    {
+        for (long int i = 0; i < tamfornecedores; i++)
+        {
+            if (strcmp(fornecedores[i].endereco.estado, estado) == 0)
+            {
+                printf("Codigo: %ld\n", fornecedores[i].codigo);
+                printf("CNPJ: %s\n", fornecedores[i].cnpj);
+                printf("Email: %s\n", fornecedores[i].email);
+                printf("Nome: %s\n", fornecedores[i].nomeFantasia);
+            }
+        }
+    }
+    else if (opcsv == 2)
+    {
+        FILE *arquivo = fopen("relatorio.csv", "w");
+        if (arquivo == NULL)
+        {
+            printf("Erro ao abrir o arquivo relatorio.csv\n");
+            return;
+        }
+        fprintf(arquivo, "Codigo,CNPJ,Email,NomeFantasia\n");
+        for (long int i = 0; i < tamfornecedores; i++)
+        {
+            if (strcmp(fornecedores[i].endereco.estado, estado) == 0)
+            {
+                fprintf(arquivo, "%ld,%s,%s,%s\n",
+                        fornecedores[i].codigo,
+                        fornecedores[i].cnpj,
+                        fornecedores[i].email,
+                        fornecedores[i].nomeFantasia);
+            }
+        }
+
+        fclose(arquivo);
+    }
+}
+
+void relatoriosbasicosfornecedoressemfiltro(Fornecedor *fornecedores, long int tamfornecedor, int opcsv)
+{
+    if (fornecedores == NULL)
+    {
+        printf("ERRO: lista vazia\n");
+        return;
+    }
+
+    if (opcsv == 1)
+    {
+      listarfornecedores(fornecedores,tamfornecedor);
+    }
+    else if (opcsv == 2)
+    {
+        FILE *arquivo = fopen("relatorio.csv", "w");
+        if (arquivo == NULL)
+        {
+            printf("Erro ao abrir o arquivo relatorio.csv\n");
+            return;
+        }
+        fprintf(arquivo, "Codigo,Nome Fantasia,Razao Social,Inscricao Estadual,CNPJ,Rua,Numero,Bairro,Cidade,Estado,Telefone,Email\n");
+
+        for (long int i = 0; i < tamfornecedor; i++)
+        {
+            fprintf(arquivo, "%ld,%s,%s,%s,%s,%s,%ld,%s,%s,%s,%s,%s\n",
+                    fornecedores[i].codigo,
+                    fornecedores[i].nomeFantasia,
+                    fornecedores[i].razaoSocial,
+                    fornecedores[i].inscricaoEstadual,
+                    fornecedores[i].cnpj,
+                    fornecedores[i].endereco.rua,
+                    fornecedores[i].endereco.numero,
+                    fornecedores[i].endereco.bairro,
+                    fornecedores[i].endereco.cidade,
+                    fornecedores[i].endereco.estado,
+                    fornecedores[i].telefone,
+                    fornecedores[i].email);
+        }
+
+        fclose(arquivo);
+        printf("Relatório gerado com sucesso no arquivo relatorio.csv\n");
+    }
+}
+
+void relatoriobasicoambientes(AmbienteMedico *ambientes, long int tamabiente, int opcsv)
+{
+    if (ambientes == NULL)
+    {
+        printf("ERRO: lista vazia\n");
+        return;
+    }
+    else if (opcsv == 1)
+    {
+        listarambiente(ambientes, tamabiente);
+    }
+    else if (opcsv == 2)
+    {
+        FILE *arquivo = fopen("relatorio.csv", "w");
+        if (arquivo == NULL)
+        {
+            printf("Erro ao abrir o arquivo relatorio.csv\n");
+            return;
+        }
+        fprintf(arquivo, "Codigo;Descricao do Procedimento\n");
+        for (long int i = 0; i < tamabiente; i++)
+        {
+            fprintf(arquivo, "%ld;%s\n", ambientes[i].codigo, ambientes[i].descricaoProcedimento);
+        }
+
+        fclose(arquivo);
+        printf("Relatório gerado com sucesso em 'relatorio.csv'\n");
+    }
+}
+
+void relatoriobasicomedicamentomaterialfornecedor(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, long int codfornecedor, int opcsv)
+{
+    if (medicamentosmateriais == NULL)
+    {
+        printf("ERRO: lista vazia\n");
+        return;
+    }
+
+    if (opcsv == 1)
+    {
+        for (long int i = 0; i < tammedicamentomaterial; i++)
+        {
+            if (codfornecedor == medicamentosmateriais[i].codfornecedor)
+            {
+                printf("Código: %ld\n", medicamentosmateriais[i].codigo);
+                printf("Descrição: %s\n", medicamentosmateriais[i].descricao);
+                printf("Fabricante: %s\n", medicamentosmateriais[i].fabricante);
+                printf("Preço de Custo: %.2f\n", medicamentosmateriais[i].precoCusto);
+                printf("Preço de Venda: %.2f\n", medicamentosmateriais[i].precoVenda);
+                printf("Quantidade em Estoque: %ld\n", medicamentosmateriais[i].quantidadeEstoque);
+                printf("Estoque Mínimo: %ld\n", medicamentosmateriais[i].estoqueMinimo);
+                printf("------------------------------------------\n");
+            }
+        }
+    }
+    else if (opcsv == 2)
+    {
+        FILE *arquivo = fopen("relatorio.csv", "w");
+        if (arquivo == NULL)
+        {
+            printf("Erro ao abrir o arquivo relatorio.csv\n");
+            return;
+        }
+        fprintf(arquivo, "Codigo;Descricao;Fabricante;Preco de Custo;Preco de Venda;Quantidade em Estoque;Estoque Minimo\n");
+
+        for (long int i = 0; i < tammedicamentomaterial; i++)
+        {
+            if (codfornecedor == medicamentosmateriais[i].codfornecedor)
+            {
+                fprintf(arquivo, "%ld;%s;%s;%.2f;%.2f;%ld;%ld\n",
+                        medicamentosmateriais[i].codigo,
+                        medicamentosmateriais[i].descricao,
+                        medicamentosmateriais[i].fabricante,
+                        medicamentosmateriais[i].precoCusto,
+                        medicamentosmateriais[i].precoVenda,
+                        medicamentosmateriais[i].quantidadeEstoque,
+                        medicamentosmateriais[i].estoqueMinimo);
+            }
+        }
+
+        fclose(arquivo);
+        printf("Relatório gerado com sucesso em 'relatorio.csv'\n");
+    }
+}
+
+void relatoriobasicomedicamentomaterialsemfiltro(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, int opcsv)
+{
+
+    if (medicamentosmateriais == NULL)
+    {
+        printf("ERRO: lista vazia\n");
+        return;
+    }
+    if (opcsv == 1)
+    {
+        for (long int i = 0; i < tammedicamentomaterial; i++)
+        {
+            printf("Código: %ld\n", medicamentosmateriais[i].codigo);
+            printf("Descrição: %s\n", medicamentosmateriais[i].descricao);
+            printf("Fabricante: %s\n", medicamentosmateriais[i].fabricante);
+            printf("Preço de Custo: %.2f\n", medicamentosmateriais[i].precoCusto);
+            printf("Preço de Venda: %.2f\n", medicamentosmateriais[i].precoVenda);
+            printf("Quantidade em Estoque: %ld\n", medicamentosmateriais[i].quantidadeEstoque);
+            printf("Estoque Mínimo: %ld\n", medicamentosmateriais[i].estoqueMinimo);
+            printf("------------------------------------------\n");
+        }
+    }
+    else if (opcsv == 2)
+    {
+        FILE *arquivo = fopen("relatorio.csv", "w");
+        if (arquivo == NULL)
+        {
+            printf("Erro ao abrir o arquivo relatorio.csv\n");
+            return;
+        }
+        fprintf(arquivo, "Codigo;Descricao;Fabricante;Preco de Custo;Preco de Venda;Quantidade em Estoque;Estoque Minimo\n");
+
+        for (long int i = 0; i < tammedicamentomaterial; i++)
+        {
+            fprintf(arquivo, "%ld;%s;%s;%.2f;%.2f;%ld;%ld\n",
+                    medicamentosmateriais[i].codigo,
+                    medicamentosmateriais[i].descricao,
+                    medicamentosmateriais[i].fabricante,
+                    medicamentosmateriais[i].precoCusto,
+                    medicamentosmateriais[i].precoVenda,
+                    medicamentosmateriais[i].quantidadeEstoque,
+                    medicamentosmateriais[i].estoqueMinimo);
+        }
+
+        fclose(arquivo);
+        printf("Relatório gerado com sucesso em 'relatorio.csv'\n");
+    }
+} 
+
+void relatoriobasicoprocedimentoambiente(Procedimento *procedimentos, long int tamprocedimento, long int codambiente, int opcsv)
+{
+    if (procedimentos == NULL)
+    {
+        printf("ERRO: lista vazia\n");
+        return;
+    }
+
+    if (opcsv == 1)
+    {
+        for (long int i = 0; i < tamprocedimento; i++)
+        {
+            if (procedimentos[i].codambientemedico == codambiente)
+            {
+                printf("Código do procedimento: %ld\n", procedimentos[i].codigo);
+                printf("Descrição: %s\n", procedimentos[i].descricao);
+                printf("Custo: R$ %.2f\n", procedimentos[i].custo);
+                printf("Tempo estimado: %ld minutos\n", procedimentos[i].tempoEstimado);
+                printf("Código do ambiente médico: %ld\n", procedimentos[i].codambientemedico);
+                printf("Quantidade de materiais/medicamentos: %ld\n", procedimentos[i].tamcodmedicamentosmateriais);
+
+                if (procedimentos[i].codmedicamentosemateriais != NULL)
+                {
+                    for (int j = 0; j < procedimentos[i].tamcodmedicamentosmateriais; j++)
+                    {
+                        printf("Código do material: %ld - Quantidade usada: %ld\n",
+                               procedimentos[i].codmedicamentosemateriais[j].codigo,
+                               procedimentos[i].codmedicamentosemateriais[j].qnt);
+                    }
+                }
+            }
+        }
+    }
+    else if (opcsv == 2)
+    {
+        FILE *arquivo = fopen("relatorio.csv", "w");
+        if (arquivo == NULL)
+        {
+            printf("Erro ao abrir o arquivo relatorio.csv\n");
+            return;
+        }
+
+        // Cabeçalho do CSV
+        fprintf(arquivo, "Código do procedimento,Descrição,Custo,Tempo estimado (min),Código do ambiente médico,Código do material,Quantidade usada\n");
+
+        for (long int i = 0; i < tamprocedimento; i++)
+        {
+            if (procedimentos[i].codambientemedico == codambiente)
+            {
+                if (procedimentos[i].codmedicamentosemateriais != NULL &&
+                    procedimentos[i].tamcodmedicamentosmateriais > 0)
+                {
+                    for (int j = 0; j < procedimentos[i].tamcodmedicamentosmateriais; j++)
+                    {
+                        fprintf(arquivo, "%ld,%s,%.2f,%ld,%ld,%ld,%ld\n",
+                                procedimentos[i].codigo,
+                                procedimentos[i].descricao,
+                                procedimentos[i].custo,
+                                procedimentos[i].tempoEstimado,
+                                procedimentos[i].codambientemedico,
+                                procedimentos[i].codmedicamentosemateriais[j].codigo,
+                                procedimentos[i].codmedicamentosemateriais[j].qnt);
+                    }
+                }
+                else
+                {
+                    // Se não houver materiais, preenche os campos com vazio
+                    fprintf(arquivo, "%ld,%s,%.2f,%ld,%ld,,\n",
+                            procedimentos[i].codigo,
+                            procedimentos[i].descricao,
+                            procedimentos[i].custo,
+                            procedimentos[i].tempoEstimado,
+                            procedimentos[i].codambientemedico);
+                }
+            }
+        }
+
+        fclose(arquivo);
+    }
+}
+
+void relatoriobasicoprocedimentosemfiltro(Procedimento *procedimentos,long int tamprocedimento,int opcsv){
+
+       if (procedimentos == NULL)
+    {
+        printf("ERRO: lista vazia\n");
+        return;
+    }
+
+    if (opcsv == 1)
+    {
+         listarprocedimento(procedimentos,tamprocedimento);
+    }
+    else if (opcsv == 2)
+    {
+        FILE *arquivo = fopen("relatorio.csv", "w");
+        if (arquivo == NULL)
+        {
+            printf("Erro ao abrir o arquivo relatorio.csv\n");
+            return;
+        }
+        fprintf(arquivo, "Código do procedimento,Descrição,Custo,Tempo estimado (min),Código do ambiente médico,Código do material,Quantidade usada\n");
+
+        for (long int i = 0; i < tamprocedimento; i++)
+        {
+                if (procedimentos[i].codmedicamentosemateriais != NULL &&
+                    procedimentos[i].tamcodmedicamentosmateriais > 0)
+                {
+                    for (int j = 0; j < procedimentos[i].tamcodmedicamentosmateriais; j++)
+                    {
+                        fprintf(arquivo, "%ld,%s,%.2f,%ld,%ld,%ld,%ld\n",
+                                procedimentos[i].codigo,
+                                procedimentos[i].descricao,
+                                procedimentos[i].custo,
+                                procedimentos[i].tempoEstimado,
+                                procedimentos[i].codambientemedico,
+                                procedimentos[i].codmedicamentosemateriais[j].codigo,
+                                procedimentos[i].codmedicamentosemateriais[j].qnt);
+                    }
+                }
+                else
+                {
+                    // Se não houver materiais, preenche os campos com vazio
+                    fprintf(arquivo, "%ld,%s,%.2f,%ld,%ld,,\n",
+                            procedimentos[i].codigo,
+                            procedimentos[i].descricao,
+                            procedimentos[i].custo,
+                            procedimentos[i].tempoEstimado,
+                            procedimentos[i].codambientemedico);
+                }
+            
+        }
+
+        fclose(arquivo);
+    }
+}
+void relatoriobasicoprofissionaisespecialidade(Profissional *profissionais, long int tamprofissionais, char *especialidade, int opcsv){
+    if(profissionais == NULL){
+        printf("ERRO: lista vazia\n");
+        return;
+    }
+
+    if(opcsv == 1){
+        for(long int i = 0; i < tamprofissionais; i++){
+            if(strcmp(profissionais[i].especialidade, especialidade) == 0){
+                printf("Código: %ld\n", profissionais[i].codigo);
+                printf("Nome completo: %s\n", profissionais[i].nomeCompleto);
+                printf("CRM: %s\n", profissionais[i].crm);
+                printf("Especialidade: %s\n", profissionais[i].especialidade);
+                printf("CPF: %s\n", profissionais[i].cpf);
+                printf("Telefone: %s\n", profissionais[i].telefone);
+                printf("Email: %s\n\n", profissionais[i].email);
+            }
+        }
+    }
+    else if(opcsv == 2){
+        FILE *arquivo = fopen("relatorio.csv", "w");
+        if (arquivo == NULL){
+            printf("Erro ao abrir o arquivo relatorio.csv\n");
+            return;
+        }
+        fprintf(arquivo, "Código,Nome completo,CRM,Especialidade,CPF,Telefone,Email\n");
+        for(long int i = 0; i < tamprofissionais; i++){
+            if(strcmp(profissionais[i].especialidade, especialidade) == 0){
+                fprintf(arquivo, "%ld,%s,%s,%s,%s,%s,%s\n",
+                        profissionais[i].codigo,
+                        profissionais[i].nomeCompleto,
+                        profissionais[i].crm,
+                        profissionais[i].especialidade,
+                        profissionais[i].cpf,
+                        profissionais[i].telefone,
+                        profissionais[i].email);
+            }
+        }
+
+        fclose(arquivo);
+    }
+}
+void relatoriobasicoprofissionaissemfiltro(Profissional *profissionais, long int tamprofissionais,int opcsv){
+     if(profissionais == NULL){
+        printf("ERRO: lista vazia\n");
+        return;
+    }
+
+    if(opcsv == 1){
+      listarprofissional(profissionais,tamprofissionais);
+    }
+    else if(opcsv == 2){
+        FILE *arquivo = fopen("relatorio.csv", "w");
+        if (arquivo == NULL){
+            printf("Erro ao abrir o arquivo relatorio.csv\n");
+            return;
+        }
+        fprintf(arquivo, "Código,Nome completo,CRM,Especialidade,CPF,Telefone,Email\n");
+        for(long int i = 0; i < tamprofissionais; i++){
+                fprintf(arquivo, "%ld,%s,%s,%s,%s,%s,%s\n",
+                        profissionais[i].codigo,
+                        profissionais[i].nomeCompleto,
+                        profissionais[i].crm,
+                        profissionais[i].especialidade,
+                        profissionais[i].cpf,
+                        profissionais[i].telefone,
+                        profissionais[i].email);
+            
+        }
+
+        fclose(arquivo);
+    }
+}
+

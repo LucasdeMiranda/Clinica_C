@@ -218,9 +218,6 @@ long int consultaprocedimento(Procedimento *procedimentos, long int tamprocedime
     return -1;
 }
 
- 
-
-
 long int exportarprocedimento(Procedimento *procedimentos, char *nome, long int tamprocedimento)
 {
     FILE *arquivo = fopen(nome, "w");
@@ -266,3 +263,212 @@ long int exportarprocedimento(Procedimento *procedimentos, char *nome, long int 
     fclose(arquivo);
     return 0;
 }
+
+long int importarprocedimentotxt(Procedimento **procedimentos, long int *tamprocedimento, long int *codigoatual,
+                                  AmbienteMedico *ambientes, MedicamentoMaterial *medicamentosmateriais,
+                                  long int tamabientes, long int tammedicamento, char *nome)
+{
+    FILE *arquivo = fopen(nome, "r");
+    if (arquivo == NULL)
+    {
+        return -1;
+    }
+
+    char linha[5000]; // linha maior, já que descrição e lista podem ser grandes
+    while (fgets(linha, sizeof(linha), arquivo) != NULL)
+    {
+        Procedimento novoprocedimento;
+
+        // Remove o '\n' do final da linha se existir
+        linha[strcspn(linha, "\n")] = '\0';
+
+        char *token = strtok(linha, ";");
+        if (token == NULL) continue;
+        novoprocedimento.codigo = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";");
+        if (token == NULL) continue;
+        strncpy(novoprocedimento.descricao, token, sizeof(novoprocedimento.descricao));
+        novoprocedimento.descricao[sizeof(novoprocedimento.descricao) - 1] = '\0';
+
+        token = strtok(NULL, ";");
+        if (token == NULL) continue;
+        novoprocedimento.custo = strtof(token, NULL);
+
+        token = strtok(NULL, ";");
+        if (token == NULL) continue;
+        novoprocedimento.tempoEstimado = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";");
+        if (token == NULL) continue;
+        novoprocedimento.codambientemedico = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";");
+        if (token == NULL) continue;
+        novoprocedimento.tamcodmedicamentosmateriais = strtol(token, NULL, 10);
+
+        // Alocar memória para os materiais
+        novoprocedimento.codmedicamentosemateriais = malloc(novoprocedimento.tamcodmedicamentosmateriais * sizeof(Codmedicamentosmateriais));
+        if (novoprocedimento.codmedicamentosemateriais == NULL)
+        {
+            fclose(arquivo);
+            return -1; // erro de alocação
+        }
+
+        for (int i = 0; i < novoprocedimento.tamcodmedicamentosmateriais; i++)
+        {
+            token = strtok(NULL, ";");
+            if (token == NULL) break;
+            novoprocedimento.codmedicamentosemateriais[i].codigo = strtol(token, NULL, 10);
+
+            token = strtok(NULL, ";");
+            if (token == NULL) break;
+            novoprocedimento.codmedicamentosemateriais[i].qnt = strtol(token, NULL, 10);
+        }
+
+        *procedimentos = cadastrarprocedimento(*procedimentos, tamprocedimento, codigoatual,
+                                               &novoprocedimento, ambientes, medicamentosmateriais,
+                                               tamabientes, tammedicamento);
+    }
+
+    fclose(arquivo);
+    return 0;
+}
+
+void exportarprocedimentotxt(Procedimento *procedimentos, long int tam, const char *caminho)
+{
+    FILE *arquivo = fopen(caminho, "w");
+    if (arquivo == NULL)
+    {
+        printf("Erro ao abrir o arquivo para exportar procedimentos.\n");
+        return;
+    }
+
+    for (long int i = 0; i < tam; i++)
+    {
+        // Escreve os dados principais do procedimento
+        fprintf(arquivo, "%ld;%s;%.2f;%ld;%ld;%ld",
+                procedimentos[i].codigo,
+                procedimentos[i].descricao,
+                procedimentos[i].custo,
+                procedimentos[i].tempoEstimado,
+                procedimentos[i].codambientemedico,
+                procedimentos[i].tamcodmedicamentosmateriais);
+
+        for (long int j = 0; j < procedimentos[i].tamcodmedicamentosmateriais; j++)
+        {
+            fprintf(arquivo, ";%ld;%ld",
+                    procedimentos[i].codmedicamentosemateriais[j].codigo,
+                    procedimentos[i].codmedicamentosemateriais[j].qnt);
+        }
+
+        fprintf(arquivo, "\n"); 
+    }
+
+    fclose(arquivo);
+}
+
+long int importarprocedimentobin(Procedimento **procedimentos, long int *tamprocedimento, long int *codigoatual,
+                                const char *nomearquivo,
+                                AmbienteMedico *ambientes, long int tamambientes,
+                                MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial)
+{
+    FILE *arquivo = fopen(nomearquivo, "rb");
+    if (!arquivo)
+    {
+        return -1; // erro abrir arquivo
+    }
+
+    long int total;
+    if (fread(&total, sizeof(long int), 1, arquivo) != 1)
+    {
+        fclose(arquivo);
+        return -2; // erro ler total
+    }
+
+    for (long int i = 0; i < total; i++)
+    {
+        Procedimento temp;
+
+        // Ler a parte fixa (todos os campos exceto o vetor)
+        // Para evitar ler lixo no ponteiro, zerar antes
+        memset(&temp, 0, sizeof(Procedimento));
+
+        // Ler dados fixos
+        if (fread(&temp.codigo, sizeof(long int), 1, arquivo) != 1) { fclose(arquivo); return -3; }
+        if (fread(&temp.descricao, sizeof(char), sizeof(temp.descricao), arquivo) != sizeof(temp.descricao)) { fclose(arquivo); return -3; }
+        if (fread(&temp.custo, sizeof(float), 1, arquivo) != 1) { fclose(arquivo); return -3; }
+        if (fread(&temp.tempoEstimado, sizeof(long int), 1, arquivo) != 1) { fclose(arquivo); return -3; }
+        if (fread(&temp.codambientemedico, sizeof(long int), 1, arquivo) != 1) { fclose(arquivo); return -3; }
+        if (fread(&temp.tamcodmedicamentosmateriais, sizeof(long int), 1, arquivo) != 1) { fclose(arquivo); return -3; }
+
+        // Alocar vetor dinâmico
+        if (temp.tamcodmedicamentosmateriais > 0)
+        {
+            temp.codmedicamentosemateriais = malloc(temp.tamcodmedicamentosmateriais * sizeof(Codmedicamentosmateriais));
+            if (temp.codmedicamentosemateriais == NULL)
+            {
+                fclose(arquivo);
+                return -4; // erro malloc
+            }
+
+            // Ler vetor
+            if (fread(temp.codmedicamentosemateriais, sizeof(Codmedicamentosmateriais), temp.tamcodmedicamentosmateriais, arquivo) != temp.tamcodmedicamentosmateriais)
+            {
+                free(temp.codmedicamentosemateriais);
+                fclose(arquivo);
+                return -5; // erro ler vetor
+            }
+        }
+        else
+        {
+            temp.codmedicamentosemateriais = NULL;
+        }
+
+        // Agora cadastra no vetor principal
+        *procedimentos = cadastrarprocedimento(*procedimentos, tamprocedimento, codigoatual, &temp,
+                                               ambientes, medicamentosmateriais, tamambientes, tammedicamentomaterial);
+
+        // Depois de cadastrar, o cadastrarprocedimento deve copiar e armazenar os dados internamente,
+        // incluindo alocar e copiar o vetor codmedicamentosemateriais
+        // Então aqui pode liberar temp.codmedicamentosemateriais para evitar vazamento:
+        if (temp.codmedicamentosemateriais != NULL)
+            free(temp.codmedicamentosemateriais);
+    }
+
+    fclose(arquivo);
+    return 0; // sucesso
+}
+
+void exportarprocedimentobin(Procedimento *procedimentos, long int tamprocedimento, const char *nomearquivo)
+{
+    FILE *arquivo = fopen(nomearquivo, "wb");
+    if (!arquivo)
+    {
+        printf("Erro ao abrir arquivo para escrita binária.\n");
+        return;
+    }
+
+    fwrite(&tamprocedimento, sizeof(long int), 1, arquivo);
+
+    for (long int i = 0; i < tamprocedimento; i++)
+    {
+        // Grava campos fixos
+        fwrite(&procedimentos[i].codigo, sizeof(long int), 1, arquivo);
+        fwrite(procedimentos[i].descricao, sizeof(char), sizeof(procedimentos[i].descricao), arquivo);
+        fwrite(&procedimentos[i].custo, sizeof(float), 1, arquivo);
+        fwrite(&procedimentos[i].tempoEstimado, sizeof(long int), 1, arquivo);
+        fwrite(&procedimentos[i].codambientemedico, sizeof(long int), 1, arquivo);
+        fwrite(&procedimentos[i].tamcodmedicamentosmateriais, sizeof(long int), 1, arquivo);
+
+        // Grava vetor dinâmico
+        if (procedimentos[i].tamcodmedicamentosmateriais > 0 && procedimentos[i].codmedicamentosemateriais != NULL)
+        {
+            fwrite(procedimentos[i].codmedicamentosemateriais, sizeof(Codmedicamentosmateriais),
+                   procedimentos[i].tamcodmedicamentosmateriais, arquivo);
+        }
+    }
+
+    fclose(arquivo);
+}
+

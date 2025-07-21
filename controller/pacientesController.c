@@ -357,3 +357,50 @@ void exportarpacientetxt(Paciente *pacientes, char *nome, long int tampacientes)
 
     fclose(arquivo);
 }
+
+long int importarpacientebin(Paciente **pacientes, long int *tampacientes, long int *codigoatual, const char *nomearquivo)
+{
+    FILE *arquivo = fopen(nomearquivo, "rb");
+    if (!arquivo)
+    {
+        return -1; // erro ao abrir arquivo
+    }
+
+    long int total;
+    if (fread(&total, sizeof(long int), 1, arquivo) != 1)
+    {
+        fclose(arquivo);
+        return -2; // erro na leitura do tamanho
+    }
+
+    for (long int i = 0; i < total; i++)
+    {
+        Paciente temp;
+
+        if (fread(&temp, sizeof(Paciente), 1, arquivo) != 1)
+        {
+            fclose(arquivo);
+            return -3; // erro na leitura do paciente
+        }
+ 
+        *pacientes = cadastrarpaciente(*pacientes, tampacientes, codigoatual, &temp);
+    }
+
+    fclose(arquivo);
+    return 0; // sucesso
+}
+
+void exportarpacientebin(Paciente *pacientes, long int tampacientes, const char *nomearquivo)
+{
+    FILE *arquivo = fopen(nomearquivo, "wb");
+    if (!arquivo)
+    {
+        printf("Erro ao abrir arquivo para escrita binária\n");
+        return;
+    }
+    fwrite(&tampacientes, sizeof(long int), 1, arquivo);
+
+    fwrite(pacientes, sizeof(Paciente), tampacientes, arquivo);
+
+    fclose(arquivo);
+}

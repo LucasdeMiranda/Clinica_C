@@ -74,7 +74,7 @@ Agendamento *cadastraragendamento(Agendamento *agendamentos, long int *tamagenda
     {
         for (int i = 0; i < *tamagendamentos; i++)
         {
-            //pega o caso de fazer ao mesmo tempo
+            // pega o caso de fazer ao mesmo tempo
             if (strcmp(novoagendamento->data, agendamentos[i].data) == 0 &&
                 strcmp(novoagendamento->horario, agendamentos[i].horario) == 0)
             {
@@ -88,13 +88,12 @@ Agendamento *cadastraragendamento(Agendamento *agendamentos, long int *tamagenda
                     flag = -1; // conflito de profissional
                     return agendamentos;
                 }
-
-
             }
 
-            //pega o caso do horario
-            else if( strcmp(novoagendamento->horariofim, agendamentos[i].horariofim) < 0 && 
-            strcmp(novoagendamento->data, agendamentos[i].data) == 0){
+            // pega o caso do horario
+            else if (strcmp(novoagendamento->horariofim, agendamentos[i].horariofim) < 0 &&
+                     strcmp(novoagendamento->data, agendamentos[i].data) == 0)
+            {
 
                 if (novoagendamento->codprocedimento == agendamentos[i].codprocedimento)
                 {
@@ -107,8 +106,6 @@ Agendamento *cadastraragendamento(Agendamento *agendamentos, long int *tamagenda
                     return agendamentos;
                 }
             }
-
-            
         }
     }
 
@@ -143,12 +140,11 @@ Agendamento *cadastraragendamento(Agendamento *agendamentos, long int *tamagenda
     return agendamentos;
 }
 
-
 long int importaragendamento(Agendamento **agendamentos, char *nome, long int *tamagendamento, long int *codigoatualagendamento,
-                              Paciente *pacientes, long int tampacientes,
-                              Profissional *profissionais, long int tamprofissionais,
-                              Procedimento *procedimentos, long int tamprocedimento,
-                              MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial)
+                             Paciente *pacientes, long int tampacientes,
+                             Profissional *profissionais, long int tamprofissionais,
+                             Procedimento *procedimentos, long int tamprocedimento,
+                             MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial)
 {
     FILE *arquivo = fopen(nome, "r");
     if (arquivo == NULL)
@@ -233,4 +229,137 @@ long int exportaragendamento(Agendamento *agendamentos, char *nome, long int tam
 
     fclose(arquivo);
     return 0; // sucesso ao exportar
+}
+
+long int importaragendamentotxt(Agendamento **agendamentos, long int *tamagendamentos, long int *codigoatual, char *nome,
+                                Paciente *pacientes, long int tampacientes,
+                                Profissional *profissionais, long int tamprofissionais,
+                                Procedimento *procedimentos, long int tamprocedimento,
+                                MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial)
+{
+    FILE *arquivo = fopen(nome, "r");
+    if (arquivo == NULL)
+    {
+        return -1; // erro ao abrir arquivo
+    }
+
+    char linha[1024];
+    Agendamento novoagendamento;
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL)
+    {
+        char *token = strtok(linha, ";");
+        if (token != NULL)
+            novoagendamento.codigo = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";");
+        if (token != NULL)
+            novoagendamento.codpaciente = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";");
+        if (token != NULL)
+            novoagendamento.codprofissional = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";");
+        if (token != NULL)
+            novoagendamento.codprocedimento = strtol(token, NULL, 10);
+
+        token = strtok(NULL, ";");
+        if (token != NULL)
+            strncpy(novoagendamento.data, token, sizeof(novoagendamento.data));
+
+        token = strtok(NULL, ";");
+        if (token != NULL)
+            strncpy(novoagendamento.horario, token, sizeof(novoagendamento.horario));
+
+        token = strtok(NULL, ";\n");
+        if (token != NULL)
+            strncpy(novoagendamento.horariofim, token, sizeof(novoagendamento.horariofim));
+
+        *agendamentos = cadastraragendamento(*agendamentos, tamagendamentos, codigoatual, &novoagendamento,
+                                             pacientes, tampacientes, profissionais, tamprofissionais,
+                                             procedimentos, tamprocedimento,
+                                             medicamentosmateriais, tammedicamentomaterial);
+    }
+
+    fclose(arquivo);
+    return 0;
+}
+
+void exportaragendamentotxt(Agendamento *agendamentos, char *nome, long int tamagendamentos)
+{
+    FILE *arquivo = fopen(nome, "w");
+    if (arquivo == NULL)
+    {
+        return; // erro ao abrir arquivo
+    }
+
+    for (long int i = 0; i < tamagendamentos; i++)
+    {
+        fprintf(arquivo, "%ld;%ld;%ld;%ld;%s;%s;%s\n",
+                agendamentos[i].codigo,
+                agendamentos[i].codpaciente,
+                agendamentos[i].codprofissional,
+                agendamentos[i].codprocedimento,
+                agendamentos[i].data,
+                agendamentos[i].horario,
+                agendamentos[i].horariofim);
+    }
+
+    fclose(arquivo);
+}
+
+long int importaragendamentobin(Agendamento **agendamentos, long int *tamagendamentos, long int *codigoatual,
+                                const char *nomearquivo, Paciente *pacientes, long int tampacientes,
+                                Profissional *profissionais, long int tamprofissionais,
+                                Procedimento *procedimentos, long int tamprocedimento,
+                                MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial)
+{
+    FILE *arquivo = fopen(nomearquivo, "rb");
+    if (!arquivo)
+        return -1; // erro ao abrir arquivo
+
+    long int total;
+    if (fread(&total, sizeof(long int), 1, arquivo) != 1)
+    {
+        fclose(arquivo);
+        return -2; // erro ao ler total
+    }
+
+    for (long int i = 0; i < total; i++)
+    {
+        Agendamento temp;
+        if (fread(&temp, sizeof(Agendamento), 1, arquivo) != 1)
+        {
+            fclose(arquivo);
+            return -3; // erro na leitura do registro
+        }
+
+        *agendamentos = cadastraragendamento(*agendamentos, tamagendamentos, codigoatual,
+                                             &temp, pacientes, tampacientes,
+                                             profissionais, tamprofissionais,
+                                             procedimentos, tamprocedimento,
+                                             medicamentosmateriais, tammedicamentomaterial);
+    }
+
+    fclose(arquivo);
+    return 0; // sucesso
+}
+
+
+void exportaragendamentobin(Agendamento *agendamentos, long int tamagendamento, const char *nomearquivo)
+{
+    FILE *arquivo = fopen(nomearquivo, "wb");
+    if (!arquivo)
+    {
+        printf("Erro ao abrir arquivo para escrita binária.\n");
+        return;
+    }
+
+    // Escreve o número total de agendamentos
+    fwrite(&tamagendamento, sizeof(long int), 1, arquivo);
+    // Escreve todos os agendamentos
+    fwrite(agendamentos, sizeof(Agendamento), tamagendamento, arquivo);
+
+    fclose(arquivo);
 }

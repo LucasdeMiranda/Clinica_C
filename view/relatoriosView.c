@@ -10,8 +10,8 @@ void menurelatorios(Agendamento *agendamentos, long int tamagendamento, Ambiente
                     Profissional *profissionais, long int tamprofissional, Receber *receber, long int tamreceber)
 {
     int op, opcsv, opfiltro, op1;
-    char data1[100], data2[100],cidade[200],estado[10];
-    long int codpaciente, codfornecedor, resultado,codprocedimento,codprofissional;
+    char data1[100], data2[100],cidade[200],estado[10],especialidade[400];
+    long int codpaciente, codfornecedor, resultado,codprocedimento,codprofissional,codambiente;
 
     printf("1:Imprimir na tela\n 2:Csv\n3:Sair\n");
     scanf("%d", &opcsv);
@@ -26,7 +26,7 @@ void menurelatorios(Agendamento *agendamentos, long int tamagendamento, Ambiente
         printf("5:Relatorio de ambientes\n");
         printf("6:Relatorio de fornecedores\n");
         printf("7:Relatorio de Medicamentos e materiais\n");
-        printf("8: Relatorio de  \n");
+        printf("8: Relatorio de procedimentos\n");
         printf("9:Relatorio de profissionais\n");
         printf("10:Relatorio de procedimentos realizados\n");
         printf("11:Sair\n");
@@ -166,13 +166,13 @@ void menurelatorios(Agendamento *agendamentos, long int tamagendamento, Ambiente
             }
         }
         else if(op==5){
-
+           relatoriobasicoambientes(ambientes,tamambientes,opcsv);
         }
         else if(op==6){
             //filtro de estado
             printf("1:Estado\n");
             printf("2:Nenhum\n");
-            scanf("%d",opfiltro);
+            scanf("%d",&opfiltro);
               if (opfiltro < 1 || opfiltro > 2)
             {
                 printf("opção invalida\n");
@@ -180,6 +180,64 @@ void menurelatorios(Agendamento *agendamentos, long int tamagendamento, Ambiente
             else if(opfiltro==1){
                 printf("digite o estado:");
                 scanf(" %9[^\n]",estado);
+                relatoriosbasicofornecedores(fornecedores,tamfornecedores,estado,opcsv);
+            }
+            else if(opfiltro==1){
+                relatoriosbasicosfornecedoressemfiltro(fornecedores,tamfornecedores,opcsv);
+            }
+        }
+        else if(op==7){
+            printf("1:Fornecedor\n");
+            printf("2:Nenhum\n");
+            scanf("%d",&opfiltro);
+              if (opfiltro < 1 || opfiltro > 2)
+            {
+                printf("opção invalida\n");
+            }
+            else if(opfiltro==1){
+            //filtro de fornecedor fornece o codigo do fornecedor e el imprime todos os medicamentos fornececidos pelo fornecedor
+            printf("digite o codigo do fornecedor:");
+            scanf("%ld",&codfornecedor);
+            relatoriobasicomedicamentomaterialfornecedor(medicamentosmariais,tammedicamentomaterial,codfornecedor,opcsv);
+            }
+            else if(opfiltro==2){
+                relatoriobasicomedicamentomaterialsemfiltro(medicamentosmariais,tammedicamentomaterial,opcsv);
+            }
+        }
+        else if(op==8){
+           //filtro que mostra somente os procedimentos que usam um determinado  ambiente
+            printf("1:Ambiente\n");
+            printf("2:Nenhum\n");
+            scanf("%d",&opfiltro);
+              if (opfiltro < 1 || opfiltro > 2)
+            {
+                printf("opção invalida\n");
+            }
+            else if(opfiltro==1){
+                printf("digite o codigo do ambiente:");
+                scanf("%ld",&codambiente);
+                relatoriobasicoprocedimentoambiente(procedimentos,tamprocedimento,codambiente,opcsv);
+            }
+            else if(opfiltro==2){
+                relatoriobasicoprocedimentosemfiltro(procedimentos,tamprocedimento,opcsv);
+            }
+        }
+        else if(op==9){
+            //filtro de especialidade
+          printf("1:Especialidade\n");
+          printf("2:Nenhum\n");
+          scanf("%d",&opfiltro);
+           if (opfiltro < 1 || opfiltro > 2)
+            {
+                printf("opção invalida\n");
+            }
+            else if(opfiltro==1){
+                  printf("digite a especialidade:");
+                scanf(" %399[^\n]", cidade);
+                relatoriobasicoprofissionaisespecialidade(profissionais, tamprofissional,especialidade,opcsv);
+            }
+            else if(opfiltro==2){
+                relatoriobasicoprofissionaissemfiltro(profissionais,tamprofissional,opcsv);
             }
         }
         else if(op==10){

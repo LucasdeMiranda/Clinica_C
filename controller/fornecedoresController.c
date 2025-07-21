@@ -328,3 +328,51 @@ void exportarfornecedortxt(Fornecedor *fornecedores, char *nome, long int tamfor
 
    fclose(arquivo);
 }
+
+long int importarfornecedorbin(Fornecedor **fornecedores, long int *tamfornecedor, long int *codigoatual, const char *nomearquivo)
+{
+    FILE *arquivo = fopen(nomearquivo, "rb");
+    if (!arquivo)
+    {
+        return -1; // erro ao abrir arquivo
+    }
+
+    long int total;
+    if (fread(&total, sizeof(long int), 1, arquivo) != 1)
+    {
+        fclose(arquivo);
+        return -2; // erro na leitura do total
+    }
+
+    for (long int i = 0; i < total; i++)
+    {
+        Fornecedor temp;
+
+        if (fread(&temp, sizeof(Fornecedor), 1, arquivo) != 1)
+        {
+            fclose(arquivo);
+            return -3; // erro na leitura do fornecedor
+        }
+
+        *fornecedores = cadastrarfornecedor(*fornecedores, tamfornecedor, codigoatual, &temp);
+    }
+
+    fclose(arquivo);
+    return 0; // sucesso
+}
+
+void exportarfornecedorbin(Fornecedor *fornecedores, long int tamfornecedor, const char *nomearquivo)
+{
+    FILE *arquivo = fopen(nomearquivo, "wb");
+    if (!arquivo)
+    {
+        printf("Erro ao abrir arquivo para escrita binária\n");
+        return;
+    }
+
+    fwrite(&tamfornecedor, sizeof(long int), 1, arquivo);
+    fwrite(fornecedores, sizeof(Fornecedor), tamfornecedor, arquivo);
+
+    fclose(arquivo);
+}
+

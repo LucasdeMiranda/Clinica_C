@@ -230,3 +230,50 @@ void exportarambientemedicotxt(AmbienteMedico *ambientes, char *nome, long int t
 
     fclose(arquivo);
 }
+
+long int importarambientemedicobin(AmbienteMedico **ambientes, long int *tamambiente, long int *codigoatual, const char *nomearquivo)
+{
+    FILE *arquivo = fopen(nomearquivo, "rb");
+    if (!arquivo)
+    {
+        return -1; // erro ao abrir arquivo
+    }
+
+    long int total;
+    if (fread(&total, sizeof(long int), 1, arquivo) != 1)
+    {
+        fclose(arquivo);
+        return -2; // erro ao ler total
+    }
+
+    for (long int i = 0; i < total; i++)
+    {
+        AmbienteMedico temp;
+        if (fread(&temp, sizeof(AmbienteMedico), 1, arquivo) != 1)
+        {
+            fclose(arquivo);
+            return -3; // erro na leitura do registro
+        }
+
+        *ambientes = cadastrarambientemedico(*ambientes, tamambiente, codigoatual, &temp);
+    }
+
+    fclose(arquivo);
+    return 0; // sucesso
+}
+
+void exportarambientemedicobin(AmbienteMedico *ambientes, long int tamambiente, const char *nomearquivo)
+{
+    FILE *arquivo = fopen(nomearquivo, "wb");
+    if (!arquivo)
+    {
+        printf("Erro ao abrir arquivo para escrita binária.\n");
+        return;
+    }
+
+    fwrite(&tamambiente, sizeof(long int), 1, arquivo);
+    fwrite(ambientes, sizeof(AmbienteMedico), tamambiente, arquivo);
+
+    fclose(arquivo);
+}
+

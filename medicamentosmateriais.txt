@@ -1,2 +1,2 @@
-0;Losartana 50mg;MedPharma;1;10.50;15.75;90;20
-1;Antihistamínico;BioHealth;2;5.00;8.50;50;10
+0;Losartana 50mg;MedPharma;1;10.00;241.50;79;20
+1;Antihistamínico;BioHealth;2;5.00;8.50;14;10
