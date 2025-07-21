@@ -1,2 +1,0 @@
-# Clinica_C
-
