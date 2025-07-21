@@ -307,13 +307,9 @@ void exportaragendamentotxt(Agendamento *agendamentos, char *nome, long int tama
     }
 
     fclose(arquivo);
-}
+} 
 
-long int importaragendamentobin(Agendamento **agendamentos, long int *tamagendamentos, long int *codigoatual,
-                                const char *nomearquivo, Paciente *pacientes, long int tampacientes,
-                                Profissional *profissionais, long int tamprofissionais,
-                                Procedimento *procedimentos, long int tamprocedimento,
-                                MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial)
+long int importaragendamentobin(Agendamento **agendamentos,long int *tamagendamentos,long int *codigoatual,const char *nomearquivo,Paciente *pacientes,long int tampacientes,Profissional *profissionais,long int tamprofissionais,Procedimento *procedimentos,long int tamprocedimento,MedicamentoMaterial *medicamentosmateriais,long int tammedicamentomaterial)
 {
     FILE *arquivo = fopen(nomearquivo, "rb");
     if (!arquivo)
@@ -323,7 +319,7 @@ long int importaragendamentobin(Agendamento **agendamentos, long int *tamagendam
     if (fread(&total, sizeof(long int), 1, arquivo) != 1)
     {
         fclose(arquivo);
-        return -2; // erro ao ler total
+        return -2; // erro na leitura do total
     }
 
     for (long int i = 0; i < total; i++)
@@ -332,34 +328,33 @@ long int importaragendamentobin(Agendamento **agendamentos, long int *tamagendam
         if (fread(&temp, sizeof(Agendamento), 1, arquivo) != 1)
         {
             fclose(arquivo);
-            return -3; // erro na leitura do registro
+            return -3; // erro na leitura do agendamento
         }
 
-        *agendamentos = cadastraragendamento(*agendamentos, tamagendamentos, codigoatual,
-                                             &temp, pacientes, tampacientes,
-                                             profissionais, tamprofissionais,
-                                             procedimentos, tamprocedimento,
-                                             medicamentosmateriais, tammedicamentomaterial);
+        *agendamentos = cadastraragendamento(
+            *agendamentos, tamagendamentos, codigoatual,
+            &temp, pacientes, tampacientes,
+            profissionais, tamprofissionais,
+            procedimentos, tamprocedimento,
+            medicamentosmateriais, tammedicamentomaterial);
     }
 
     fclose(arquivo);
     return 0; // sucesso
 }
 
-
-void exportaragendamentobin(Agendamento *agendamentos, long int tamagendamento, const char *nomearquivo)
+void exportaragendamentobin(Agendamento *agendamentos, long int tamagendamentos, const char *nomearquivo)
 {
     FILE *arquivo = fopen(nomearquivo, "wb");
     if (!arquivo)
     {
-        printf("Erro ao abrir arquivo para escrita binária.\n");
+        printf("Erro ao abrir arquivo para escrita binária\n");
         return;
     }
 
-    // Escreve o número total de agendamentos
-    fwrite(&tamagendamento, sizeof(long int), 1, arquivo);
-    // Escreve todos os agendamentos
-    fwrite(agendamentos, sizeof(Agendamento), tamagendamento, arquivo);
+    fwrite(&tamagendamentos, sizeof(long int), 1, arquivo);
+    fwrite(agendamentos, sizeof(Agendamento), tamagendamentos, arquivo);
 
     fclose(arquivo);
 }
+

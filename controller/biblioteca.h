@@ -98,7 +98,7 @@ typedef struct
 typedef struct
 {
     long int codigo, codpaciente, codprofissional, codprocedimento;
-    char data[20], horario[20], horariofim[20];  ;
+    char data[20], horario[20], horariofim[20];
 } Agendamento;
 
 typedef struct
@@ -204,6 +204,12 @@ long int importaragendamento(Agendamento **agendamentos, char *nome, long int *t
                              Profissional *profissionais, long int tamprofissionais,
                              Procedimento *procedimentos, long int tamprocedimento,
                              MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial);
+long int importarprocedimento(Procedimento **procedimentos,char *nome,long int *tamprocedimento,long int *codigoatual,AmbienteMedico *ambientes,
+    MedicamentoMaterial *medicamentosmateriais,
+    long int tamambientes,
+    long int tammedicamentomaterial);
+
+    
 // exportar
 long int exportarpaciente(Paciente *pacientes, char *nome, long int tampacientes);
 long int exportarambiente(AmbienteMedico *ambientes, char *nome, long int tamambientes);
@@ -225,13 +231,13 @@ void exportarprofissionaltxt(Profissional *profissionais, char *nome, long int t
 long int importarpacientetxt(Paciente **pacientes, long int *tampacientes, long int *codigoatual, char *nome);
 long int importarambientemedicotxt(AmbienteMedico **ambientes, long int *tamambiente, long int *codigoatual, char *nome);
 void exportarambientemedicotxt(AmbienteMedico *ambientes, char *nome, long int tamambiente);
-long int importarprocedimentotxt(Procedimento **procedimentos, long int *tamprocedimento,long int *codigoatual,AmbienteMedico *ambientes,MedicamentoMaterial *medicamentosmateriais,long int tamabientes,long int tammedicamento,char *nome);
+long int importarprocedimentotxt(Procedimento **procedimentos, long int *tamprocedimento, long int *codigoatual, AmbienteMedico *ambientes, MedicamentoMaterial *medicamentosmateriais, long int tamabientes, long int tammedicamento, char *nome);
 void exportarprocedimentotxt(Procedimento *procedimentos, long int tam, const char *caminho);
-long int importaragendamentotxt(Agendamento **agendamentos, long int *tamagendamentos, long int *codigoatual, char *nome,Paciente *pacientes, long int tampacientes,Profissional *profissionais, long int tamprofissionais,Procedimento *procedimentos, long int tamprocedimento,MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial);
+long int importaragendamentotxt(Agendamento **agendamentos, long int *tamagendamentos, long int *codigoatual, char *nome, Paciente *pacientes, long int tampacientes, Profissional *profissionais, long int tamprofissionais, Procedimento *procedimentos, long int tamprocedimento, MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial);
 void exportaragendamentotxt(Agendamento *agendamentos, char *nome, long int tamagendamentos);
-long int importarrecebertxt(Receber **receber, long int *tamreceber, long int *codigoatual, char *nome,Agendamento *agendamentos, long int tamagendamento,Procedimento *procedimentos, long int tamprocedimento);
+long int importarrecebertxt(Receber **receber, long int *tamreceber, long int *codigoatual, char *nome, Agendamento *agendamentos, long int tamagendamento, Procedimento *procedimentos, long int tamprocedimento);
 void exportarrecebertxt(Receber *receber, char *nome, long int tamreceber);
-long int importarentradaestoquetxt(Entradaestoque **entradaestoque, long int *tamentradaestoque, long int *codigoatual,MedicamentoMaterial *medicamentosmateriais, long int tammedicamentosmaterial,char *nome);
+long int importarentradaestoquetxt(Entradaestoque **entradaestoque, long int *tamentradaestoque, long int *codigoatual, MedicamentoMaterial *medicamentosmateriais, long int tammedicamentosmaterial, char *nome);
 long int importarlancamentosretiradastxt(LacamentosRetiradas **lacamentosretiradas, long int *tamlacamentosretiradas,
                                          Agendamento *agendamentos, long int tamagendamento,
                                          Procedimento *procedimentos, long int tamprocedimento,
@@ -252,17 +258,13 @@ long int importarambientemedicobin(AmbienteMedico **ambientes, long int *tamambi
 void exportarambientemedicobin(AmbienteMedico *ambientes, long int tamambiente, const char *nomearquivo);
 
 long int importarprocedimentobin(Procedimento **procedimentos, long int *tamprocedimento, long int *codigoatual,
-                                const char *nomearquivo,
-                                AmbienteMedico *ambientes, long int tamambientes,
-                                MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial);
+                                 const char *nomearquivo,
+                                 AmbienteMedico *ambientes, long int tamambientes,
+                                 MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial);
 void exportarprocedimentobin(Procedimento *procedimentos, long int tamprocedimento, const char *nomearquivo);
-long int importaragendamentobin(Agendamento **agendamentos, long int *tamagendamentos, long int *codigoatual,
-                                const char *nomearquivo, Paciente *pacientes, long int tampacientes,
-                                Profissional *profissionais, long int tamprofissionais,
-                                Procedimento *procedimentos, long int tamprocedimento,
-                                MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial);
-void exportaragendamentobin(Agendamento *agendamentos, long int tamagendamento, const char *nomearquivo);
-long int importarreceberbin(Receber **receber, long int *tamreceber, long int *codigoatual,const char *nomearquivo,Agendamento *agendamentos, long int tamagendamento,Procedimento *procedimentos, long int tamprocedimento);
+ 
+
+long int importarreceberbin(Receber **receber, long int *tamreceber, long int *codigoatual, const char *nomearquivo, Agendamento *agendamentos, long int tamagendamento, Procedimento *procedimentos, long int tamprocedimento);
 void exportarreceberbin(Receber *receber, long int tamreceber, const char *nomearquivo);
 long int importarentradaestoquebin(Entradaestoque **entradas, long int *tamentradaestoque, long int *codigoatual,
                                    const char *nomearquivo,
@@ -273,9 +275,11 @@ long int importarlancamentoretiradabin(
     Agendamento *agendamentos, long int tamagendamento,
     Procedimento *procedimentos, long int tamprocedimento,
     float *saldototal,
-    Entradaestoque *entradaestoque, long int tamentradaestoque,char *nomedoarquivo);
+    Entradaestoque *entradaestoque, long int tamentradaestoque, char *nomedoarquivo);
 void exportarlancamentoretiradabin(LacamentosRetiradas *lancamentos, long int tam, const char *nomearquivo);
-//estoque
+long int importaragendamentobin(Agendamento **agendamentos,long int *tamagendamentos,long int *codigoatual,const char *nomearquivo,Paciente *pacientes,long int tampacientes,Profissional *profissionais,long int tamprofissionais,Procedimento *procedimentos,long int tamprocedimento,MedicamentoMaterial *medicamentosmateriais,long int tammedicamentomaterial);
+void exportaragendamentobin(Agendamento *agendamentos, long int tamagendamentos, const char *nomearquivo);
+// estoque
 Entradaestoque *cadastrarentradaestoque(Entradaestoque *entradaestoque, long int *tamentradaestoque,
                                         MedicamentoMaterial *medicamentosmateriais, long int tammedicamentosmaterial,
                                         Entradaestoque *novoentradaestoque, long int *codigoatual);
@@ -323,34 +327,33 @@ void relatorioestoqueprocedimento(MedicamentoMaterial *medicamentosmateriais, lo
                                   long int tamprocedimento, long int codprocedimento, int opcsv);
 void relatorioestoquepaciente(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial,
                               Agendamento *agendamentos, long int tamagendamentos,
-                              Procedimento *procedimentos, long int tamprocedimento, 
+                              Procedimento *procedimentos, long int tamprocedimento,
                               long int codpaciente, int opcsv);
 
-void relatoriosestoquedata(Entradaestoque *entradaestoque, long int tamentradaestoque,MedicamentoMaterial *medicamentosmateriais, long int tammedicamamentomaterial, char *data1, char *data2, int opcsv);
-void relatorioestoqueprofissional(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial,Agendamento *agendamentos, long int tamagendamentos,
-                              Procedimento *procedimentos, long int tamprocedimento,
-                              long int codprofissional, int opcsv);
-void relatorioestoqueminimo(MedicamentoMaterial *medicamentomaterial, long int tammedicamentomaterial,int opcsv);
-void relatorioestoquesemfiltro(MedicamentoMaterial *medicamentomaterial, long int tammedicamentomaterial,int opcsv);
+void relatoriosestoquedata(Entradaestoque *entradaestoque, long int tamentradaestoque, MedicamentoMaterial *medicamentosmateriais, long int tammedicamamentomaterial, char *data1, char *data2, int opcsv);
+void relatorioestoqueprofissional(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, Agendamento *agendamentos, long int tamagendamentos,
+                                  Procedimento *procedimentos, long int tamprocedimento,
+                                  long int codprofissional, int opcsv);
+void relatorioestoqueminimo(MedicamentoMaterial *medicamentomaterial, long int tammedicamentomaterial, int opcsv);
+void relatorioestoquesemfiltro(MedicamentoMaterial *medicamentomaterial, long int tammedicamentomaterial, int opcsv);
 
-void relatorioprocedimentoprocedimento(Agendamento *agendamentos, long int tamagendamento,Procedimento *procedimentos, long int tamprocedimento,long int codprocedimento, int opcsv);
-void relatorioprocedimentopaciente(Agendamento *agendamentos, long int tamagendamento,Procedimento *procedimentos, long int tamprocedimento,Paciente *pacientes, long int tampacientes,long int codpaciente, int opcsv);
-void relatorioprocedimentodata(Agendamento *agendamentos, long int tamagendamento,Procedimento *procedimentos, long int tamprocedimento,char *data1, char *data2,int opcsv);
-void relatorioprocedimentoprofissional(Agendamento *agendamentos, long int tamagendamento,Procedimento *procedimentos, long int tamprocedimento,Profissional *profissional, long int tamprofissional,long int codprofissional, int opcsv);
-void relatorioprocedimentosemfiltro(Agendamento *agendamentos, long int tamagendamento, Procedimento *procedimentos, long int tamprocedimento,int opcsv);
+void relatorioprocedimentoprocedimento(Agendamento *agendamentos, long int tamagendamento, Procedimento *procedimentos, long int tamprocedimento, long int codprocedimento, int opcsv);
+void relatorioprocedimentopaciente(Agendamento *agendamentos, long int tamagendamento, Procedimento *procedimentos, long int tamprocedimento, Paciente *pacientes, long int tampacientes, long int codpaciente, int opcsv);
+void relatorioprocedimentodata(Agendamento *agendamentos, long int tamagendamento, Procedimento *procedimentos, long int tamprocedimento, char *data1, char *data2, int opcsv);
+void relatorioprocedimentoprofissional(Agendamento *agendamentos, long int tamagendamento, Procedimento *procedimentos, long int tamprocedimento, Profissional *profissional, long int tamprofissional, long int codprofissional, int opcsv);
+void relatorioprocedimentosemfiltro(Agendamento *agendamentos, long int tamagendamento, Procedimento *procedimentos, long int tamprocedimento, int opcsv);
 
-//relatorios basicos
+// relatorios basicos
 void relatoriobasicopacientecidade(Paciente *pacientes, long int tampacientes, char *cidade, int opcsv);
-void relatoriobasicopacientesemfiltro(Paciente *paciente, long int tampacientes,int opscv);
+void relatoriobasicopacientesemfiltro(Paciente *paciente, long int tampacientes, int opscv);
 void relatoriosbasicofornecedores(Fornecedor *fornecedores, long int tamfornecedores, char *estado, int opcsv);
-void relatoriosbasicosfornecedoressemfiltro(Fornecedor *fornecedores, long int tamornecedor,int opcsv);
+void relatoriosbasicosfornecedoressemfiltro(Fornecedor *fornecedores, long int tamornecedor, int opcsv);
 void relatoriobasicoambientes(AmbienteMedico *ambientes, long int tamabiente, int opcsv);
-void relatoriobasicomedicamentomaterialfornecedor(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial,long int codfornecedor, int opcsv);
+void relatoriobasicomedicamentomaterialfornecedor(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, long int codfornecedor, int opcsv);
 void relatoriobasicomedicamentomaterialsemfiltro(MedicamentoMaterial *medicamentosmateriais, long int tammedicamentomaterial, int opcsv);
 void relatoriobasicoprocedimentoambiente(Procedimento *procedimentos, long int tamprocedimento, long int codambiente, int opcsv);
-void relatoriobasicoprocedimentosemfiltro(Procedimento *procedimentos,long int tamprocedimento,int opcsv);
+void relatoriobasicoprocedimentosemfiltro(Procedimento *procedimentos, long int tamprocedimento, int opcsv);
 void relatoriobasicoprofissionaisespecialidade(Profissional *profissionais, long int tamprofissionais, char *especialidade, int opcsv);
-void relatoriobasicoprofissionaissemfiltro(Profissional *profissionais, long int tamprofissionais,int opcsv);
-
+void relatoriobasicoprofissionaissemfiltro(Profissional *profissionais, long int tamprofissionais, int opcsv);
 
 #endif

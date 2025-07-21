@@ -472,3 +472,91 @@ void exportarprocedimentobin(Procedimento *procedimentos, long int tamprocedimen
     fclose(arquivo);
 }
 
+long int importarprocedimento(Procedimento **procedimentos,char *nome,long int *tamprocedimento,long int *codigoatual,AmbienteMedico *ambientes,
+    MedicamentoMaterial *medicamentosmateriais,
+    long int tamambientes,
+    long int tammedicamentomaterial)
+{
+    FILE *arquivo = fopen(nome, "r");
+    if (arquivo == NULL)
+        return -1; // erro ao abrir arquivo
+
+    char linha[2048];
+    Procedimento novoprocedimento;
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL)
+    {
+        if (strstr(linha, "<tabela nome=\"procedimento\">") != NULL)
+        {
+            while (fgets(linha, sizeof(linha), arquivo) != NULL && strstr(linha, "</tabela>") == NULL)
+            {
+                if (strstr(linha, "<registro>") != NULL)
+                {
+                    novoprocedimento.tamcodmedicamentosmateriais = 0;
+                    novoprocedimento.codmedicamentosemateriais = NULL;
+
+                    while (fgets(linha, sizeof(linha), arquivo) != NULL && strstr(linha, "</registro>") == NULL)
+                    {
+                        if (strstr(linha, "<codigo>") != NULL)
+                            sscanf(linha, "<codigo>%ld</codigo>", &novoprocedimento.codigo);
+
+                        if (strstr(linha, "<descricao>") != NULL)
+                            sscanf(linha, "<descricao>%1999[^<]</descricao>", novoprocedimento.descricao);
+
+                        if (strstr(linha, "<custo>") != NULL)
+                            sscanf(linha, "<custo>%f</custo>", &novoprocedimento.custo);
+
+                        if (strstr(linha, "<tempo_estimado>") != NULL)
+                            sscanf(linha, "<tempo_estimado>%ld</tempo_estimado>", &novoprocedimento.tempoEstimado);
+
+                        if (strstr(linha, "<ambiente_medico>") != NULL)
+                            sscanf(linha, "<ambiente_medico>%ld</ambiente_medico>", &novoprocedimento.codambientemedico);
+
+                        if (strstr(linha, "<medicamentos>") != NULL)
+                        {
+                            while (fgets(linha, sizeof(linha), arquivo) != NULL && strstr(linha, "</medicamentos>") == NULL)
+                            {
+                                if (strstr(linha, "<quantidade>") != NULL)
+                                {
+                                    sscanf(linha, "<quantidade>%ld</quantidade>", &novoprocedimento.tamcodmedicamentosmateriais);
+                                    novoprocedimento.codmedicamentosemateriais = malloc(novoprocedimento.tamcodmedicamentosmateriais * sizeof(Codmedicamentosmateriais));
+                                    if (novoprocedimento.codmedicamentosemateriais == NULL)
+                                    {
+                                        fclose(arquivo);
+                                        return -2; // erro de alocação
+                                    }
+                                }
+                                else if (strstr(linha, "<codigo_material") != NULL)
+                                {
+                                    Codmedicamentosmateriais cm;
+                                    sscanf(linha, "<codigo_material quantidade=\"%ld\">%ld</codigo_material>", &cm.qnt, &cm.codigo);
+
+                                    novoprocedimento.codmedicamentosemateriais[
+                                        novoprocedimento.tamcodmedicamentosmateriais++] = cm;
+                                }
+                            }
+
+                            novoprocedimento.tamcodmedicamentosmateriais--;
+                        }
+                    }
+
+                   
+                    *procedimentos = cadastrarprocedimento(*procedimentos, tamprocedimento, codigoatual,
+                                                            &novoprocedimento, ambientes, medicamentosmateriais,
+                                                            tamambientes, tammedicamentomaterial);
+
+                    // Libera a memória alocada para os medicamentos
+                    if (novoprocedimento.codmedicamentosemateriais != NULL)
+                    {
+                        free(novoprocedimento.codmedicamentosemateriais);
+                        novoprocedimento.codmedicamentosemateriais = NULL;
+                    }
+                }
+            }
+        }
+    }
+
+    fclose(arquivo);
+    return 0;
+}
+

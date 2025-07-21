@@ -27,7 +27,7 @@ int main()
          *fornecedorestxt = "fornecedores.txt", *medicamentosmateriaistxt = "medicamentosmateriais.txt",
          *pacientestxt = "pacientes.txt", *procedimentostxt = "procedimentos.txt", *receberbin="contasreceber.bin", *entradaestoquebin="entradaestoque.bin",
          *profissionaistxt = "profissionais.txt",*recebertxt="contasreceber.txt",
-         *agendamentosbin = "agendamentos.bin", *ambientesbin = "ambientes.bin", *fornecedoresbin = "fornecedores.bin",
+          *ambientesbin = "ambientes.bin", *fornecedoresbin = "fornecedores.bin", *agendamentobin="agendamentos.bin",
          *medicamentosmateriaisbin = "medicamentosmateriais.bin", *pacientesbin = "pacientes.bin", *lancamentoretiradastxt="lancamentoseretiradas.txt", *lancamentosretiradasbin="lancamentoseretiradas.bin",
          *procedimentosbin = "procedimentos.bin", *entradaestoquetxt="entradaestoque.txt",
          *profissionaisbin = "profissionais.bin", *nome = "arquivo.xml", *pacientexml = "paciente.xml", *relatorio = "relatorio.csv",
@@ -163,17 +163,18 @@ int main()
         pf=importarprofissionalbin(&profissionais,&tamprofissionais,&codigoatualprofissionais,profissionaisbin);
         a=importarambientemedicobin(&ambientes,&tamambiente,&codigoatualambiente,ambientesbin);
         pro= importarprocedimentobin(&procedimentos,&tamprocedimento,&codigoatualprocedimentos,procedimentosbin,ambientes,tamambiente,medicamentosmateriais,tammedicamentomaterial);
-        ag=importaragendamentobin(&agendamentos,&tamagendamento,&codigoatualagendamento,agendamentosbin,pacientes,tampacientes,profissionais,tamprofissionais,procedimentos,tamprocedimento,medicamentosmateriais,tammedicamentomaterial);
         r=importarreceberbin(&receber,&tamreceber,&codigoatualreceber,receberbin,agendamentos,tamagendamento,procedimentos,tamprocedimento);
         en=importarentradaestoquebin(&entradaestoque,&tamentradaestoque,&codigoatualentradaestoque,entradaestoquebin,medicamentosmateriais,tammedicamentomaterial);
+        ag=importaragendamentobin(&agendamentos,&tamagendamento,&codigoatualagendamento,agendamentobin,pacientes,tampacientes,profissionais,tamprofissionais,procedimentos,tamprocedimento,medicamentosmateriais,tammedicamentomaterial);
         lan= importarlancamentoretiradabin(&lacamentosretiradas,&tamlancamentosretiradas,agendamentos,tamagendamento,procedimentos,tamprocedimento,&saldototal,entradaestoque,tamentradaestoque,lancamentosretiradasbin);
+        
         if (p == -1)
         {
             printf("Erro ao abrir arquivo de pacientes\n");
         }
         else
         {
-            printf("Pacientes carregados com sucesso do TXT\n");
+            printf("Pacientes carregados com sucesso do bin\n");
         }
 
         if (f == -1)
@@ -182,7 +183,7 @@ int main()
         }
         else
         {
-            printf("fornecedores carregados com sucesso do TXT\n");
+            printf("fornecedores carregados com sucesso do bin\n");
         }
 
          if (m == -1)
@@ -191,7 +192,7 @@ int main()
         }
         else
         {
-            printf("medicamentos carregados com sucesso do TXT\n");
+            printf("medicamentos carregados com sucesso do bin\n");
         }
 
          if (pf == -1)
@@ -200,7 +201,7 @@ int main()
         }
         else
         {
-            printf("profissionais carregados com sucesso do TXT\n");
+            printf("profissionais carregados com sucesso do bin\n");
         }
         if (a == -1)
         {
@@ -208,7 +209,7 @@ int main()
         }
         else
         {
-            printf("ambientes carregados com sucesso do TXT\n");
+            printf("ambientes carregados com sucesso do bin\n");
         }
          if (pro == -1)
         {
@@ -216,7 +217,7 @@ int main()
         }
         else
         {
-            printf("procedimentos carregados com sucesso do TXT\n");
+            printf("procedimentos carregados com sucesso do bin\n");
         }
         if (ag == -1)
         {
@@ -224,7 +225,7 @@ int main()
         }
         else
         {
-            printf("agendamentos carregados com sucesso do TXT\n");
+            printf("agendamentos carregados com sucesso do bin\n");
         }
         if (r == -1)
         {
@@ -232,7 +233,7 @@ int main()
         }
         else
         {
-            printf("receber carregados com sucesso do TXT\n");
+            printf("receber carregados com sucesso do bin\n");
         }
 
          if (en == -1)
@@ -241,7 +242,7 @@ int main()
         }
         else
         {
-            printf("entrada estoque carregados com sucesso do TXT\n");
+            printf("entrada estoque carregados com sucesso do bin\n");
         }
         if (lan == -1)
         {
@@ -249,7 +250,7 @@ int main()
         }
         else
         {
-            printf(" lancamentos e entradas carregados com sucesso do TXT\n");
+            printf(" lancamentos e entradas carregados com sucesso do bin\n");
         }
         
     
@@ -398,7 +399,15 @@ int main()
             }
             else if (op1 == 7)
             {
-                
+                leitura= importarprocedimento(&procedimentos,nome,&tamprocedimento,&codigoatualprocedimentos,ambientes,medicamentosmateriais,tamambiente,tammedicamentomaterial);
+                  if (leitura == -1)
+                {
+                    printf("erro ao importar procedimentos\n");
+                }
+                else
+                {
+                    printf("procedimentos importados com sucesso\n");
+                }
             }
         }
 
@@ -561,7 +570,7 @@ int main()
             exportarprofissionalbin(profissionais,tamprofissionais,profissionaisbin);
             exportarambientemedicobin(ambientes,tamambiente,ambientesbin);
             exportarprocedimentobin(procedimentos,tamprocedimento,procedimentosbin);
-            exportaragendamentobin(agendamentos,tamagendamento,agendamentosbin);
+            exportaragendamentobin(agendamentos,tamagendamento,agendamentobin);
             exportarreceberbin(receber,tamreceber,receberbin);
             exportarentradaestoquebin(entradaestoque,tamentradaestoque,entradaestoquebin);
             exportarlancamentoretiradabin(lacamentosretiradas,tamlancamentosretiradas,lancamentosretiradasbin);
